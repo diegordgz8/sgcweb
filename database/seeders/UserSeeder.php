@@ -18,65 +18,65 @@ class UserSeeder extends Seeder
 	 */
 	public function run()
 	{
-		$integrante = Integrante::factory([
-			'letra' => 'V',
-			'documento' => '26942316',
-			'nombre' => 'Diego',
-			's_nombre' => 'A.',
-			'apellido' => 'Rodríguez',
-			'fecha_nacimiento' => '1999-08-25',
-			'email' => 'diegordgz8@outlook.com',
-		])->create();
+		// $integrante = Integrante::factory([
+		// 	'letra' => 'V',
+		// 	'documento' => '26942316',
+		// 	'nombre' => 'Diego',
+		// 	's_nombre' => 'A.',
+		// 	'apellido' => 'Rodríguez',
+		// 	'fecha_nacimiento' => '1999-08-25',
+		// 	'email' => 'diego@mail.com',
+		// ])->create();
 
-		$usuario = User::factory([
-			'name' => 'Diego A. Rodríguez',
-			'email' => 'diegordgz8@outlook.com',
-			'password' => bcrypt('645362'),
-		])->create()->assignRole('Administrador');
+		// $usuario = User::factory([
+		// 	'name' => 'Diego A. Rodríguez',
+		// 	'email' => 'diego@mail.com',
+		// 	'password' => bcrypt('645362'),
+		// ])->create()->assignRole('Administrador');
 
-		$propietario = Propietario::factory()->create([
-			'integrante_id' => $integrante->id,
-			'user_id' => $usuario->id,
-		]);
+		// $propietario = Propietario::factory()->create([
+		// 	'integrante_id' => $integrante->id,
+		// 	'user_id' => $usuario->id,
+		// ]);
 
-		Administrador::create([
-			'integrante_id' => $integrante->id,
-			'rol' => 'Master',
-			'user_id' => $usuario->id,
-		]);
+		// Administrador::create([
+		// 	'integrante_id' => $integrante->id,
+		// 	'rol' => 'Master',
+		// 	'user_id' => $usuario->id,
+		// ]);
 
-		$unidad = Unidad::factory()->create();
-		$unidad->propietario()->associate($propietario)->save();
-		$integrante->unidad()->associate($unidad)->save();
+		// $unidad = Unidad::factory()->create();
+		// $unidad->propietario()->associate($propietario)->save();
+		// $integrante->unidad()->associate($unidad)->save();
 
 
-		$integrante = Integrante::factory([
-			'nombre' => 'Anthony',
-			'apellido' => 'Suárez',
-			'fecha_nacimiento' => '1992-09-08',
-			'email' => 'ajhensuarez@gmail.com',
-		])->create();
+		// $integrante = Integrante::factory([
+		// 	'nombre' => 'Anthony',
+		// 	'apellido' => 'Suárez',
+		// 	'fecha_nacimiento' => '1992-09-08',
+		// 	'email' => 'ajhensuarez@mail.com',
+		// ])->create();
 
-		$usuario = User::factory([
-			'name' => 'Anthony Suárez',
-			'email' => 'ajhensuarez@gmail.com',
-			'password' => bcrypt('22318939'),
-		])->create()->assignRole('Administrador');
+		// $usuario = User::factory([
+		// 	'name' => 'Anthony Suárez',
+		// 	'email' => 'ajhensuarez@mail.com',
+		// 	'password' => bcrypt('22318939'),
+		// ])->create()->assignRole('Administrador');
 
-		$propietario = Propietario::factory()->create([
-			'integrante_id' => $integrante->id,
-			'user_id' => $usuario->id,
-		]);
+		// $propietario = Propietario::factory()->create([
+		// 	'integrante_id' => $integrante->id,
+		// 	'user_id' => $usuario->id,
+		// ]);
 
-		Administrador::create([
-			'integrante_id' => $integrante->id,
-			'rol' => 'Master',
-			'user_id' => $usuario->id,
-		]);
+		// Administrador::create([
+		// 	'integrante_id' => $integrante->id,
+		// 	'rol' => 'Master',
+		// 	'user_id' => $usuario->id,
+		// ]);
 
-		$unidad = Unidad::factory()->create();
-		$unidad->propietario()->associate($propietario)->save();
-		$integrante->unidad()->associate($unidad)->save();
+		// $unidad = Unidad::factory()->create();
+		// $unidad->propietario()->associate($propietario)->save();
+		// $integrante->unidad()->associate($unidad)->save();
 
 
 		// Usuario con rol de Administrador
@@ -86,12 +86,12 @@ class UserSeeder extends Seeder
 			'nombre' => 'Admin',
 			'apellido' => 'Istrador',
 			'fecha_nacimiento' => '2000-01-01',
-			'email' => 'teamsgcweb2.0@gmail.com',
+			'email' => 'admin@mail.com',
 		])->create();
 
 		$usuario = User::factory([
-			'name' => 'AdminIstrador',
-			'email' => 'teamsgcweb2.0@gmail.com',
+			'name' => 'Administrador',
+			'email' => 'admin@mail.com',
 			'password' => bcrypt('admin'),
 		])->create()->assignRole('Administrador');
 
@@ -118,13 +118,13 @@ class UserSeeder extends Seeder
 			'nombre' => 'Pro',
 			'apellido' => 'Pietario',
 			'fecha_nacimiento' => '2000-01-01',
-			'email' => 'propietario@gmail.com',
+			'email' => 'propietario@mail.com',
 		])->create();
 
 		$usuario = User::factory([
-			'name' => 'ProPietario',
-			'email' => 'propietario@gmail.com',
-			'password' => bcrypt('123'),
+			'name' => 'Propietario',
+			'email' => 'propietario@mail.com',
+			'password' => bcrypt('pass'),
 		])->create()->assignRole('Propietario');
 
 		$propietario = Propietario::factory()->create([
@@ -144,13 +144,13 @@ class UserSeeder extends Seeder
 			'nombre' => 'Condo',
 			'apellido' => 'Minio',
 			'fecha_nacimiento' => '2000-01-01',
-			'email' => 'condominio@gmail.com',
+			'email' => 'condominio@mail.com',
 		])->create();
 
 		$usuario = User::factory([
-			'name' => 'CondoMinio',
-			'email' => 'condominio@gmail.com',
-			'password' => bcrypt('123'),
+			'name' => 'Condominio',
+			'email' => 'condominio@mail.com',
+			'password' => bcrypt('pass'),
 		])->create()->assignRole('Condominio');
 
 		Administrador::create([
@@ -167,13 +167,13 @@ class UserSeeder extends Seeder
 			'nombre' => 'Por',
 			'apellido' => 'Tero',
 			'fecha_nacimiento' => '2000-01-01',
-			'email' => 'portero@gmail.com',
+			'email' => 'portero@mail.com',
 		])->create();
 
 		$usuario = User::factory([
-			'name' => 'PorTero',
-			'email' => 'portero@gmail.com',
-			'password' => bcrypt('123'),
+			'name' => 'Portero',
+			'email' => 'portero@mail.com',
+			'password' => bcrypt('pass'),
 		])->create()->assignRole('Portero');
 
 		Administrador::create([

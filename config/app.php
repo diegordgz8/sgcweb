@@ -161,12 +161,12 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
+
         /*
         * Package Service Providers...
         */
         // Barryvdh\DomPDF\ServiceProvider::class,
-        Flasher\Livewire\FlasherLivewireServiceProvider::class,
+        Flasher\Laravel\FlasherServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -232,6 +232,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        'Flasher' => Flasher\Laravel\Facade\Flasher::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
     ],
 

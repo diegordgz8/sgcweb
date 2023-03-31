@@ -44,8 +44,6 @@
 
     @stack('modals')
 
-    @flasher_render
-    @flasher_livewire_render
     @livewireScripts
 
     @stack('js')
