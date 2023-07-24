@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             <a href="{{ route('habitante.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
@@ -149,7 +149,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model="openEdit">
         <x-slot name="title">
             Editar la categoría
         </x-slot>
@@ -167,7 +167,7 @@
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="categoria.nombre">
-                                <x-jet-input-error for="nombre" />
+                                <x-input-error for="nombre" />
                             </div>
 
                             <div class="col-span-6">
@@ -176,7 +176,7 @@
                                 <input type="text" name="descripcion" id="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="categoria.descripcion">
-                                <x-jet-input-error for="descripcion" />
+                                <x-input-error for="descripcion" />
                             </div>
 
                         </div>
@@ -188,17 +188,17 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model="openDestroy">
 
         <x-slot name="title">
             Eliminar
@@ -209,15 +209,15 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+            <x-secondary-button wire:click="$set('openDestroy', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Eliminar
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

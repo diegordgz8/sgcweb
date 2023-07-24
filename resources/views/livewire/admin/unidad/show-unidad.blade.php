@@ -7,19 +7,19 @@
 
     @if ($unidad->propietario)
         <div class="px-4 py-3 sm:px-6">
-            <x-jet-button wire:click="$set('openCambiar', true)">
+            <x-button wire:click="$set('openCambiar', true)">
                 Cambio de propietario
-            </x-jet-button>
+            </x-button>
 
-            <x-jet-danger-button wire:click="$set('openRetirar', true)">
+            <x-danger-button wire:click="$set('openRetirar', true)">
                 Retirar propietario
-            </x-jet-danger-button>
+            </x-danger-button>
         </div>
     @else
         <div class="px-4 py-3 sm:px-6">
-            <x-jet-button wire:click="$set('openAsignar', true)">
+            <x-button wire:click="$set('openAsignar', true)">
                 Asignar propietario
-            </x-jet-button>
+            </x-button>
         </div>
     @endif
 
@@ -177,7 +177,7 @@
 
     @endif
 
-    <x-jet-dialog-modal wire:model="openAsignar">
+    <x-dialog-modal wire:model="openAsignar">
 
         <x-slot name="title">
             Asignar propietario
@@ -192,18 +192,18 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openAsignar', false)">
+            <x-secondary-button wire:click="$set('openAsignar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="asignarPropietario" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="asignarPropietario" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Asignar propietario
-            </x-jet-button>
+            </x-button>
         </x-slot>
 
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-dialog-modal wire:model="openCambiar">
+    <x-dialog-modal wire:model="openCambiar">
 
         <x-slot name="title">
             Cambiar propietario
@@ -217,18 +217,18 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openAsignar', false)">
+            <x-secondary-button wire:click="$set('openAsignar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="cambiarPropietario" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="cambiarPropietario" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Cambiar propietario
-            </x-jet-button>
+            </x-button>
         </x-slot>
 
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-confirmation-modal wire:model="openRetirar">
+    <x-confirmation-modal wire:model="openRetirar">
 
         <x-slot name="title">
             Retirar propietario
@@ -240,18 +240,18 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openRetirar', false)">
+            <x-secondary-button wire:click="$set('openRetirar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="retirar" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="retirar" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Retirar propietario
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
-    {{-- <x-jet-confirmation-modal wire:model="openDestroy">
+    {{-- <x-confirmation-modal wire:model="openDestroy">
 
 		<x-slot name="title">
 			Eliminar
@@ -262,15 +262,15 @@
 		</x-slot>
 
 		<x-slot name="footer">
-			<x-jet-secondary-button wire:click="$set('openDestroy', false)">
+			<x-secondary-button wire:click="$set('openDestroy', false)">
 				Cancelar
-			</x-jet-secondary-button>
+			</x-secondary-button>
 
-			<x-jet-danger-button wire:click="remove" wire:loading.attr="disabled" class="disabled:opacity-25">
+			<x-danger-button wire:click="remove" wire:loading.attr="disabled" class="disabled:opacity-25">
 				Eliminar
-			</x-jet-danger-button>
+			</x-danger-button>
 		</x-slot>
 
-	</x-jet-confirmation-modal> --}}
+	</x-confirmation-modal> --}}
 
 </div>

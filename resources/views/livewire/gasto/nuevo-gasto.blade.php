@@ -1,10 +1,10 @@
 <div wire:init="$set('readyToLoad', true)" x-data="nuevoGasto">
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo gasto
@@ -24,7 +24,7 @@
                                 </label>
                                 <input wire:model.lazy="descripcion" type="text" name="descripcion" id="descripcion"
                                     class="form-control w-full">
-                                <x-jet-input-error for="descripcion" />
+                                <x-input-error for="descripcion" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -40,7 +40,7 @@
                                         value="Extraordinario">
                                     <label for="extraordinario">Extraordinario</label>
                                 </div>
-                                <x-jet-input-error for="tipo" />
+                                <x-input-error for="tipo" />
                             </div>
 
                             {{-- @if ($tipo == 'Extraordinario') --}}
@@ -50,7 +50,7 @@
                                     </label>
                                     <input wire:model.lazy="numeroMeses" type="number" name="numero-meses"
                                         id="numero-meses" class="form-control w-full">
-                                    <x-jet-input-error for="numeroMeses" />
+                                    <x-input-error for="numeroMeses" />
                                 </div>
 
                                 <div x-show="tipo == 'Extraordinario'" x-transition class="col-span-6 sm:col-span-2">
@@ -65,7 +65,7 @@
                                             value="no" class="ml-2">
                                         <label for="no">No</label>
                                     </div>
-                                    <x-jet-input-error for="elegidoAsamblea" />
+                                    <x-input-error for="elegidoAsamblea" />
                                 </div>
 
                                 {{-- @if ($elegidoAsamblea == 'si') --}}
@@ -81,7 +81,7 @@
                                                     {{ $item->descripcion }}</option>
                                             @endforeach
                                         </select>
-                                        <x-jet-input-error for="asamblea.id" />
+                                        <x-input-error for="asamblea.id" />
                                     </div>
                                 {{-- @endif --}}
                             {{-- @endif --}}
@@ -98,7 +98,7 @@
                                         <option>Total de inmuebles</option>
                                     </select>
                                 </div>
-                                <x-jet-input-error for="calculo" />
+                                <x-input-error for="calculo" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -107,7 +107,7 @@
                                 </label>
                                 <input wire:model="comienzoCobro" type="month" name="comienzo-cobro" id="comienzo-cobro"
                                     class="form-control w-full">
-                                <x-jet-input-error for="comienzoCobro" />
+                                <x-input-error for="comienzoCobro" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -118,7 +118,7 @@
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
-                                <x-jet-input-error for="moneda" />
+                                <x-input-error for="moneda" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -127,7 +127,7 @@
                                 </label>
                                 <input wire:model="monto" type="text" name="monto" id="monto" readonly
                                     class="form-control w-full">
-                                <x-jet-input-error for="monto" />
+                                <x-input-error for="monto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -136,7 +136,7 @@
                                 </label>
                                 <input wire:model="factura" type="text" name="factura" id="factura"
                                     class="form-control w-full">
-                                <x-jet-input-error for="factura" />
+                                <x-input-error for="factura" />
                             </div>
 
                             <div class="col-span-6">
@@ -145,7 +145,7 @@
                                 </label>
                                 <textarea wire:model.lazy="observaciones" name="observaciones" id="observaciones"
                                     rows="5" class="form-control w-full"></textarea>
-                                <x-jet-input-error for="observaciones" />
+                                <x-input-error for="observaciones" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -159,8 +159,8 @@
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                     @endforeach
                                 </select>
-                                <x-jet-input-error for="proveedor.id" />
-								<x-jet-input-error for="servicios" />
+                                <x-input-error for="proveedor.id" />
+								<x-input-error for="servicios" />
                             </div>
 
                         </div>
@@ -180,17 +180,17 @@
 
         <x-slot name="footer">
 
-            <x-jet-secondary-button wire:click="$set('open', false)">
+            <x-secondary-button wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
+            <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
                 Registrar
-            </x-jet-button>
+            </x-button>
 
         </x-slot>
 
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>
 

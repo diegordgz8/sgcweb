@@ -24,7 +24,7 @@
                 </x-slot>
             </x-filtro>
 
-            <x-jet-input type="search" placeholder="Escriba para buscar por nombre o apellido..." class="w-full"
+            <x-input type="search" placeholder="Escriba para buscar por nombre o apellido..." class="w-full"
                 wire:model="busqueda" />
 
                 <a href="{{ route('visita.exportar', ['-' . $busqueda . '-' . $this->orden . '-' . $this->direccion . '-' . $fechaDesde . '-' . $fechaHasta]) }}"

@@ -1,11 +1,11 @@
 <div>
 	{{-- The whole world belongs to you. --}}
 
-	<x-jet-button wire:click="$set('abierto', true)">
+	<x-button wire:click="$set('abierto', true)">
 		Nuevo
-	</x-jet-button>
+	</x-button>
 
-	<x-jet-dialog-modal wire:model="abierto">
+	<x-dialog-modal wire:model="abierto">
 		<x-slot name="title">
 			Nuevo Tipo de unidad
 		</x-slot>
@@ -23,7 +23,7 @@
 								<input type="text" name="nombre" id="nombre"
 									class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
 									wire:model="nombre">
-								<x-jet-input-error for="nombre" />
+								<x-input-error for="nombre" />
 							</div>
 
 							<div class="col-span-2">
@@ -31,7 +31,7 @@
 								<input type="number" name="area" id="area"
 									class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
 									wire:model="area">
-								<x-jet-input-error for="area" />
+								<x-input-error for="area" />
 							</div>
 
 							<div class="col-span-6">
@@ -39,7 +39,7 @@
 								<input type="text" name="descripcion" id="descripcion"
 									class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
 									wire:model="descripcion">
-								<x-jet-input-error for="descripcion" />
+								<x-input-error for="descripcion" />
 							</div>
 						</div>
 					</div>
@@ -50,14 +50,14 @@
 		</x-slot>
 
 		<x-slot name="footer">
-			<x-jet-secondary-button class="mr-2" wire:click="$set('abierto', false)">
+			<x-secondary-button class="mr-2" wire:click="$set('abierto', false)">
 				Cancelar
-			</x-jet-secondary-button>
+			</x-secondary-button>
 
-			<x-jet-button wire:click="save()">
+			<x-button wire:click="save()">
 				Registrar
-			</x-jet-button>
+			</x-button>
 		</x-slot>
-	</x-jet-dialog-modal>
+	</x-dialog-modal>
 
 </div>

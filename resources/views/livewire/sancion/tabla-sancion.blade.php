@@ -5,7 +5,7 @@
 
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             {{-- @livewire('cuenta.nueva-cuenta') --}}
         </div>

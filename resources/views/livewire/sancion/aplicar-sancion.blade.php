@@ -6,7 +6,7 @@
         @include('livewire.sancion.partials.tabla-unidades')
     </div>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth='2xl'>
+    <x-dialog-modal wire:model="open" maxWidth='2xl'>
         <x-slot name="title">
             Aplicar sanción
         </x-slot>
@@ -142,7 +142,7 @@
                 </div>
                 <!-- /tabla -->
 
-                <x-jet-input-error for="sanciones" />
+                <x-input-error for="sanciones" />
 
             </div>
 
@@ -150,16 +150,16 @@
 
         <x-slot name="footer">
 
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save" wire:loading.attr="disabled">
+            <x-button wire:click="save" wire:loading.attr="disabled">
                 Aplicar sanción
-            </x-jet-button>
+            </x-button>
 
         </x-slot>
 
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

@@ -39,7 +39,7 @@
                         <div class="flex space-x-4 items-center">
                             <x-select-cantidad />
 
-                            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full"
+                            <x-input type="text" placeholder="Escriba para buscar..." class="w-full"
                                 wire:model="busqueda" />
 
                             @livewire('servicio.nuevo-servicio')

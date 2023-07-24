@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input type="search" placeholder="Escriba para buscar..." class="w-full"
+            <x-input type="search" placeholder="Escriba para buscar..." class="w-full"
                 wire:model="busqueda" />
 
             <a href="{{ route('proveedor.exportar') }}" class="btn btn-blue whitespace-nowrap">
@@ -163,7 +163,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model="openEdit">
         <x-slot name="title">
             Editar proveedor
         </x-slot>
@@ -192,8 +192,8 @@
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
                                         placeholder="Cédula o RIF" wire:model="proveedor.documento" readonly>
                                 </div>
-                                <x-jet-input-error for="proveedor.letra" />
-                                <x-jet-input-error for="proveedor.documento" />
+                                <x-input-error for="proveedor.letra" />
+                                <x-input-error for="proveedor.documento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -201,7 +201,7 @@
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="proveedor.nombre">
-                                <x-jet-input-error for="proveedor.nombre" />
+                                <x-input-error for="proveedor.nombre" />
                             </div>
 
                             <div class="col-span-6">
@@ -209,7 +209,7 @@
                                 <input type="text" name="contacto" id="contacto" autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="proveedor.contacto">
-                                <x-jet-input-error for="proveedor.contacto" />
+                                <x-input-error for="proveedor.contacto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -219,7 +219,7 @@
                                         class="form-control w-full" wire:model="proveedor.telefono">
                                     <small class="text-xs text-gray-600">Formato: 0412-1234567</small>
                                 </div>
-                                <x-jet-input-error for="proveedor.telefono" />
+                                <x-input-error for="proveedor.telefono" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -227,7 +227,7 @@
                                 <input type="text" name="email" id="email" autocomplete="email"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="proveedor.email">
-                                <x-jet-input-error for="proveedor.email" />
+                                <x-input-error for="proveedor.email" />
                             </div>
 
                             <div class="col-span-6">
@@ -235,7 +235,7 @@
                                 <input type="text" name="direccion" id="direccion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="proveedor.direccion">
-                                <x-jet-input-error for="proveedor.direccion" />
+                                <x-input-error for="proveedor.direccion" />
                             </div>
                         </div>
                     </div>
@@ -246,17 +246,17 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model="openDestroy">
 
         <x-slot name="title">
             Eliminar
@@ -267,15 +267,15 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+            <x-secondary-button wire:click="$set('openDestroy', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Eliminar
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

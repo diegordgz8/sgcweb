@@ -75,7 +75,7 @@ foreach ($linksDropdown as $item) {
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="flex-shrink-0 flex items-center">
+                <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
                         <div class="rounded-full bg-blue-500 p-2 shadow-md">
                             <img src="{{ asset('img/logo/blanco.png') }}" alt="" class="block h-9 w-auto">
@@ -93,17 +93,17 @@ foreach ($linksDropdown as $item) {
                 @auth
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-jet-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                        <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                             Inicio
-                        </x-jet-nav-link>
+                        </x-nav-link>
 
                         @if ($dropCount)
-                            <x-jet-dropdown>
+                            <x-dropdown>
 
                                 <x-slot name="trigger">
-                                    <x-jet-nav-link class="h-full cursor-pointer">
+                                    <x-nav-link class="h-full cursor-pointer">
                                         Pagos
-                                    </x-jet-nav-link>
+                                    </x-nav-link>
                                 </x-slot>
 
                                 <x-slot name="content">
@@ -111,24 +111,24 @@ foreach ($linksDropdown as $item) {
                                     @foreach ($linksDropdown as $item)
 
                                         @can($item['can'])
-                                            <x-jet-dropdown-link href="{{ $item['route'] }}" :active="$item['active']">
+                                            <x-dropdown-link href="{{ $item['route'] }}" :active="$item['active']">
                                                 {{ $item['name'] }}
-                                            </x-jet-dropdown-link>
+                                            </x-dropdown-link>
                                         @endcan
 
                                     @endforeach
                                 </x-slot>
 
-                            </x-jet-dropdown>
+                            </x-dropdown>
                         @endif
 
                         @foreach ($nav_links as $item)
 
                             @can($item['can'])
 
-                                <x-jet-nav-link href="{{ $item['route'] }}" :active="$item['active']">
+                                <x-nav-link href="{{ $item['route'] }}" :active="$item['active']">
                                     {{ $item['name'] }}
-                                </x-jet-nav-link>
+                                </x-nav-link>
 
                             @endcan
 
@@ -143,7 +143,7 @@ foreach ($linksDropdown as $item) {
                     <!-- Teams Dropdown -->
                     @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                         <div class="ml-3 relative">
-                            <x-jet-dropdown align="right" width="60">
+                            <x-dropdown align="right" width="60">
                                 <x-slot name="trigger">
                                     <span class="inline-flex rounded-md">
                                         <button type="button"
@@ -168,15 +168,15 @@ foreach ($linksDropdown as $item) {
                                         </div>
 
                                         <!-- Team Settings -->
-                                        <x-jet-dropdown-link
+                                        <x-dropdown-link
                                             href="{{ route('teams.show', Auth::user()->currentTeam->id) }}">
                                             {{ __('Team Settings') }}
-                                        </x-jet-dropdown-link>
+                                        </x-dropdown-link>
 
                                         @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                                            <x-jet-dropdown-link href="{{ route('teams.create') }}">
+                                            <x-dropdown-link href="{{ route('teams.create') }}">
                                                 {{ __('Create New Team') }}
-                                            </x-jet-dropdown-link>
+                                            </x-dropdown-link>
                                         @endcan
 
                                         <div class="border-t border-gray-100"></div>
@@ -187,17 +187,17 @@ foreach ($linksDropdown as $item) {
                                         </div>
 
                                         @foreach (Auth::user()->allTeams() as $team)
-                                            <x-jet-switchable-team :team="$team" />
+                                            <x-switchable-team :team="$team" />
                                         @endforeach
                                     </div>
                                 </x-slot>
-                            </x-jet-dropdown>
+                            </x-dropdown>
                         </div>
                     @endif
 
                     <!-- Settings Dropdown -->
                     <div class="ml-3 relative">
-                        <x-jet-dropdown align="right" width="48">
+                        <x-dropdown align="right" width="48">
                             <x-slot name="trigger">
                                 @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
                                     <button
@@ -226,15 +226,15 @@ foreach ($linksDropdown as $item) {
                             <x-slot name="content">
 
                                 @can('home')
-                                    <x-jet-dropdown-link href="{{ route('home') }}">
+                                    <x-dropdown-link href="{{ route('home') }}">
                                         {{ __('Panel de propietario') }}
-                                    </x-jet-dropdown-link>
+                                    </x-dropdown-link>
                                 @endcan
 
                                 @can('admin.home')
-                                    <x-jet-dropdown-link href="{{ route('admin.home') }}">
+                                    <x-dropdown-link href="{{ route('admin.home') }}">
                                         {{ __('Administración del condominio') }}
-                                    </x-jet-dropdown-link>
+                                    </x-dropdown-link>
                                 @endcan
 
                                 <!-- Account Management -->
@@ -242,14 +242,14 @@ foreach ($linksDropdown as $item) {
                                     {{ __('Administrar cuenta') }}
                                 </div>
 
-                                <x-jet-dropdown-link href="{{ route('profile.show') }}">
+                                <x-dropdown-link href="{{ route('profile.show') }}">
                                     {{ __('Perfil') }}
-                                </x-jet-dropdown-link>
+                                </x-dropdown-link>
 
                                 @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                                    <x-jet-dropdown-link href="{{ route('api-tokens.index') }}">
+                                    <x-dropdown-link href="{{ route('api-tokens.index') }}">
                                         {{ __('API Tokens') }}
-                                    </x-jet-dropdown-link>
+                                    </x-dropdown-link>
                                 @endif
 
                                 <div class="border-t border-gray-100"></div>
@@ -258,14 +258,14 @@ foreach ($linksDropdown as $item) {
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
 
-                                    <x-jet-dropdown-link href="{{ route('logout') }}"
+                                    <x-dropdown-link href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                                                                                                             this.closest('form').submit();">
                                         {{ __('Cerrar sesión') }}
-                                    </x-jet-dropdown-link>
+                                    </x-dropdown-link>
                                 </form>
                             </x-slot>
-                        </x-jet-dropdown>
+                        </x-dropdown>
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Iniciar sesión</a>
@@ -299,9 +299,9 @@ foreach ($linksDropdown as $item) {
                 @foreach ($linksDropdown as $item)
 
                     @can($item['can'])
-                        <x-jet-responsive-nav-link href="{{ $item['route'] }}" :active="$item['active']">
+                        <x-responsive-nav-link href="{{ $item['route'] }}" :active="$item['active']">
                             {{ $item['name'] }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
                     @endcan
 
                 @endforeach
@@ -309,9 +309,9 @@ foreach ($linksDropdown as $item) {
                 @foreach ($nav_links as $item)
 
                     @can($item['can'])
-                        <x-jet-responsive-nav-link href="{{ $item['route'] }}" :active="$item['active']">
+                        <x-responsive-nav-link href="{{ $item['route'] }}" :active="$item['active']">
                             {{ $item['name'] }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
                     @endcan
 
                 @endforeach
@@ -321,7 +321,7 @@ foreach ($linksDropdown as $item) {
             <div class="pt-4 pb-1 border-t border-gray-200">
                 <div class="flex items-center px-4">
                     @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                        <div class="flex-shrink-0 mr-3">
+                        <div class="shrink-0 mr-3">
                             <img class="h-10 w-10 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}"
                                 alt="{{ Auth::user()->name }}" />
                         </div>
@@ -336,33 +336,33 @@ foreach ($linksDropdown as $item) {
                 <div class="mt-3 space-y-1">
 
                     @can('admin.home')
-                        <x-jet-responsive-nav-link href="{{ route('admin.home') }}"
+                        <x-responsive-nav-link href="{{ route('admin.home') }}"
                             :active="request()->routeIs('admin.home')">
                             {{ __('Administración del condominio') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
                     @endcan
 
                     <!-- Account Management -->
-                    <x-jet-responsive-nav-link href="{{ route('profile.show') }}"
+                    <x-responsive-nav-link href="{{ route('profile.show') }}"
                         :active="request()->routeIs('profile.show')">
                         {{ __('Perfil') }}
-                    </x-jet-responsive-nav-link>
+                    </x-responsive-nav-link>
 
                     @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
-                        <x-jet-responsive-nav-link href="{{ route('api-tokens.index') }}"
+                        <x-responsive-nav-link href="{{ route('api-tokens.index') }}"
                             :active="request()->routeIs('api-tokens.index')">
                             {{ __('API Tokens') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
                     @endif
 
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
 
-                        <x-jet-responsive-nav-link href="{{ route('logout') }}" onclick="event.preventDefault();
+                        <x-responsive-nav-link href="{{ route('logout') }}" onclick="event.preventDefault();
                         this.closest('form').submit();">
                             {{ __('Cerrar sesión') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
                     </form>
 
                     <!-- Team Management -->
@@ -374,16 +374,16 @@ foreach ($linksDropdown as $item) {
                         </div>
 
                         <!-- Team Settings -->
-                        <x-jet-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}"
+                        <x-responsive-nav-link href="{{ route('teams.show', Auth::user()->currentTeam->id) }}"
                             :active="request()->routeIs('teams.show')">
                             {{ __('Team Settings') }}
-                        </x-jet-responsive-nav-link>
+                        </x-responsive-nav-link>
 
                         @can('create', Laravel\Jetstream\Jetstream::newTeamModel())
-                            <x-jet-responsive-nav-link href="{{ route('teams.create') }}"
+                            <x-responsive-nav-link href="{{ route('teams.create') }}"
                                 :active="request()->routeIs('teams.create')">
                                 {{ __('Create New Team') }}
-                            </x-jet-responsive-nav-link>
+                            </x-responsive-nav-link>
                         @endcan
 
                         <div class="border-t border-gray-200"></div>
@@ -394,18 +394,18 @@ foreach ($linksDropdown as $item) {
                         </div>
 
                         @foreach (Auth::user()->allTeams() as $team)
-                            <x-jet-switchable-team :team="$team" component="jet-responsive-nav-link" />
+                            <x-switchable-team :team="$team" component="jet-responsive-nav-link" />
                         @endforeach
                     @endif
                 </div>
             </div>
         @else
-            <x-jet-responsive-nav-link href="{{ route('login') }}">
+            <x-responsive-nav-link href="{{ route('login') }}">
                 Iniciar sesión
-            </x-jet-responsive-nav-link>
-            <x-jet-responsive-nav-link href="{{ route('register') }}">
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('register') }}">
                 Registrarse
-            </x-jet-responsive-nav-link>
+            </x-responsive-nav-link>
         @endauth
     </div>
 </nav>

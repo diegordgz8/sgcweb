@@ -34,7 +34,7 @@
                                             <input type="text" name="rif" id="rif"
                                                 class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md">
                                         </div>
-                                        <x-jet-input-error for="rif" />
+                                        <x-input-error for="rif" />
                                     </div>
 
                                     <div class="col-span-6">
@@ -42,7 +42,7 @@
                                             class="block text-sm font-medium text-gray-700">Nombre:</label>
                                         <input type="text" name="nombre" id="nombre"
                                             class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                        <x-jet-input-error for="nombre" />
+                                        <x-input-error for="nombre" />
                                     </div>
 
                                     <div class="col-span-6">
@@ -50,7 +50,7 @@
                                             class="block text-sm font-medium text-gray-700">Dirección:</label>
                                         <input type="text" name="direccion" id="direccion"
                                             class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                        <x-jet-input-error for="direccion" />
+                                        <x-input-error for="direccion" />
                                     </div>
 
                                     <h3 class="col-span-6 text-center">Tasa de cambio inicial</h3>
@@ -60,7 +60,7 @@
                                             Tasa de cambio:
                                         </label>
                                         <input type="text" name="tasa" id="tasa" class="form-control w-full">
-                                        <x-jet-input-error for="tasa" />
+                                        <x-input-error for="tasa" />
                                     </div>
 
                                     <h3 class="col-span-6 text-center">Mensualidad inicial</h3>
@@ -70,7 +70,7 @@
                                             Monto:
                                         </label>
                                         <input type="text" name="monto" id="monto" class="form-control w-full">
-                                        <x-jet-input-error for="monto" />
+                                        <x-input-error for="monto" />
                                     </div>
 
                                     <div class="col-span-6">
@@ -81,16 +81,16 @@
                                             <option>Bolívar</option>
                                             <option>Dólar</option>
                                         </select>
-                                        <x-jet-input-error for="moneda" />
+                                        <x-input-error for="moneda" />
                                     </div>
 
                                 </div>
                             </div>
 
                             <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                <x-jet-button type="submit">
+                                <x-button type="submit">
                                     Registrar
-                                </x-jet-button>
+                                </x-button>
                             </div>
 
                         </div>

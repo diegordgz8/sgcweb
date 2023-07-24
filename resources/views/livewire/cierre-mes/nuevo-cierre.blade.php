@@ -1,11 +1,11 @@
 <div>
 
-    <x-jet-button wire:click="$set('open', true)" class="whitespace-nowrap">
+    <x-button wire:click="$set('open', true)" class="whitespace-nowrap">
         Cerrar mes
-    </x-jet-button>
+    </x-button>
 
 	{{-- {{ Str::substr(today(), 5, 2) }} --}}
-	<x-jet-dialog-modal wire:model="open">
+	<x-dialog-modal wire:model="open">
 
         <x-slot name="title">
             Cierre de mes
@@ -23,7 +23,7 @@
 							<label for="mes" class="block text-sm font-medium text-gray-700">Mes</label>
 							<input wire:model="mes" type="month" name="mes" id="mes"
 								class="form-control w-full">
-							<x-jet-input-error for="mes" />
+							<x-input-error for="mes" />
 						</div>
 
 						<div class="col-span-6">
@@ -34,7 +34,7 @@
 								<option>Bolívar</option>
 								<option>Dólar</option>
 							</select>
-							<x-jet-input-error for="moneda" />
+							<x-input-error for="moneda" />
 						</div>
 
 						<div class="col-span-6">
@@ -43,7 +43,7 @@
 							</label>
 							<input wire:model.lazy="tasaCambio.tasa" type="text" name="tasa-cambio" id="tasa-cambio" readonly
 								class="form-control w-full">
-							<x-jet-input-error for="tasaCambio.tasa" />
+							<x-input-error for="tasaCambio.tasa" />
 						</div>
 
 					</div>
@@ -55,15 +55,15 @@
 	</x-slot>
 
 	<x-slot name="footer">
-		<x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+		<x-secondary-button class="mr-2" wire:click="$set('open', false)">
 			Cancelar
-		</x-jet-secondary-button>
+		</x-secondary-button>
 
-		<x-jet-button wire:click="cerrarMes" wire:loading.attr="disabled" class="disabled:opacity-25">
+		<x-button wire:click="cerrarMes" wire:loading.attr="disabled" class="disabled:opacity-25">
 			Registrar
-		</x-jet-button>
+		</x-button>
 	</x-slot>
 
-</x-jet-dialog-modal>
+</x-dialog-modal>
 
 </div>

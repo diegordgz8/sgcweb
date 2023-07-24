@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             @livewire('comunicado.nuevo-comunicado')
         </div>
@@ -91,7 +91,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model="openEdit">
         <x-slot name="title">
             Editar el comunicado
         </x-slot>
@@ -108,14 +108,14 @@
                                 <label for="asunto" class="block text-sm font-medium text-gray-700">Asunto</label>
                                 <input wire:model="comunicado.asunto" type="text" name="asunto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="comunicado.asunto" />
+                                <x-input-error for="comunicado.asunto" />
                             </div>
 
                             <div class="col-span-6">
                                 <label for="contenido" class="block text-sm font-medium text-gray-700">Contenido</label>
                                 <textarea wire:model.lazy="comunicado.contenido" name="contenido"
                                     id="contenido" rows="15" class="w-full mt-1 form-control"></textarea>
-                                <x-jet-input-error for="comunicado.contenido" />
+                                <x-input-error for="comunicado.contenido" />
                             </div>
 
                         </div>
@@ -127,14 +127,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

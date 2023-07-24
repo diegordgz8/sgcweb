@@ -1,10 +1,10 @@
 <div>
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Nuevo comunicado
         </x-slot>
@@ -21,14 +21,14 @@
                                 <label for="asunto" class="block text-sm font-medium text-gray-700">Asunto</label>
                                 <input wire:model.lazy="asunto" type="text" name="asunto" id="asunto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="asunto" />
+                                <x-input-error for="asunto" />
                             </div>
 
                             <div class="col-span-6">
                                 <label for="contenido"
                                     class="block text-sm font-medium text-gray-700">Contenido</label>
                                 <textarea wire:model.lazy="contenido" name="contenido" id="contenido" rows="15" class="mt-1 w-full form-control"></textarea>
-                                <x-jet-input-error for="contenido" />
+                                <x-input-error for="contenido" />
                             </div>
                         </div>
                     </div>
@@ -39,14 +39,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save">
+            <x-button wire:click="save">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

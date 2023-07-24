@@ -43,7 +43,7 @@
 
                     <x-select-cantidad />
 
-                    <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full"
+                    <x-input type="text" placeholder="Escriba para buscar..." class="w-full"
                         wire:model="busqueda" />
 
                 </div>

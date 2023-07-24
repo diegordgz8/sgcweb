@@ -152,7 +152,7 @@
         @endif
 
         {{-- Modal modificar integrante --}}
-        <x-jet-dialog-modal wire:model="openEdit">
+        <x-dialog-modal wire:model="openEdit">
             <x-slot name="title">
                 Editar el integrante
             </x-slot>
@@ -180,14 +180,14 @@
                                             id="documento"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md">
                                     </div>
-                                    <x-jet-input-error for="integrante.documento" />
+                                    <x-input-error for="integrante.documento" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3 sm:col-start-1">
                                     <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
                                     <input wire:model="integrante.nombre" type="text" name="nombre" id="nombre"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.nombre" />
+                                    <x-input-error for="integrante.nombre" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -195,7 +195,7 @@
                                         nombre:</label>
                                     <input wire:model="integrante.s_nombre" type="text" name="s_nombre" id="s_nombre"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.s_nombre" />
+                                    <x-input-error for="integrante.s_nombre" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -203,7 +203,7 @@
                                         class="block text-sm font-medium text-gray-700">Apellido:</label>
                                     <input wire:model="integrante.apellido" type="text" name="apellido" id="apellido"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.apellido" />
+                                    <x-input-error for="integrante.apellido" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -212,7 +212,7 @@
                                     <input wire:model="integrante.s_apellido" type="text" name="s_apellido"
                                         id="s_apellido"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.s_apellido" />
+                                    <x-input-error for="integrante.s_apellido" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -222,7 +222,7 @@
                                     <input wire:model="integrante.fecha_nacimiento" type="date" name="fecha_nacimiento"
                                         id="fecha_nacimiento"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.fecha_nacimiento" />
+                                    <x-input-error for="integrante.fecha_nacimiento" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3 sm:col-start-1">
@@ -242,7 +242,7 @@
                                         <input wire:model="telefono" type="text" name="telefono" id="telefono"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                     </div>
-                                    <x-jet-input-error for="telefono" />
+                                    <x-input-error for="telefono" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -250,7 +250,7 @@
                                     <input wire:model="integrante.email" type="text" name="email" id="email"
                                         autocomplete="email"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                    <x-jet-input-error for="integrante.email" />
+                                    <x-input-error for="integrante.email" />
                                 </div>
 
                                 <h3 class="col-span-6 text-center">Enfermedades que padece</h3>
@@ -265,7 +265,7 @@
                                                 class=" text-sm font-medium text-gray-700">{{ $item->nombre }}</label>
                                         </div>
                                     @endforeach
-                                    <x-jet-input-error for="enfermedades" />
+                                    <x-input-error for="enfermedades" />
                                 </div>
 
                                 <h3 class="col-span-6 text-center">Medicamentos que utiliza</h3>
@@ -280,7 +280,7 @@
                                                 class=" text-sm font-medium text-gray-700">{{ $item->nombre }}</label>
                                         </div>
                                     @endforeach
-                                    <x-jet-input-error for="medicamentos" />
+                                    <x-input-error for="medicamentos" />
                                 </div>
 
                             </div>
@@ -292,18 +292,18 @@
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+                <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                     Cancelar
-                </x-jet-secondary-button>
+                </x-secondary-button>
 
-                <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+                <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                     Actualizar
-                </x-jet-button>
+                </x-button>
             </x-slot>
-        </x-jet-dialog-modal>
+        </x-dialog-modal>
 
         {{-- Modal eliminar integrante --}}
-        <x-jet-confirmation-modal wire:model="openDestroy">
+        <x-confirmation-modal wire:model="openDestroy">
 
             <x-slot name="title">
                 Remover
@@ -314,16 +314,16 @@
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+                <x-secondary-button wire:click="$set('openDestroy', false)">
                     Cancelar
-                </x-jet-secondary-button>
+                </x-secondary-button>
 
-                <x-jet-danger-button wire:click="remove" wire:loading.attr="disabled" class="disabled:opacity-25">
+                <x-danger-button wire:click="remove" wire:loading.attr="disabled" class="disabled:opacity-25">
                     Remover
-                </x-jet-danger-button>
+                </x-danger-button>
             </x-slot>
 
-        </x-jet-confirmation-modal>
+        </x-confirmation-modal>
 
     </div>
 

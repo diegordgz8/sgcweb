@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Actualizar tasa de cambio" icono="img/iconos/pariedad.png" />
     </div>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Actualizar tasa de cambio
         </x-slot>
@@ -21,7 +21,7 @@
                                 Tasa de cambio:
                             </label>
                             <input wire:model="tasa.tasa" type="text" name="tasa" id="tasa" class="form-control w-full">
-                            <x-jet-input-error for="tasa.tasa" />
+                            <x-input-error for="tasa.tasa" />
                         </div>
 
                         <div class="col-span-6">
@@ -30,7 +30,7 @@
 
                                     <x-select-cantidad />
 
-                                    <x-jet-input type="text" placeholder="Escriba para buscar por fecha..."
+                                    <x-input type="text" placeholder="Escriba para buscar por fecha..."
                                         class="w-full" wire:model="busqueda" />
 
                                 </div>
@@ -112,13 +112,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 </div>

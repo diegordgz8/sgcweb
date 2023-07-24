@@ -7,7 +7,7 @@
             @endif
         @endif
 
-        <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+        <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
     </div>
 
     <!-- tabla -->
@@ -24,7 +24,7 @@
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
 
-                                            <x-jet-checkbox wire:model="selectPage" name="selectPage" id="selectPage" />
+                                            <x-checkbox wire:model="selectPage" name="selectPage" id="selectPage" />
 
                                         </th>
 
@@ -109,7 +109,7 @@
                                     @foreach ($listaServicios as $item)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap text-xs space-x-1 font-medium">
-                                                <x-jet-checkbox value="{{ $item->id }}" wire:model="servicios" />
+                                                <x-checkbox value="{{ $item->id }}" wire:model="servicios" />
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm font-medium text-gray-900">

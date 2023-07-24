@@ -15,7 +15,7 @@
                     documento:</label>
                 <input wire:model="documento" type="text" name="documento-unidad" id="documento-unidad"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="documento" />
+                <x-input-error for="documento" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -31,14 +31,14 @@
                     <input wire:model.lazy="ci" type="text" name="documento" id="documento"
                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md">
                 </div>
-                <x-jet-input-error for="ci" />
+                <x-input-error for="ci" />
             </div>
 
             <div class="col-span-6 sm:col-span-3 sm:col-start-1">
                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
                 <input wire:model="integrante.nombre" type="text" name="nombre" id="nombre"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="integrante.nombre" />
+                <x-input-error for="integrante.nombre" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -47,14 +47,14 @@
                 <input wire:model="integrante.s_nombre" type="text" name="s_nombre" id="s_nombre"
                     autocomplete="street-address"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="integrante.s_nombre" />
+                <x-input-error for="integrante.s_nombre" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
                 <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido:</label>
                 <input wire:model="integrante.apellido" type="text" name="apellido" id="apellido"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="integrante.apellido" />
+                <x-input-error for="integrante.apellido" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -63,7 +63,7 @@
                 <input wire:model="integrante.s_apellido" type="text" name="s_apellido" id="s_apellido"
                     autocomplete="street-address"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="integrante.s_apellido" />
+                <x-input-error for="integrante.s_apellido" />
             </div>
 
 			<div class="col-span-6 sm:col-span-3">
@@ -72,7 +72,7 @@
 				<input wire:model="integrante.fecha_nacimiento" type="date" name="fecha_nacimiento"
 					id="fecha_nacimiento"
 					class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-				<x-jet-input-error for="integrante.fecha_nacimiento" />
+				<x-input-error for="integrante.fecha_nacimiento" />
 			</div>
 
             <div class="col-span-6 sm:col-span-3">
@@ -80,7 +80,7 @@
                 <input wire:model="edad" type="text" name="edad"
                     id="edad" readonly
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="edad" />
+                <x-input-error for="edad" />
             </div>
 
             <div class="col-span-6 sm:col-span-3  sm:col-start-1">
@@ -99,14 +99,14 @@
                     <input wire:model="telefono" type="text" name="telefono" id="telefono"
                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                 </div>
-                <x-jet-input-error for="telefono" />
+                <x-input-error for="telefono" />
             </div>
 
             <div class="col-span-6 sm:col-span-3">
                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                 <input wire:model="integrante.email" type="text" name="email" id="email" autocomplete="email"
                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                <x-jet-input-error for="integrante.email" />
+                <x-input-error for="integrante.email" />
             </div>
 
         </div>

@@ -15,7 +15,7 @@
         @include('livewire.pago.partials.tabla-gastos')
     </div>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo pago
@@ -63,7 +63,7 @@
                                 </label>
                                 <input wire:model.lazy="descripcion" type="text" name="descripcion" id="descripcion"
                                     class="form-control w-full">
-                                <x-jet-input-error for="descripcion" />
+                                <x-input-error for="descripcion" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -72,7 +72,7 @@
                                 </label>
                                 <input wire:model="fecha" type="date" name="fecha" id="fecha"
                                     class="form-control w-full">
-                                <x-jet-input-error for="fecha" />
+                                <x-input-error for="fecha" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -91,7 +91,7 @@
                                         <option>Cheque</option>
                                     </select>
                                 </div>
-                                <x-jet-input-error for="formaPago" />
+                                <x-input-error for="formaPago" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -102,7 +102,7 @@
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
-                                <x-jet-input-error for="moneda" />
+                                <x-input-error for="moneda" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -141,7 +141,7 @@
                                     @endif
 
                                 </select>
-                                <x-jet-input-error for="fondo.id" />
+                                <x-input-error for="fondo.id" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
@@ -150,7 +150,7 @@
                                 </label>
                                 <input wire:model="monto" type="text" name="monto" id="monto"
                                     class="form-control w-full">
-                                <x-jet-input-error for="monto" />
+                                <x-input-error for="monto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-1">
@@ -164,7 +164,7 @@
                                 </label>
                                 <input wire:model="recibo" type="text" name="recibo" id="recibo"
                                     class="form-control w-full">
-                                <x-jet-input-error for="recibo" />
+                                <x-input-error for="recibo" />
                             </div>
 
                             @switch($formaPago)
@@ -177,7 +177,7 @@
                                         </label>
                                         <input wire:model="referencia" type="text" name="referencia" id="referencia"
                                             class="form-control w-full">
-                                        <x-jet-input-error for="referencia" />
+                                        <x-input-error for="referencia" />
                                     </div>
                                 @break
 
@@ -192,7 +192,7 @@
                                     </label>
                                     <input wire:model="tasaCambio.tasa" type="text" name="tasa-cambio"
                                         id="tasa-cambio" class="form-control w-full">
-                                    <x-jet-input-error for="tasaCambio.tasa" />
+                                    <x-input-error for="tasaCambio.tasa" />
                                 </div>
                             @endif
 
@@ -206,16 +206,16 @@
 
     <x-slot name="footer">
 
-        <x-jet-secondary-button wire:click="$set('open', false)">
+        <x-secondary-button wire:click="$set('open', false)">
             Cancelar
-        </x-jet-secondary-button>
+        </x-secondary-button>
 
-        <x-jet-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
+        <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
             Registrar
-        </x-jet-button>
+        </x-button>
 
     </x-slot>
 
-</x-jet-dialog-modal>
+</x-dialog-modal>
 
 </div>

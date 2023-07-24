@@ -1,10 +1,10 @@
 <div>
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
 
         <x-slot name="title">
             Nueva visita
@@ -31,22 +31,22 @@
                                     <input wire:model.lazy="ci" type="text" name="numero_ci" id="numero_ci"
                                         class="form-control block w-full pl-12">
                                 </div>
-                                <x-jet-input-error for="letra" />
-                                <x-jet-input-error for="ci" />
+                                <x-input-error for="letra" />
+                                <x-input-error for="ci" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3 sm:col-start-1">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input wire:model="nombre" type="text" name="nombre" id="nombre"
                                     class="form-control w-full">
-                                <x-jet-input-error for="nombre" />
+                                <x-input-error for="nombre" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido</label>
                                 <input wire:model="apellido" type="text" name="apellido" id="apellido"
                                     class="form-control w-full">
-                                <x-jet-input-error for="apellido" />
+                                <x-input-error for="apellido" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -58,7 +58,7 @@
                                             {{ $item->propietario->integrante->apellido }}</option>
                                     @endforeach
                                 </select>
-                                <x-jet-input-error for="unidad.id" />
+                                <x-input-error for="unidad.id" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -66,35 +66,35 @@
                                     personas</label>
                                 <input wire:model="numeroPersonas" type="number" name="num_personas" id="num_personas"
                                     class="form-control w-full">
-                                <x-jet-input-error for="numeroPersonas" />
+                                <x-input-error for="numeroPersonas" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2 sm:col-start-1">
                                 <label for="matricula" class="block text-sm font-medium text-gray-700">Matrícula</label>
                                 <input wire:model="matricula" type="text" name="matricula" id="matricula"
                                     class="form-control w-full">
-                                <x-jet-input-error for="matricula" />
+                                <x-input-error for="matricula" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
                                 <label for="marca" class="block text-sm font-medium text-gray-700">Marca</label>
                                 <input wire:model="marca" type="text" name="marca" id="marca"
                                     class="form-control w-full">
-                                <x-jet-input-error for="marca" />
+                                <x-input-error for="marca" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
                                 <label for="modelo" class="block text-sm font-medium text-gray-700">Modelo</label>
                                 <input wire:model="modelo" type="text" name="modelo" id="modelo"
                                     class="form-control w-full">
-                                <x-jet-input-error for="modelo" />
+                                <x-input-error for="modelo" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="color" class="block text-sm font-medium text-gray-700">Color</label>
                                 <input wire:model="color" type="text" name="color" id="color"
                                     class="form-control w-full">
-                                <x-jet-input-error for="color" />
+                                <x-input-error for="color" />
                             </div>
 
                         </div>
@@ -106,14 +106,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

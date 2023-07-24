@@ -1,10 +1,10 @@
 <div wire:init="$set('readyToLoad', true)">
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth='4xl'>
+    <x-dialog-modal wire:model="open" maxWidth='4xl'>
         <x-slot name="title">
             Nueva asamblea
         </x-slot>
@@ -26,14 +26,14 @@
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                         wire:model="descripcion">
                                 </div>
-                                <x-jet-input-error for="descripcion" />
+                                <x-input-error for="descripcion" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="fecha" class="block text-sm font-medium text-gray-700"> Fecha:</label>
                                 <input type="date" name="fecha" id="fecha" autocomplete="street-address"
                                     class="form-control w-full" wire:model="fecha">
-                                <x-jet-input-error for="fecha" />
+                                <x-input-error for="fecha" />
                             </div>
 
                             <div class="col-span-6">
@@ -41,18 +41,18 @@
                                     class="block text-sm font-medium text-gray-700">Observación:</label>
                                 <textarea name="observacion" class="form-control w-full" cols="30" rows="5"
                                     wire:model="observacion"></textarea>
-                                <x-jet-input-error for="observacion" />
+                                <x-input-error for="observacion" />
                             </div>
 
                             <div class="col-span-6">
-                                <x-jet-input-error for="asistentes" />
+                                <x-input-error for="asistentes" />
 
                                 <div class="space-y-4">
                                     <div class="flex space-x-4 items-center">
 
                                         <x-select-cantidad />
 
-                                        <x-jet-input type="text" placeholder="Escriba para buscar..."
+                                        <x-input type="text" placeholder="Escriba para buscar..."
                                             class="w-full" wire:model="busqueda" />
 
                                     </div>
@@ -71,7 +71,7 @@
                                                                     <tr>
                                                                         <th scope="col"
                                                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1">
-                                                                            <x-jet-checkbox wire:model="selectPage"
+                                                                            <x-checkbox wire:model="selectPage"
                                                                                 name="selectPage" id="selectPage" />
 
                                                                         </th>
@@ -189,7 +189,7 @@
                                                                         <tr>
                                                                             <td
                                                                                 class="px-6 py-4 whitespace-nowrap text-xs space-x-1 font-medium">
-                                                                                <x-jet-checkbox wire:model="asistentes"
+                                                                                <x-checkbox wire:model="asistentes"
                                                                                     value="{{ $item->id }}" />
                                                                             </td>
                                                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -260,13 +260,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
-            <x-jet-button wire:click="save()" wire:loading.attr="disabled">
+            </x-secondary-button>
+            <x-button wire:click="save()" wire:loading.attr="disabled">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

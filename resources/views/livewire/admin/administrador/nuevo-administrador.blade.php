@@ -1,10 +1,10 @@
 <div>
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Nuevo administrador
         </x-slot>
@@ -33,15 +33,15 @@
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
                                         placeholder="Cédula">
                                 </div>
-                                <x-jet-input-error for="idResponsable" />
-                                <x-jet-input-error for="documento" />
+                                <x-input-error for="idResponsable" />
+                                <x-input-error for="documento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3 sm:col-start-1">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
                                 <input wire:model.lazy="nombre" type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="nombre" />
+                                <x-input-error for="nombre" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -50,14 +50,14 @@
                                 <input wire:model.lazy="segundoNombre" type="text" name="s_nombre" id="s_nombre"
                                     autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="segundoNombre" />
+                                <x-input-error for="segundoNombre" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="apellido" class="block text-sm font-medium text-gray-700">Apellido:</label>
                                 <input wire:model.lazy="apellido" type="text" name="apellido" id="apellido"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="apellido" />
+                                <x-input-error for="apellido" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -66,7 +66,7 @@
                                 <input wire:model.lazy="segundoApellido" type="text" name="s_apellido" id="s_apellido"
                                     autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="segundoApellido" />
+                                <x-input-error for="segundoApellido" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -75,7 +75,7 @@
                                 <input wire:model="fecha_nacimiento" type="date" name="fecha_nacimiento"
                                     id="fecha_nacimiento"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="fecha_nacimiento" />
+                                <x-input-error for="fecha_nacimiento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -83,7 +83,7 @@
                                 <input wire:model="edad" type="text" name="edad"
                                     id="edad" readonly
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="edad" />
+                                <x-input-error for="edad" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3 sm:col-start-1">
@@ -102,21 +102,21 @@
                                     <input wire:model="telefono" type="text" name="telefono" id="telefono"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <x-jet-input-error for="telefono" />
+                                <x-input-error for="telefono" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                 <input wire:model.lazy="email" type="text" name="email" id="email" autocomplete="email"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="email" />
+                                <x-input-error for="email" />
                             </div>
 
                             <div class="col-span-6">
                                 <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
                                 <input wire:model.lazy="rol" type="text" name="rol" id="rol" autocomplete="rol"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-jet-input-error for="rol" />
+                                <x-input-error for="rol" />
                             </div>
 
                         </div>
@@ -128,14 +128,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save()">
+            <x-button wire:click="save()">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

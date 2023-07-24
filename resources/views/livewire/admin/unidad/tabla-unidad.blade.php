@@ -83,7 +83,7 @@
                 </x-slot>
             </x-filtro>
 
-            <x-jet-input wire:model="busqueda" type="text" placeholder="Escriba para buscar por número o dirección..."
+            <x-input wire:model="busqueda" type="text" placeholder="Escriba para buscar por número o dirección..."
                 class="w-full" />
 
             <a href="{{ route('unidad.exportar', ['-' . $busqueda . '-' . 'numero' . '-' . 'asc' . '-' . $propietario . '-' . $habitantes . '-' . $facturas]) }}"

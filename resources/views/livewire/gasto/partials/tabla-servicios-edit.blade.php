@@ -81,7 +81,7 @@
                                                 <div class="text-sm font-medium text-gray-900">
                                                     <input wire:model="montos.{{ $item->id }}" type="text"
                                                         class="form-control w-36">
-                                                    <x-jet-input-error for="montos.{{ $item->id }}" />
+                                                    <x-input-error for="montos.{{ $item->id }}" />
                                                 </div>
                                             </td>
                                         </tr>

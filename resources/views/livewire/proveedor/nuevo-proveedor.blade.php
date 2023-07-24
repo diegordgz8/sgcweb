@@ -1,10 +1,10 @@
 <div wire:init="$set('readyToLoad', true)">
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo proveedor
@@ -33,15 +33,15 @@
                                         id="numero_documento" class="form-control block w-full pl-12"
                                         placeholder="Cédula o RIF">
                                 </div>
-                                <x-jet-input-error for="letra" />
-                                <x-jet-input-error for="documento" />
+                                <x-input-error for="letra" />
+                                <x-input-error for="documento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-4">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del proveedor</label>
                                 <input wire:model.lazy="nombre" type="text" name="nombre" id="nombre"
                                     class="form-control w-full">
-                                <x-jet-input-error for="nombre" />
+                                <x-input-error for="nombre" />
                             </div>
 
                             <div class="col-span-3">
@@ -49,7 +49,7 @@
                                     contacto</label>
                                 <input wire:model.lazy="contacto" type="text" name="contacto" id="contacto"
                                     class="form-control w-full">
-                                <x-jet-input-error for="contacto" />
+                                <x-input-error for="contacto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -68,28 +68,28 @@
                                     <input wire:model.lazy="telefono" type="text" name="telefono" id="telefono"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <x-jet-input-error for="telefono" />
+                                <x-input-error for="telefono" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                 <input wire:model="email" type="email" name="email" id="email" autocomplete="email"
                                     class="form-control w-full">
-                                <x-jet-input-error for="email" />
+                                <x-input-error for="email" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
                                 <input wire:model="direccion" type="text" name="direccion" id="direccion"
                                     class="form-control w-full">
-                                <x-jet-input-error for="direccion" />
+                                <x-input-error for="direccion" />
                             </div>
 
                         </div>
 
                         <div class="py-4">
 							<h2 class="text-center text-xl font-semibold">Seleccione los servicios que ofrece el proveedor</h2>
-							<x-jet-input-error for="servicios" />
+							<x-input-error for="servicios" />
                             @include('livewire.proveedor.partials.tabla-servicios')
                         </div>
 
@@ -101,14 +101,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

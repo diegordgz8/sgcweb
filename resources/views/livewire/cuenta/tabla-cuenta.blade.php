@@ -5,7 +5,7 @@
 
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             @livewire('cuenta.nueva-cuenta')
 
@@ -182,7 +182,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model="openEdit">
         <x-slot name="title">
             Modificar cuenta
         </x-slot>
@@ -213,8 +213,8 @@
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
                                         placeholder="Cédula o RIF" wire:model="documento">
                                 </div>
-                                <x-jet-input-error for="letra" />
-                                <x-jet-input-error for="documento" />
+                                <x-input-error for="letra" />
+                                <x-input-error for="documento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -223,7 +223,7 @@
                                 <input type="text" name="beneficiario" id="beneficiario"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="cuenta.beneficiario">
-                                <x-jet-input-error for="cuenta.beneficiario" />
+                                <x-input-error for="cuenta.beneficiario" />
                             </div>
 
                             <div class="col-span-6">
@@ -232,7 +232,7 @@
                                 <input type="text" name="numero" id="numero" autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="cuenta.numero">
-                                <x-jet-input-error for="cuenta.numero" />
+                                <x-input-error for="cuenta.numero" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="banco_id" class="block text-sm font-medium text-gray-700">Banco:</label>
@@ -243,7 +243,7 @@
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                     @endforeach
                                 </select>
-                                <x-jet-input-error for="cuenta.banco_id" />
+                                <x-input-error for="cuenta.banco_id" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de
@@ -253,7 +253,7 @@
                                     <option value="Ahorro">Ahorro</option>
                                     <option value="Corriente">Corriente</option>
                                 </select>
-                                <x-jet-input-error for="cuenta.tipo" />
+                                <x-input-error for="cuenta.tipo" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -273,7 +273,7 @@
                                     <input wire:model.lazy="telefono" type="text" name="telefono" id="telefono"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                 </div>
-                                <x-jet-input-error for="telefono" />
+                                <x-input-error for="telefono" />
                             </div>
 
                             <div class="col-span-6">
@@ -287,7 +287,7 @@
                                         class="ml-2">
                                     <label for="no">No</label>
                                 </div>
-                                <x-jet-input-error for="cuenta.publica" />
+                                <x-input-error for="cuenta.publica" />
                             </div>
 
                         </div>
@@ -300,17 +300,17 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model="openDestroy">
 
         <x-slot name="title">
             Eliminar
@@ -321,15 +321,15 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+            <x-secondary-button wire:click="$set('openDestroy', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Eliminar
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
+            <x-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
         </div>
 
         {{-- <div wire:click="enviarMensaje"

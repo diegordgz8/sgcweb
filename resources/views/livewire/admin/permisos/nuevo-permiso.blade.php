@@ -1,10 +1,10 @@
 <div>
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
 
         <x-slot name="title">
             Nuevo permiso
@@ -22,7 +22,7 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input wire:model.lazy="nombre" type="text" name="nombre" id="nombre"
                                     class="form-control w-full">
-                                <x-jet-input-error for="nombre" />
+                                <x-input-error for="nombre" />
                             </div>
 
                         </div>
@@ -34,14 +34,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

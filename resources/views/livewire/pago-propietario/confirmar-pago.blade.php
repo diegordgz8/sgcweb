@@ -3,7 +3,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
+            <x-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
         </div>
 
         {{-- tabla --}}
@@ -115,7 +115,7 @@
 
     </div>
 
-    <x-jet-dialog-modal wire:model="openConfirmar">
+    <x-dialog-modal wire:model="openConfirmar">
         <x-slot name="title">
             Confirmar pago
         </x-slot>
@@ -137,13 +137,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openConfirmar', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openConfirmar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
-    <x-jet-confirmation-modal wire:model="openRechazar">
+    <x-confirmation-modal wire:model="openRechazar">
 
         <x-slot name="title">
             Rechazar pago
@@ -154,17 +154,17 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openRechazar', false)">
+            <x-secondary-button wire:click="$set('openRechazar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button @click="rechazar" wire:loading.attr="disabled"
+            <x-danger-button @click="rechazar" wire:loading.attr="disabled"
                 class="disabled:opacity-25">
                 Rechazar
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 </div>
 
 @push('js')

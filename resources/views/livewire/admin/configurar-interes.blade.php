@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Configurar interés" icono="img/iconos/interes.png" />
     </div>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Actualizar interés
         </x-slot>
@@ -21,7 +21,7 @@
                                 Factor (%):
                             </label>
                             <input wire:model="interes.factor" type="text" name="factor" id="factor" class="form-control w-full">
-                            <x-jet-input-error for="interes.factor" />
+                            <x-input-error for="interes.factor" />
                         </div>
 
                         <div class="col-span-6">
@@ -29,7 +29,7 @@
                                 Número de meses que debe tener una factura para que se aplique el interés:
                             </label>
                             <input wire:model="interes.meses" type="text" name="meses" id="meses" class="form-control w-full">
-                            <x-jet-input-error for="interes.meses" />
+                            <x-input-error for="interes.meses" />
                         </div>
 
                         <div class="col-span-6">
@@ -43,18 +43,18 @@
                                     class="ml-2">
                                 <label for="no">No</label>
                             </div>
-                            <x-jet-input-error for="interes.estado" />
+                            <x-input-error for="interes.estado" />
                         </div>
 
                         <div class="col-span-6">
-                            <x-jet-input-error for="asistentes" />
+                            <x-input-error for="asistentes" />
 
                             <div class="space-y-4">
                                 <div class="flex space-x-4 items-center">
 
                                     <x-select-cantidad />
 
-                                    <x-jet-input type="text" placeholder="Escriba para buscar por fecha..."
+                                    <x-input type="text" placeholder="Escriba para buscar por fecha..."
                                         class="w-full" wire:model="busqueda" />
 
                                 </div>
@@ -133,13 +133,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 </div>

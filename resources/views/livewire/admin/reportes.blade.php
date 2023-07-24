@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Reportes" icono="/img/iconos/iva.png" />
     </div>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Reportes
         </x-slot>
@@ -41,10 +41,10 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cerrar
-            </x-jet-secondary-button>
+            </x-secondary-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

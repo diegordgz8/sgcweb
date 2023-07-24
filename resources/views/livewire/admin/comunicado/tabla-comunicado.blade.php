@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
         </div>
 
         <!-- tabla -->
@@ -108,7 +108,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model="openDestroy">
 
         <x-slot name="title">
             Eliminar
@@ -119,15 +119,15 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+            <x-secondary-button wire:click="$set('openDestroy', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Eliminar
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

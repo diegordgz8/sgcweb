@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <x-jet-dialog-modal wire:model="openRestaurar">
+    <x-dialog-modal wire:model="openRestaurar">
         <x-slot name="title">
             Restaurar
         </x-slot>
@@ -42,7 +42,7 @@
                     @endforeach
 
                 </select>
-				<x-jet-input-error for="backup" />
+				<x-input-error for="backup" />
             </div>
 
                 <div wire:loading class="p-2">
@@ -52,14 +52,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openRestaurar', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openRestaurar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="restaurar">
+            <x-button wire:click="restaurar">
                 Restaurar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

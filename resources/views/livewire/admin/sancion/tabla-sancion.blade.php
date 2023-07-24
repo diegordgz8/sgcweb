@@ -5,7 +5,7 @@
 
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             @livewire('admin.sancion.nueva-sancion')
 
@@ -131,7 +131,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-jet-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model="openEdit">
         <x-slot name="title">
             Actualizar monto
         </x-slot>
@@ -148,7 +148,7 @@
                                 <input type="text" name="monto" id="monto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                     wire:model="sancion.monto">
-                                <x-jet-input-error for="sancion.monto" />
+                                <x-input-error for="sancion.monto" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <div class="mt-1 relative rounded-md shadow-sm">
@@ -161,7 +161,7 @@
                                         <option>Dólar</option>
                                     </select>
                                 </div>
-                                <x-jet-input-error for="sancion.moneda" />
+                                <x-input-error for="sancion.moneda" />
                             </div>
 
                         </div>
@@ -174,14 +174,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="update()">
+            <x-button wire:click="update()">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

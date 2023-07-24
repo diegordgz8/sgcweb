@@ -15,7 +15,7 @@
                         <div class="flex space-x-4 items-center">
                             <x-select-cantidad />
 
-                            <x-jet-input type="search" placeholder="Escriba para buscar..." class="w-full"
+                            <x-input type="search" placeholder="Escriba para buscar..." class="w-full"
                                 wire:model="busqueda" />
 
                             @livewire('admin.roles.nuevo-rol')
@@ -100,7 +100,7 @@
                         {{-- /tabla --}}
                     </div>
 
-                    <x-jet-dialog-modal wire:model="openEdit">
+                    <x-dialog-modal wire:model="openEdit">
                         <x-slot name="title">
                             Editar rol
                         </x-slot>
@@ -118,7 +118,7 @@
                                                 <input type="text" name="name" id="name"
                                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                     wire:model.lazy="rol.name">
-                                                <x-jet-input-error for="rol.name" />
+                                                <x-input-error for="rol.name" />
                                             </div>
 
                                             <div class="col-span-6">
@@ -143,7 +143,7 @@
                                                     @endforeach
                 
                                                 </div>
-                                                <x-jet-input-error for="permisos" />
+                                                <x-input-error for="permisos" />
                                             </div>
                 
                                         </div>
@@ -155,17 +155,17 @@
                         </x-slot>
 
                         <x-slot name="footer">
-                            <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+                            <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                                 Cancelar
-                            </x-jet-secondary-button>
+                            </x-secondary-button>
 
-                            <x-jet-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
+                            <x-button wire:click="update" wire:loading.attr="disabled" class="disabled:opacity-25">
                                 Actualizar
-                            </x-jet-button>
+                            </x-button>
                         </x-slot>
-                    </x-jet-dialog-modal>
+                    </x-dialog-modal>
 
-                    <x-jet-confirmation-modal wire:model="openDestroy">
+                    <x-confirmation-modal wire:model="openDestroy">
 
                         <x-slot name="title">
                             Eliminar
@@ -176,16 +176,16 @@
                         </x-slot>
 
                         <x-slot name="footer">
-                            <x-jet-secondary-button wire:click="$set('openDestroy', false)">
+                            <x-secondary-button wire:click="$set('openDestroy', false)">
                                 Cancelar
-                            </x-jet-secondary-button>
+                            </x-secondary-button>
 
-                            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+                            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                                 Eliminar
-                            </x-jet-danger-button>
+                            </x-danger-button>
                         </x-slot>
 
-                    </x-jet-confirmation-modal>
+                    </x-confirmation-modal>
 
 				</div>
 

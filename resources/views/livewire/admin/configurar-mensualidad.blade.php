@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Actualizar mensualidad" icono="img/iconos/mensualidad.png" />
     </div>
 
-    <x-jet-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model="open">
         <x-slot name="title">
             Actualizar mensualidad
         </x-slot>
@@ -21,7 +21,7 @@
                                 Monto:
                             </label>
                             <input wire:model="monto" type="text" name="monto" id="monto" class="form-control w-full">
-                            <x-jet-input-error for="monto" />
+                            <x-input-error for="monto" />
                         </div>
 
                         <div class="col-span-6">
@@ -32,18 +32,18 @@
                                 <option>Bolívar</option>
                                 <option>Dólar</option>
                             </select>
-                            <x-jet-input-error for="moneda" />
+                            <x-input-error for="moneda" />
                         </div>
 
                         <div class="col-span-6">
-                            <x-jet-input-error for="asistentes" />
+                            <x-input-error for="asistentes" />
 
                             <div class="space-y-4">
                                 <div class="flex space-x-4 items-center">
 
                                     <x-select-cantidad />
 
-                                    <x-jet-input type="text" placeholder="Escriba para buscar por fecha..."
+                                    <x-input type="text" placeholder="Escriba para buscar por fecha..."
                                         class="w-full" wire:model="busqueda" />
 
                                 </div>
@@ -133,14 +133,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Actualizar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>

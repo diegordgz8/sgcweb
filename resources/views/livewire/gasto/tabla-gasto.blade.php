@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-jet-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
 
             @livewire('gasto.nuevo-gasto')
         </div>
@@ -131,7 +131,7 @@
     </div>
 
     @if ($gasto->proveedor)
-        <x-jet-dialog-modal wire:model="openEdit" maxWidth="4xl">
+        <x-dialog-modal wire:model="openEdit" maxWidth="4xl">
             <x-slot name="title">
                 Editar el gasto
             </x-slot>
@@ -158,7 +158,7 @@
                                     </label>
                                     <input wire:model="gasto.monto" type="text" name="monto" id="monto" readonly
                                         class="form-control w-full">
-                                    <x-jet-input-error for="gasto.monto" />
+                                    <x-input-error for="gasto.monto" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">
@@ -183,18 +183,18 @@
             </x-slot>
 
             <x-slot name="footer">
-                <x-jet-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
+                <x-secondary-button class="mr-2" wire:click="$set('openEdit', false)">
                     Cancelar
-                </x-jet-secondary-button>
+                </x-secondary-button>
 
-                <x-jet-button wire:click="update">
+                <x-button wire:click="update">
                     Actualizar
-                </x-jet-button>
+                </x-button>
             </x-slot>
-        </x-jet-dialog-modal>
+        </x-dialog-modal>
     @endif
 
-    <x-jet-confirmation-modal wire:model="openCancelar">
+    <x-confirmation-modal wire:model="openCancelar">
 
         <x-slot name="title">
             Cancelar
@@ -205,15 +205,15 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('openCancelar', false)">
+            <x-secondary-button wire:click="$set('openCancelar', false)">
                 Cancelar
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
+            <x-danger-button wire:click="delete" wire:loading.attr="disabled" class="disabled:opacity-25">
                 Detener
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
 
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

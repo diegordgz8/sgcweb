@@ -1,10 +1,10 @@
 <div wire:init="$set('readyToLoad', true)">
 
-    <x-jet-button wire:click="$set('open', true)">
+    <x-button wire:click="$set('open', true)">
         Nuevo
-    </x-jet-button>
+    </x-button>
 
-    <x-jet-dialog-modal wire:model="open" maxWidth='2xl'>
+    <x-dialog-modal wire:model="open" maxWidth='2xl'>
         <x-slot name="title">
             Nueva sanción
         </x-slot>
@@ -26,7 +26,7 @@
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                         wire:model="descripcion">
                                 </div>
-                                <x-jet-input-error for="descripcion" />
+                                <x-input-error for="descripcion" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -38,7 +38,7 @@
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                         wire:model="monto">
                                 </div>
-                                <x-jet-input-error for="monto" />
+                                <x-input-error for="monto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
@@ -51,7 +51,7 @@
                                         <option>Dólar</option>
                                     </select>
                                 </div>
-                                <x-jet-input-error for="moneda" />
+                                <x-input-error for="moneda" />
                             </div>
                         </div>
                     </div>
@@ -62,13 +62,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button class="mr-2" wire:click="$set('open', false)">
+            <x-secondary-button class="mr-2" wire:click="$set('open', false)">
                 Cancelar
-            </x-jet-secondary-button>
-            <x-jet-button wire:click="save()" wire:loading.attr="disabled">
+            </x-secondary-button>
+            <x-button wire:click="save()" wire:loading.attr="disabled">
                 Registrar
-            </x-jet-button>
+            </x-button>
         </x-slot>
-    </x-jet-dialog-modal>
+    </x-dialog-modal>
 
 </div>
