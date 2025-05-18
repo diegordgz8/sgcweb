@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
 
         <x-slot name="title">
             Nuevo rol
@@ -20,7 +20,7 @@
 
                             <div class="col-span-6">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                <input wire:model.lazy="nombre" type="text" name="nombre" id="nombre"
+                                <input wire:model.blur="nombre" type="text" name="nombre" id="nombre"
                                     class="form-control w-full">
                                 <x-input-error for="nombre" />
                             </div>
@@ -33,7 +33,7 @@
                                     @foreach ($this->listaPermisos as $key => $item)
                                     <div class="flex items-start">
                                         <div class="flex items-center">
-                                            <input wire:model.defer="permisos" type="checkbox"
+                                            <input wire:model="permisos" type="checkbox"
                                             {{-- id="permiso_{{ $key }}"
                                                 name="permiso_{{ $key }}" --}}
                                                 value="{{ $item->id }}"

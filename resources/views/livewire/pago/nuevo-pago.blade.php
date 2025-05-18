@@ -15,7 +15,7 @@
         @include('livewire.pago.partials.tabla-gastos')
     </div>
 
-    <x-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model.live="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo pago
@@ -61,7 +61,7 @@
                                 <label for="descripcion" class="block text-sm font-medium text-gray-700">
                                     Descripción:
                                 </label>
-                                <input wire:model.lazy="descripcion" type="text" name="descripcion" id="descripcion"
+                                <input wire:model.blur="descripcion" type="text" name="descripcion" id="descripcion"
                                     class="form-control w-full">
                                 <x-input-error for="descripcion" />
                             </div>
@@ -70,7 +70,7 @@
                                 <label for="fecha" class="block text-sm font-medium text-gray-700">
                                     Fecha de pago:
                                 </label>
-                                <input wire:model="fecha" type="date" name="fecha" id="fecha"
+                                <input wire:model.live="fecha" type="date" name="fecha" id="fecha"
                                     class="form-control w-full">
                                 <x-input-error for="fecha" />
                             </div>
@@ -80,7 +80,7 @@
                                     Forma de pago:
                                 </label>
                                 <div>
-                                    <select wire:model="formaPago" name="forma-pago" id="forma-pago"
+                                    <select wire:model.live="formaPago" name="forma-pago" id="forma-pago"
                                         class="form-control w-full">
                                         <option>----</option>
                                         <option>Transferencia</option>
@@ -98,7 +98,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model="moneda" name="moneda" id="moneda" class="form-control w-full">
+                                <select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
@@ -109,7 +109,7 @@
                                 <label for="fondo" class="block text-sm font-medium text-gray-700">
                                     Fondo:
                                 </label>
-                                <select wire:model="fondo.id" name="fondo" id="fondo" class="form-control w-full">
+                                <select wire:model.live="fondo.id" name="fondo" id="fondo" class="form-control w-full">
                                     <option value="0">----</option>
 
                                     @if ($formaPago == 'Pago móvil')
@@ -148,7 +148,7 @@
                                 <label for="monto" class="block text-sm font-medium text-gray-700">
                                     Monto:
                                 </label>
-                                <input wire:model="monto" type="text" name="monto" id="monto"
+                                <input wire:model.live="monto" type="text" name="monto" id="monto"
                                     class="form-control w-full">
                                 <x-input-error for="monto" />
                             </div>
@@ -162,7 +162,7 @@
                                 <label for="recibo" class="block text-sm font-medium text-gray-700">
                                     Número de recibo:
                                 </label>
-                                <input wire:model="recibo" type="text" name="recibo" id="recibo"
+                                <input wire:model.live="recibo" type="text" name="recibo" id="recibo"
                                     class="form-control w-full">
                                 <x-input-error for="recibo" />
                             </div>
@@ -175,7 +175,7 @@
                                         <label for="referencia" class="block text-sm font-medium text-gray-700">
                                             Referencia:
                                         </label>
-                                        <input wire:model="referencia" type="text" name="referencia" id="referencia"
+                                        <input wire:model.live="referencia" type="text" name="referencia" id="referencia"
                                             class="form-control w-full">
                                         <x-input-error for="referencia" />
                                     </div>
@@ -190,7 +190,7 @@
                                     <label for="tasa-cambio" class="block text-sm font-medium text-gray-700">
                                         Tasa de cambio:
                                     </label>
-                                    <input wire:model="tasaCambio.tasa" type="text" name="tasa-cambio"
+                                    <input wire:model.live="tasaCambio.tasa" type="text" name="tasa-cambio"
                                         id="tasa-cambio" class="form-control w-full">
                                     <x-input-error for="tasaCambio.tasa" />
                                 </div>

@@ -5,7 +5,7 @@
 
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             @livewire('cuenta.nueva-cuenta')
 
@@ -182,7 +182,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Modificar cuenta
         </x-slot>
@@ -203,7 +203,7 @@
                                     <div class="absolute inset-y-0 left-0 flex items-center">
                                         <select id="letra" name="letra"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                                            wire:model="letra">
+                                            wire:model.live="letra">
                                             <option value="V">V</option>
                                             <option value="E">E</option>
                                             <option value="J">J</option>
@@ -211,7 +211,7 @@
                                     </div>
                                     <input type="text" name="documento" id="documento"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Cédula o RIF" wire:model="documento">
+                                        placeholder="Cédula o RIF" wire:model.live="documento">
                                 </div>
                                 <x-input-error for="letra" />
                                 <x-input-error for="documento" />
@@ -222,7 +222,7 @@
                                     class="block text-sm font-medium text-gray-700">Beneficiario:</label>
                                 <input type="text" name="beneficiario" id="beneficiario"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="cuenta.beneficiario">
+                                    wire:model.live="cuenta.beneficiario">
                                 <x-input-error for="cuenta.beneficiario" />
                             </div>
 
@@ -231,13 +231,13 @@
                                     cuenta:</label>
                                 <input type="text" name="numero" id="numero" autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="cuenta.numero">
+                                    wire:model.live="cuenta.numero">
                                 <x-input-error for="cuenta.numero" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="banco_id" class="block text-sm font-medium text-gray-700">Banco:</label>
                                 <select id="banco_id" name="banco_id" class="form-control w-full"
-                                    wire:model="cuenta.banco_id">
+                                    wire:model.live="cuenta.banco_id">
                                     <option value="0"> -- </option>
                                     @foreach ($bancos as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
@@ -248,7 +248,7 @@
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de
                                     cuenta:</label>
-                                <select id="tipo" name="tipo" class="form-control w-full" wire:model="cuenta.tipo">
+                                <select id="tipo" name="tipo" class="form-control w-full" wire:model.live="cuenta.tipo">
                                     <option value="0"> -- </option>
                                     <option value="Ahorro">Ahorro</option>
                                     <option value="Corriente">Corriente</option>
@@ -261,7 +261,7 @@
                                     a pago móvil</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 flex items-center">
-                                        <select wire:model="codigo" id="codigo" name="codigo"
+                                        <select wire:model.live="codigo" id="codigo" name="codigo"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
                                             <option>0412</option>
                                             <option>0414</option>
@@ -270,7 +270,7 @@
                                             <option>0426</option>
                                         </select>
                                     </div>
-                                    <input wire:model.lazy="telefono" type="text" name="telefono" id="telefono"
+                                    <input wire:model.blur="telefono" type="text" name="telefono" id="telefono"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <x-input-error for="telefono" />
@@ -281,9 +281,9 @@
                                     ¿Mostrar los datos de la cuenta a los propietarios?
                                 </label>
                                 <div>
-                                    <input wire:model="cuenta.publica" type="radio" name="publica" id="si" value="1">
+                                    <input wire:model.live="cuenta.publica" type="radio" name="publica" id="si" value="1">
                                     <label for="si">Sí</label>
-                                    <input wire:model="cuenta.publica" type="radio" name="publica" id="no" value="0"
+                                    <input wire:model.live="cuenta.publica" type="radio" name="publica" id="no" value="0"
                                         class="ml-2">
                                     <label for="no">No</label>
                                 </div>
@@ -310,7 +310,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

@@ -5,7 +5,7 @@
             <x-select-cantidad />
 
             <x-input type="search" placeholder="Escriba para buscar..." class="w-full"
-                wire:model="busqueda" />
+                wire:model.live="busqueda" />
 
             <a href="{{ route('proveedor.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
@@ -163,7 +163,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Editar proveedor
         </x-slot>
@@ -182,7 +182,7 @@
                                     <div class="absolute inset-y-0 left-0 flex items-center">
                                         <select id="letra" name="letra"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                                            wire:model="proveedor.letra" disabled>
+                                            wire:model.live="proveedor.letra" disabled>
                                             <option>V</option>
                                             <option>E</option>
                                             <option>J</option>
@@ -190,7 +190,7 @@
                                     </div>
                                     <input type="text" name="documento" id="documento"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Cédula o RIF" wire:model="proveedor.documento" readonly>
+                                        placeholder="Cédula o RIF" wire:model.live="proveedor.documento" readonly>
                                 </div>
                                 <x-input-error for="proveedor.letra" />
                                 <x-input-error for="proveedor.documento" />
@@ -200,7 +200,7 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="proveedor.nombre">
+                                    wire:model.live="proveedor.nombre">
                                 <x-input-error for="proveedor.nombre" />
                             </div>
 
@@ -208,7 +208,7 @@
                                 <label for="contacto" class="block text-sm font-medium text-gray-700">Contacto</label>
                                 <input type="text" name="contacto" id="contacto" autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="proveedor.contacto">
+                                    wire:model.live="proveedor.contacto">
                                 <x-input-error for="proveedor.contacto" />
                             </div>
 
@@ -216,7 +216,7 @@
                                 <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <input type="tel" name="telefono" id="telefono" pattern="\d{4}-\d{7}"
-                                        class="form-control w-full" wire:model="proveedor.telefono">
+                                        class="form-control w-full" wire:model.live="proveedor.telefono">
                                     <small class="text-xs text-gray-600">Formato: 0412-1234567</small>
                                 </div>
                                 <x-input-error for="proveedor.telefono" />
@@ -226,7 +226,7 @@
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                 <input type="text" name="email" id="email" autocomplete="email"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="proveedor.email">
+                                    wire:model.live="proveedor.email">
                                 <x-input-error for="proveedor.email" />
                             </div>
 
@@ -234,7 +234,7 @@
                                 <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
                                 <input type="text" name="direccion" id="direccion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="proveedor.direccion">
+                                    wire:model.live="proveedor.direccion">
                                 <x-input-error for="proveedor.direccion" />
                             </div>
                         </div>
@@ -256,7 +256,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

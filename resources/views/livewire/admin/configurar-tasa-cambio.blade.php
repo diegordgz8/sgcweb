@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Actualizar tasa de cambio" icono="img/iconos/pariedad.png" />
     </div>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Actualizar tasa de cambio
         </x-slot>
@@ -20,7 +20,7 @@
                             <label for="tasa" class="block text-sm font-medium text-gray-700">
                                 Tasa de cambio:
                             </label>
-                            <input wire:model="tasa.tasa" type="text" name="tasa" id="tasa" class="form-control w-full">
+                            <input wire:model.live="tasa.tasa" type="text" name="tasa" id="tasa" class="form-control w-full">
                             <x-input-error for="tasa.tasa" />
                         </div>
 
@@ -31,7 +31,7 @@
                                     <x-select-cantidad />
 
                                     <x-input type="text" placeholder="Escriba para buscar por fecha..."
-                                        class="w-full" wire:model="busqueda" />
+                                        class="w-full" wire:model.live="busqueda" />
 
                                 </div>
 

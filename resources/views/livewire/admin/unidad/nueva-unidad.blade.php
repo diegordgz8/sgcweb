@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Nueva unidad
         </x-slot>
@@ -20,13 +20,13 @@
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="numero" class="block text-sm font-medium text-gray-700">Número:</label>
                                 <input type="text" name="numero" id="numero" class="form-control mt-1 w-full"
-                                    wire:model="numero">
+                                    wire:model.live="numero">
                                 <x-input-error for="numero" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de unidad:</label>
-                                <select wire:model="tipo.id" name="tipo" id="tipo" class="form-control mt-1 w-full">
+                                <select wire:model.live="tipo.id" name="tipo" id="tipo" class="form-control mt-1 w-full">
                                     <option value="0"> -- </option>
                                     @foreach ($tipoUnidades as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
@@ -38,7 +38,7 @@
                             <div class="col-span-6">
                                 <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
                                 <input type="text" name="direccion" id="direccion" class="form-control mt-1 w-full"
-                                    wire:model="direccion">
+                                    wire:model.live="direccion">
                                 <x-input-error for="direccion" />
                             </div>
                         </div>

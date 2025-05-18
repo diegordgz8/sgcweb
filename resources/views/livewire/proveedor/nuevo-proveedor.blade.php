@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model.live="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo proveedor
@@ -22,14 +22,14 @@
                                 <label for="documento" class="block text-sm font-medium text-gray-700">Documento</label>
                                 <div class="relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 flex items-center">
-                                        <select wire:model="letra" id="letra" name="letra"
+                                        <select wire:model.live="letra" id="letra" name="letra"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
                                             <option>V</option>
                                             <option>E</option>
                                             <option>J</option>
                                         </select>
                                     </div>
-                                    <input wire:model.lazy="documento" type="text" name="numero_documento"
+                                    <input wire:model.blur="documento" type="text" name="numero_documento"
                                         id="numero_documento" class="form-control block w-full pl-12"
                                         placeholder="Cédula o RIF">
                                 </div>
@@ -39,7 +39,7 @@
 
                             <div class="col-span-6 sm:col-span-4">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del proveedor</label>
-                                <input wire:model.lazy="nombre" type="text" name="nombre" id="nombre"
+                                <input wire:model.blur="nombre" type="text" name="nombre" id="nombre"
                                     class="form-control w-full">
                                 <x-input-error for="nombre" />
                             </div>
@@ -47,7 +47,7 @@
                             <div class="col-span-3">
                                 <label for="contacto" class="block text-sm font-medium text-gray-700">Nombre del
                                     contacto</label>
-                                <input wire:model.lazy="contacto" type="text" name="contacto" id="contacto"
+                                <input wire:model.blur="contacto" type="text" name="contacto" id="contacto"
                                     class="form-control w-full">
                                 <x-input-error for="contacto" />
                             </div>
@@ -56,7 +56,7 @@
                                 <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
                                 <div class="relative rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 flex items-center">
-                                        <select wire:model="codigo" id="codigo" name="codigo"
+                                        <select wire:model.live="codigo" id="codigo" name="codigo"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md">
                                             <option>0412</option>
                                             <option>0414</option>
@@ -65,7 +65,7 @@
                                             <option>0426</option>
                                         </select>
                                     </div>
-                                    <input wire:model.lazy="telefono" type="text" name="telefono" id="telefono"
+                                    <input wire:model.blur="telefono" type="text" name="telefono" id="telefono"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-16 sm:text-sm border-gray-300 rounded-md">
                                 </div>
                                 <x-input-error for="telefono" />
@@ -73,14 +73,14 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                <input wire:model="email" type="email" name="email" id="email" autocomplete="email"
+                                <input wire:model.live="email" type="email" name="email" id="email" autocomplete="email"
                                     class="form-control w-full">
                                 <x-input-error for="email" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
-                                <input wire:model="direccion" type="text" name="direccion" id="direccion"
+                                <input wire:model.live="direccion" type="text" name="direccion" id="direccion"
                                     class="form-control w-full">
                                 <x-input-error for="direccion" />
                             </div>

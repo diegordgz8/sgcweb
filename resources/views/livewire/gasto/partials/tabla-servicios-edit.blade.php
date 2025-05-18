@@ -79,7 +79,7 @@
                                             </td>
                                             <td class="px-6 py-4">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    <input wire:model="montos.{{ $item->id }}" type="text"
+                                                    <input wire:model.live="montos.{{ $item->id }}" type="text"
                                                         class="form-control w-36">
                                                     <x-input-error for="montos.{{ $item->id }}" />
                                                 </div>

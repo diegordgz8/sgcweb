@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <x-dialog-modal wire:model="openRestaurar">
+    <x-dialog-modal wire:model.live="openRestaurar">
         <x-slot name="title">
             Restaurar
         </x-slot>
@@ -34,7 +34,7 @@
 
                 <h1 class="text-center text-lg mb-4">Seleccione el archivo que usará para la restauración</h1>
 
-                <select wire:model="zippedBackup" name="backup" id="backup" class="form-control">
+                <select wire:model.live="zippedBackup" name="backup" id="backup" class="form-control">
                     <option value="0">----</option>
 
                     @foreach ($files as $item)

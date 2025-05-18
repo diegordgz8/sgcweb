@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             @livewire('gasto.nuevo-gasto')
         </div>
@@ -131,7 +131,7 @@
     </div>
 
     @if ($gasto->proveedor)
-        <x-dialog-modal wire:model="openEdit" maxWidth="4xl">
+        <x-dialog-modal wire:model.live="openEdit" maxWidth="4xl">
             <x-slot name="title">
                 Editar el gasto
             </x-slot>
@@ -156,7 +156,7 @@
                                     <label for="monto" class="block text-sm font-medium text-gray-700">
                                         Monto total:
                                     </label>
-                                    <input wire:model="gasto.monto" type="text" name="monto" id="monto" readonly
+                                    <input wire:model.live="gasto.monto" type="text" name="monto" id="monto" readonly
                                         class="form-control w-full">
                                     <x-input-error for="gasto.monto" />
                                 </div>
@@ -194,7 +194,7 @@
         </x-dialog-modal>
     @endif
 
-    <x-confirmation-modal wire:model="openCancelar">
+    <x-confirmation-modal wire:model.live="openCancelar">
 
         <x-slot name="title">
             Cancelar

@@ -7,9 +7,9 @@ use App\Http\Controllers\Admin\CtrHabitante;
 use App\Http\Controllers\Admin\CtrSancion;
 use App\Http\Controllers\Admin\CtrUnidad;
 use App\Http\Controllers\Admin\CtrUser;
-use App\Http\Livewire\Admin\Database\Backup;
-use App\Http\Livewire\Admin\Permisos\TablaPermiso;
-use App\Http\Livewire\Admin\Roles\TablaRol;
+use App\Livewire\Admin\Database\Backup;
+use App\Livewire\Admin\Permisos\TablaPermiso;
+use App\Livewire\Admin\Roles\TablaRol;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'admin.index')->middleware('can:admin.home')->name('home');

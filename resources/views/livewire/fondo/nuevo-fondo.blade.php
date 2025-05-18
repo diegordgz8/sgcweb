@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Nuevo fondo
         </x-slot>
@@ -21,7 +21,7 @@
                                 <label for="descripcion"
                                     class="block text-sm font-medium text-gray-700">Descripción:</label>
                                 <input type="text" name="descripcion" id="descripcion" class="form-control w-full"
-                                    wire:model="descripcion">
+                                    wire:model.live="descripcion">
                                 <x-input-error for="descripcion" />
                             </div>
 
@@ -29,13 +29,13 @@
                                 <label for="saldo-inicial" class="block text-sm font-medium text-gray-700">Saldo
                                     inicial:</label>
                                 <input type="number" name="saldo-inicial" id="saldo-inicial" class="form-control w-full"
-                                    wire:model="saldoInicial">
+                                    wire:model.live="saldoInicial">
                                 <x-input-error for="saldoInicial" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda:</label>
-                                <select name="moneda" id="moneda" class="form-control w-full" wire:model="moneda">
+                                <select name="moneda" id="moneda" class="form-control w-full" wire:model.live="moneda">
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
@@ -44,7 +44,7 @@
 
                             <div class="col-span-6">
                                 <label for="cuenta" class="block text-sm font-medium text-gray-700">Cuenta afiliada:</label>
-                                <select wire:model="cuenta.id" name="cuenta" id="cuenta" class="form-control w-full">
+                                <select wire:model.live="cuenta.id" name="cuenta" id="cuenta" class="form-control w-full">
                                     <option>----</option>
                                     @foreach ($cuentas as $item)
                                         <option value="{{ $item->id }}">{{ $item->numero }} - {{ $item->banco->nombre }}

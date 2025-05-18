@@ -3,7 +3,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
+            <x-input wire:model.live="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
 
             <a href="{{ route('pago-propietario.create') }}">
                 <button class="btn btn-blue w-44">Notificar pago</button>

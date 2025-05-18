@@ -3,7 +3,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input wire:model="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
+            <x-input wire:model.live="busqueda" type="text" placeholder="Escriba para buscar..." class="w-full" />
         </div>
 
         {{-- tabla --}}
@@ -115,7 +115,7 @@
 
     </div>
 
-    <x-dialog-modal wire:model="openConfirmar">
+    <x-dialog-modal wire:model.live="openConfirmar">
         <x-slot name="title">
             Confirmar pago
         </x-slot>
@@ -143,7 +143,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openRechazar">
+    <x-confirmation-modal wire:model.live="openRechazar">
 
         <x-slot name="title">
             Rechazar pago

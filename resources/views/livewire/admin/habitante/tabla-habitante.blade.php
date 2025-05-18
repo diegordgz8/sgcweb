@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             <a href="{{ route('habitante.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
@@ -149,7 +149,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Editar la categoría
         </x-slot>
@@ -166,7 +166,7 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="categoria.nombre">
+                                    wire:model.live="categoria.nombre">
                                 <x-input-error for="nombre" />
                             </div>
 
@@ -175,7 +175,7 @@
                                     class="block text-sm font-medium text-gray-700">Descripción</label>
                                 <input type="text" name="descripcion" id="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="categoria.descripcion">
+                                    wire:model.live="categoria.descripcion">
                                 <x-input-error for="descripcion" />
                             </div>
 
@@ -198,7 +198,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

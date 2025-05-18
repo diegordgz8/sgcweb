@@ -5,7 +5,7 @@
     </x-button>
 
 	{{-- {{ Str::substr(today(), 5, 2) }} --}}
-	<x-dialog-modal wire:model="open">
+	<x-dialog-modal wire:model.live="open">
 
         <x-slot name="title">
             Cierre de mes
@@ -21,7 +21,7 @@
 
 						<div class="col-span-6">
 							<label for="mes" class="block text-sm font-medium text-gray-700">Mes</label>
-							<input wire:model="mes" type="month" name="mes" id="mes"
+							<input wire:model.live="mes" type="month" name="mes" id="mes"
 								class="form-control w-full">
 							<x-input-error for="mes" />
 						</div>
@@ -30,7 +30,7 @@
 							<label for="moneda" class="block text-sm font-medium text-gray-700">
 								Moneda
 							</label>
-							<select wire:model="moneda" name="moneda" id="moneda" class="form-control w-full">
+							<select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
 								<option>Bolívar</option>
 								<option>Dólar</option>
 							</select>
@@ -41,7 +41,7 @@
 							<label for="tasa-cambio" class="block text-sm font-medium text-gray-700">
 								Tasa de cambio
 							</label>
-							<input wire:model.lazy="tasaCambio.tasa" type="text" name="tasa-cambio" id="tasa-cambio" readonly
+							<input wire:model.blur="tasaCambio.tasa" type="text" name="tasa-cambio" id="tasa-cambio" readonly
 								class="form-control w-full">
 							<x-input-error for="tasaCambio.tasa" />
 						</div>

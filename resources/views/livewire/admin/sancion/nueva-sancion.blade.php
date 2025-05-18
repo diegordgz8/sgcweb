@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open" maxWidth='2xl'>
+    <x-dialog-modal wire:model.live="open" maxWidth='2xl'>
         <x-slot name="title">
             Nueva sanción
         </x-slot>
@@ -24,7 +24,7 @@
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <input type="text" name="descripcion" id="descripcion"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                        wire:model="descripcion">
+                                        wire:model.live="descripcion">
                                 </div>
                                 <x-input-error for="descripcion" />
                             </div>
@@ -36,7 +36,7 @@
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <input type="text" name="monto" id="monto"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                        wire:model="monto">
+                                        wire:model.live="monto">
                                 </div>
                                 <x-input-error for="monto" />
                             </div>
@@ -46,7 +46,7 @@
                                     <label for="moneda" class="block text-sm font-medium text-gray-700">
                                         Moneda:
                                     </label>
-                                    <select wire:model="moneda" name="moneda" id="moneda" class="form-control w-full">
+                                    <select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
                                         <option>Bolívar</option>
                                         <option>Dólar</option>
                                     </select>

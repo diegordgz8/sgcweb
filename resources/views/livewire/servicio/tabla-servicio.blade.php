@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             @livewire('servicio.nuevo-servicio')
 
@@ -129,7 +129,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Editar servicio
         </x-slot>
@@ -146,7 +146,7 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="servicio.nombre">
+                                    wire:model.live="servicio.nombre">
                                 <x-input-error for="servicio.nombre" />
                             </div>
 
@@ -154,7 +154,7 @@
                                 <label for="categoria"
                                     class="block text-sm font-medium text-gray-700">Categoría:</label>
                                 <select name="categoria" id="categoria" class="form-control w-full"
-                                    wire:model="servicio.categoria_id">
+                                    wire:model.live="servicio.categoria_id">
                                     <option value="0"> -- </option>
                                     @foreach ($categorias as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
@@ -168,7 +168,7 @@
                                     class="block text-sm font-medium text-gray-700">Descripción:</label>
                                 <input type="text" name="descripcion" id="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="servicio.descripcion">
+                                    wire:model.live="servicio.descripcion">
                                 <x-input-error for="servicio.descripcion" />
                             </div>
 
@@ -191,7 +191,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

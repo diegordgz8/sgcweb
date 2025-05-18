@@ -5,7 +5,7 @@
 
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             @livewire('admin.sancion.nueva-sancion')
 
@@ -131,7 +131,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Actualizar monto
         </x-slot>
@@ -147,7 +147,7 @@
                                 <label for="monto" class="block text-sm font-medium text-gray-700">Monto</label>
                                 <input type="text" name="monto" id="monto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="sancion.monto">
+                                    wire:model.live="sancion.monto">
                                 <x-input-error for="sancion.monto" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
@@ -155,7 +155,7 @@
                                     <label for="moneda" class="block text-sm font-medium text-gray-700">
                                         Moneda:
                                     </label>
-                                    <select wire:model="sancion.moneda" name="moneda" id="moneda"
+                                    <select wire:model.live="sancion.moneda" name="moneda" id="moneda"
                                         class="form-control w-full">
                                         <option>Bolívar</option>
                                         <option>Dólar</option>

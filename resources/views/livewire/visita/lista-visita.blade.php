@@ -10,14 +10,14 @@
                     <div>
                         <label for="fecha-desde" class="block text-sm font-medium text-gray-700 px-4">
                             Desde la fecha:
-                            <input wire:model="fechaDesde" type="date" name="fecha-desde" id="fecha-desde" class="form-control w-full">
+                            <input wire:model.live="fechaDesde" type="date" name="fecha-desde" id="fecha-desde" class="form-control w-full">
                         </label>
                     </div>
 
                     <div>
                         <label for="fecha-hasta" class="block text-sm font-medium text-gray-700 px-4">
                             Hasta la fecha:
-                            <input wire:model="fechaHasta" type="date" name="fecha-hasta" id="fecha-hasta" class="form-control w-full">
+                            <input wire:model.live="fechaHasta" type="date" name="fecha-hasta" id="fecha-hasta" class="form-control w-full">
                         </label>
                     </div>
 
@@ -25,7 +25,7 @@
             </x-filtro>
 
             <x-input type="search" placeholder="Escriba para buscar por nombre o apellido..." class="w-full"
-                wire:model="busqueda" />
+                wire:model.live="busqueda" />
 
                 <a href="{{ route('visita.exportar', ['-' . $busqueda . '-' . $this->orden . '-' . $this->direccion . '-' . $fechaDesde . '-' . $fechaHasta]) }}"
                 class="btn btn-blue whitespace-nowrap">

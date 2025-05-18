@@ -40,7 +40,7 @@
                             <x-select-cantidad />
 
                             <x-input type="text" placeholder="Escriba para buscar..." class="w-full"
-                                wire:model="busqueda" />
+                                wire:model.live="busqueda" />
 
                             @livewire('servicio.nuevo-servicio')
                         </div>

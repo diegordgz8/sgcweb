@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open" maxWidth='4xl'>
+    <x-dialog-modal wire:model.live="open" maxWidth='4xl'>
         <x-slot name="title">
             Nueva asamblea
         </x-slot>
@@ -24,7 +24,7 @@
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <input type="text" name="descripcion" id="descripcion"
                                         class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                        wire:model="descripcion">
+                                        wire:model.live="descripcion">
                                 </div>
                                 <x-input-error for="descripcion" />
                             </div>
@@ -32,7 +32,7 @@
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="fecha" class="block text-sm font-medium text-gray-700"> Fecha:</label>
                                 <input type="date" name="fecha" id="fecha" autocomplete="street-address"
-                                    class="form-control w-full" wire:model="fecha">
+                                    class="form-control w-full" wire:model.live="fecha">
                                 <x-input-error for="fecha" />
                             </div>
 
@@ -40,7 +40,7 @@
                                 <label for="observacion"
                                     class="block text-sm font-medium text-gray-700">Observación:</label>
                                 <textarea name="observacion" class="form-control w-full" cols="30" rows="5"
-                                    wire:model="observacion"></textarea>
+                                    wire:model.live="observacion"></textarea>
                                 <x-input-error for="observacion" />
                             </div>
 
@@ -53,7 +53,7 @@
                                         <x-select-cantidad />
 
                                         <x-input type="text" placeholder="Escriba para buscar..."
-                                            class="w-full" wire:model="busqueda" />
+                                            class="w-full" wire:model.live="busqueda" />
 
                                     </div>
 
@@ -71,7 +71,7 @@
                                                                     <tr>
                                                                         <th scope="col"
                                                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1">
-                                                                            <x-checkbox wire:model="selectPage"
+                                                                            <x-checkbox wire:model.live="selectPage"
                                                                                 name="selectPage" id="selectPage" />
 
                                                                         </th>
@@ -189,7 +189,7 @@
                                                                         <tr>
                                                                             <td
                                                                                 class="px-6 py-4 whitespace-nowrap text-xs space-x-1 font-medium">
-                                                                                <x-checkbox wire:model="asistentes"
+                                                                                <x-checkbox wire:model.live="asistentes"
                                                                                     value="{{ $item->id }}" />
                                                                             </td>
                                                                             <td class="px-6 py-4 whitespace-nowrap">

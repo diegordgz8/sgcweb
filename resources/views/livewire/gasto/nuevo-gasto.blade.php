@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model.live="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo gasto
@@ -22,7 +22,7 @@
                                 <label for="descripcion" class="block text-sm font-medium text-gray-700">
                                     Descripción:
                                 </label>
-                                <input wire:model.lazy="descripcion" type="text" name="descripcion" id="descripcion"
+                                <input wire:model.blur="descripcion" type="text" name="descripcion" id="descripcion"
                                     class="form-control w-full">
                                 <x-input-error for="descripcion" />
                             </div>
@@ -48,7 +48,7 @@
                                     <label for="numero-meses" class="block text-sm font-medium text-gray-700">
                                         Número de meses:
                                     </label>
-                                    <input wire:model.lazy="numeroMeses" type="number" name="numero-meses"
+                                    <input wire:model.blur="numeroMeses" type="number" name="numero-meses"
                                         id="numero-meses" class="form-control w-full">
                                     <x-input-error for="numeroMeses" />
                                 </div>
@@ -73,7 +73,7 @@
                                         <label for="asamblea" class="block text-sm font-medium text-gray-700">
                                             Asamblea:
                                         </label>
-                                        <select wire:model="asamblea.id" name="asamblea" id="asamblea"
+                                        <select wire:model.live="asamblea.id" name="asamblea" id="asamblea"
                                             class="form-control w-full">
                                             <option value="0"> -- </option>
                                             @foreach ($asambleas as $item)
@@ -91,7 +91,7 @@
                                     Calcular por:
                                 </label>
                                 <div>
-                                    <select wire:model="calculo" name="calculo" id="calculo"
+                                    <select wire:model.live="calculo" name="calculo" id="calculo"
                                         class="form-control w-full">
                                         <option>----</option>
                                         <option>Alícuota</option>
@@ -105,7 +105,7 @@
                                 <label for="comienzo-cobro" class="block text-sm font-medium text-gray-700">
                                     Comienzo de cobro:
                                 </label>
-                                <input wire:model="comienzoCobro" type="month" name="comienzo-cobro" id="comienzo-cobro"
+                                <input wire:model.live="comienzoCobro" type="month" name="comienzo-cobro" id="comienzo-cobro"
                                     class="form-control w-full">
                                 <x-input-error for="comienzoCobro" />
                             </div>
@@ -114,7 +114,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model="moneda" name="moneda" id="moneda" class="form-control w-full">
+                                <select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
@@ -125,7 +125,7 @@
                                 <label for="monto" class="block text-sm font-medium text-gray-700">
                                     Monto total:
                                 </label>
-                                <input wire:model="monto" type="text" name="monto" id="monto" readonly
+                                <input wire:model.live="monto" type="text" name="monto" id="monto" readonly
                                     class="form-control w-full">
                                 <x-input-error for="monto" />
                             </div>
@@ -134,7 +134,7 @@
                                 <label for="factura" class="block text-sm font-medium text-gray-700">
                                     Factura:
                                 </label>
-                                <input wire:model="factura" type="text" name="factura" id="factura"
+                                <input wire:model.live="factura" type="text" name="factura" id="factura"
                                     class="form-control w-full">
                                 <x-input-error for="factura" />
                             </div>
@@ -143,7 +143,7 @@
                                 <label for="observaciones" class="block text-sm font-medium text-gray-700">
                                     Observaciones:
                                 </label>
-                                <textarea wire:model.lazy="observaciones" name="observaciones" id="observaciones"
+                                <textarea wire:model.blur="observaciones" name="observaciones" id="observaciones"
                                     rows="5" class="form-control w-full"></textarea>
                                 <x-input-error for="observaciones" />
                             </div>
@@ -152,7 +152,7 @@
                                 <label for="proveedor" class="block text-sm font-medium text-gray-700">
                                     Proveedor:
                                 </label>
-                                <select wire:model="proveedor.id" name="proveedor" id="proveedor"
+                                <select wire:model.live="proveedor.id" name="proveedor" id="proveedor"
                                     class="form-control w-full">
                                     <option>----</option>
                                     @foreach ($proveedores as $item)
@@ -198,8 +198,8 @@
 <script>
     function nuevoGasto() {
         return {
-            tipo: @entangle('tipo').defer,
-            elegidoAsamblea: @entangle('elegidoAsamblea').defer,
+            tipo: @entangle('tipo'),
+            elegidoAsamblea: @entangle('elegidoAsamblea'),
 
             init: function() {
                 // console.log('Listo!');

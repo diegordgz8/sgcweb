@@ -177,7 +177,7 @@
 
     @endif
 
-    <x-dialog-modal wire:model="openAsignar">
+    <x-dialog-modal wire:model.live="openAsignar">
 
         <x-slot name="title">
             Asignar propietario
@@ -203,7 +203,7 @@
 
     </x-dialog-modal>
 
-    <x-dialog-modal wire:model="openCambiar">
+    <x-dialog-modal wire:model.live="openCambiar">
 
         <x-slot name="title">
             Cambiar propietario
@@ -228,7 +228,7 @@
 
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openRetirar">
+    <x-confirmation-modal wire:model.live="openRetirar">
 
         <x-slot name="title">
             Retirar propietario
@@ -251,7 +251,7 @@
 
     </x-confirmation-modal>
 
-    {{-- <x-confirmation-modal wire:model="openDestroy">
+    {{-- <x-confirmation-modal wire:model.live="openDestroy">
 
 		<x-slot name="title">
 			Eliminar

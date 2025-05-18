@@ -3,7 +3,7 @@
 		Nuevo
 	</x-button>
 
-	<x-dialog-modal wire:model="abierto">
+	<x-dialog-modal wire:model.live="abierto">
 		<x-slot name="title">
 			Nuevo Banco
 		</x-slot>
@@ -19,7 +19,7 @@
 								<label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
 								<input type="text" name="nombre" id="nombre"
 									class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-									wire:model="nombre">
+									wire:model.live="nombre">
 								<x-input-error for="nombre" />
 							</div>
 						</div>

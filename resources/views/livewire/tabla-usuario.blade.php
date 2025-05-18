@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
         </div>
 
         <!-- tabla -->
@@ -109,7 +109,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Asignar roles
         </x-slot>
@@ -138,7 +138,7 @@
                                     @foreach ($listaRoles as $key => $item)
                                     <div class="flex items-start">
                                         <div class="flex items-center h-5">
-                                            <input wire:model.defer="roles" type="checkbox"
+                                            <input wire:model="roles" type="checkbox"
                                             id="role_{{ $key }}"
                                                 name="role_{{ $key }}"
                                                 value="{{ $item->id }}"
@@ -174,7 +174,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

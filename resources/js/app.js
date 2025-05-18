@@ -1,6 +1,7 @@
 import "./bootstrap";
-import Alpine from "alpinejs";
+import { Livewire, Alpine } from "alpinejs";
 
-window.Alpine = Alpine;
+// window.Alpine = Alpine;
+// Alpine.plugin(yourCustomPlugin);
 
-Alpine.start();
+Livewire.start();

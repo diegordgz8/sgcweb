@@ -16,7 +16,7 @@
                             <x-select-cantidad />
 
                             <x-input type="search" placeholder="Escriba para buscar..." class="w-full"
-                                wire:model="busqueda" />
+                                wire:model.live="busqueda" />
 
                             @livewire('admin.roles.nuevo-rol')
                         </div>
@@ -100,7 +100,7 @@
                         {{-- /tabla --}}
                     </div>
 
-                    <x-dialog-modal wire:model="openEdit">
+                    <x-dialog-modal wire:model.live="openEdit">
                         <x-slot name="title">
                             Editar rol
                         </x-slot>
@@ -117,7 +117,7 @@
                                                 <label for="name" class="block text-sm font-medium text-gray-700">Nombre</label>
                                                 <input type="text" name="name" id="name"
                                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                                    wire:model.lazy="rol.name">
+                                                    wire:model.blur="rol.name">
                                                 <x-input-error for="rol.name" />
                                             </div>
 
@@ -129,7 +129,7 @@
                                                     @foreach ($this->listaPermisos as $key => $item)
                                                     <div class="flex items-start">
                                                         <div class="flex items-center">
-                                                            <input wire:model.defer="permisos" type="checkbox"
+                                                            <input wire:model="permisos" type="checkbox"
                                                             {{-- id="permiso_{{ $key }}"
                                                                 name="permiso_{{ $key }}" --}}
                                                                 value="{{ $item->id }}"
@@ -165,7 +165,7 @@
                         </x-slot>
                     </x-dialog-modal>
 
-                    <x-confirmation-modal wire:model="openDestroy">
+                    <x-confirmation-modal wire:model.live="openDestroy">
 
                         <x-slot name="title">
                             Eliminar

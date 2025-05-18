@@ -14,19 +14,19 @@
 
                         <label for="todos-moneda"
                             class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model="moneda" type="radio" name="moneda" id="todos-moneda" value="2">
+                            <input wire:model.live="moneda" type="radio" name="moneda" id="todos-moneda" value="2">
                             Todas
                         </label>
 
                         <label for="bolivar"
                             class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model="moneda" type="radio" name="moneda" id="bolivar" value="1">
+                            <input wire:model.live="moneda" type="radio" name="moneda" id="bolivar" value="1">
                             Bolívar
                         </label>
 
                         <label for="dolar"
                             class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model="moneda" type="radio" name="moneda" id="dolar" value="0">
+                            <input wire:model.live="moneda" type="radio" name="moneda" id="dolar" value="0">
                             Dólar
                         </label>
                     </div>
@@ -39,14 +39,14 @@
                         <label for="minimo"
                             class="text-sm py-2 px-4 font-normal block w-full bg-transparent text-gray-700">
                             Mínimo:
-                            <input wire:model="minimo" type="text" name="minimo" id="minimo"
+                            <input wire:model.live="minimo" type="text" name="minimo" id="minimo"
                                 class="form-control w-full">
                         </label>
 
                         <label for="maximo"
                             class="text-sm py-2 px-4 font-normal block w-full bg-transparent text-gray-700">
                             Máximo:
-                            <input wire:model="maximo" type="text" name="maximo" id="maximo"
+                            <input wire:model.live="maximo" type="text" name="maximo" id="maximo"
                                 class="form-control w-full">
                         </label>
                     </div>
@@ -55,7 +55,7 @@
             </x-filtro>
 
             <x-input type="text" placeholder="Escriba para buscar por nombre..." class="w-full"
-                wire:model="busqueda" />
+                wire:model.live="busqueda" />
 
                 <a href="{{ route('fondo.exportar', ['-' . $busqueda . '-' . $orden . '-' . $direccion . '-' . $moneda . '-' . $minimo . '-' . $maximo]) }}"
                 class="btn btn-blue whitespace-nowrap">
@@ -96,7 +96,7 @@
         {{-- /tabla --}}
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Editar la categoría
         </x-slot>
@@ -113,7 +113,7 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="categoria.nombre">
+                                    wire:model.live="categoria.nombre">
                                 <x-input-error for="categoria.nombre" />
                             </div>
 
@@ -122,7 +122,7 @@
                                     class="block text-sm font-medium text-gray-700">Descripción</label>
                                 <input type="text" name="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model="categoria.descripcion">
+                                    wire:model.live="categoria.descripcion">
                                 <x-input-error for="categoria.descripcion" />
                             </div>
 
@@ -145,7 +145,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

@@ -13,7 +13,7 @@
         @include('livewire.pago-propietario.partials.tabla-facturas')
     </div>
 
-    <x-dialog-modal wire:model="open" maxWidth="4xl">
+    <x-dialog-modal wire:model.live="open" maxWidth="4xl">
 
         <x-slot name="title">
             Nuevo pago
@@ -59,7 +59,7 @@
                                 <label for="descripcion" class="block text-sm font-medium text-gray-700">
                                     Descripción:
                                 </label>
-                                <input wire:model.lazy="descripcion" type="text" name="descripcion" id="descripcion"
+                                <input wire:model.blur="descripcion" type="text" name="descripcion" id="descripcion"
                                     class="form-control w-full" />
                                 <x-input-error for="descripcion" />
                             </div>
@@ -68,7 +68,7 @@
                                 <label for="fecha" class="block text-sm font-medium text-gray-700">
                                     Fecha de pago:
                                 </label>
-                                <input wire:model="fecha" type="date" name="fecha" id="fecha"
+                                <input wire:model.live="fecha" type="date" name="fecha" id="fecha"
                                     class="form-control w-full" />
                                 <x-input-error for="fecha" />
                             </div>
@@ -77,7 +77,7 @@
                                 <label for="monto" class="block text-sm font-medium text-gray-700">
                                     Monto:
                                 </label>
-                                <input wire:model="monto" type="text" name="monto" id="monto"
+                                <input wire:model.live="monto" type="text" name="monto" id="monto"
                                     class="form-control w-full" />
                                 <x-input-error for="monto" />
                             </div>
@@ -92,7 +92,7 @@
                                     Forma de pago:
                                 </label>
                                 <div>
-                                    <select wire:model.lazy="formaPago" x-model="formaPago" name="forma-pago" id="forma-pago"
+                                    <select wire:model.blur="formaPago" x-model="formaPago" name="forma-pago" id="forma-pago"
                                         class="form-control w-full">
                                         <option>----</option>
                                         <option>Transferencia</option>
@@ -110,7 +110,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model="moneda" x-model="moneda" name="moneda" id="moneda" class="form-control w-full">
+                                <select wire:model.live="moneda" x-model="moneda" name="moneda" id="moneda" class="form-control w-full">
                                     <option>Bolívar</option>
                                     <option>Dólar</option>
                                 </select>
@@ -121,7 +121,7 @@
                                 <label for="cuenta" class="block text-sm font-medium text-gray-700">
                                     Cuenta:
                                 </label>
-                                <select wire:model="cuenta.id" name="cuenta" id="cuenta"
+                                <select wire:model.live="cuenta.id" name="cuenta" id="cuenta"
                                     class="form-control w-full">
                                     <option value="0" selected>----</option>
 
@@ -152,7 +152,7 @@
                                     class="block text-sm font-medium text-gray-700">
                                     Referencia:
                                 </label>
-                                <input wire:model.lazy="referencia" type="text" name="referencia"
+                                <input wire:model.blur="referencia" type="text" name="referencia"
                                     id="referencia" class="form-control w-full" />
                                 <x-input-error for="referencia" />
                             </div>

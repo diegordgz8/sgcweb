@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Reportes" icono="/img/iconos/iva.png" />
     </div>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Reportes
         </x-slot>

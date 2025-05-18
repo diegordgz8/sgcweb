@@ -4,7 +4,7 @@
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
 
-            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+            <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
 
             @livewire('admin.administrador.nuevo-administrador')
         </div>
@@ -99,7 +99,7 @@
 
     </div>
 
-    <x-dialog-modal wire:model="openEdit">
+    <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
             Editar responsable
         </x-slot>
@@ -114,7 +114,7 @@
 
                             <div class="col-span-6">
                                 <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
-                                <input wire:model.lazy="administrador.rol" type="text" name="rol" id="rol"
+                                <input wire:model.blur="administrador.rol" type="text" name="rol" id="rol"
                                     autocomplete="rol"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 <x-input-error for="administrador.rol" />
@@ -139,7 +139,7 @@
         </x-slot>
     </x-dialog-modal>
 
-    <x-confirmation-modal wire:model="openDestroy">
+    <x-confirmation-modal wire:model.live="openDestroy">
 
         <x-slot name="title">
             Eliminar

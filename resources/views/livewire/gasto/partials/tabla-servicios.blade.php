@@ -4,7 +4,7 @@
     <div class="flex space-x-4 items-center">
         <x-select-cantidad />
 
-        <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model="busqueda" />
+        <x-input type="text" placeholder="Escriba para buscar..." class="w-full" wire:model.live="busqueda" />
     </div>
 
     <!-- tabla -->
@@ -18,7 +18,7 @@
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="relative px-6 py-3">
-                                            <x-checkbox wire:model="selectPage" name="selectPage" id="selectPage" />
+                                            <x-checkbox wire:model.live="selectPage" name="selectPage" id="selectPage" />
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -109,7 +109,7 @@
                                     @foreach ($listaServicios as $item)
                                         <tr>
                                             <td class="px-6 py-4">
-                                                <x-checkbox wire:model="servicios.{{ $item->id }}"
+                                                <x-checkbox wire:model.live="servicios.{{ $item->id }}"
                                                     value="{{ $item->id }}" />
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -129,7 +129,7 @@
                                             </td>
                                             <td class="px-6 py-4">
                                                 <div class="text-sm font-medium text-gray-900">
-                                                    <input wire:model.lazy="montos.{{ $item->id }}" type="text"
+                                                    <input wire:model.blur="montos.{{ $item->id }}" type="text"
                                                         class="form-control w-36">
                                                     <x-input-error for="montos.{{ $item->id }}" />
                                                 </div>

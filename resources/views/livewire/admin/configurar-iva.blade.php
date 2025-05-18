@@ -4,7 +4,7 @@
         <x-btn-admin-ancho nombre="Configurar IVA" icono="/img/iconos/iva.png" />
     </div>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Configurar IVA
         </x-slot>
@@ -20,7 +20,7 @@
                             <label for="factor" class="block text-sm font-medium text-gray-700">
                                 Factor (%):
                             </label>
-                            <input wire:model="factor" type="text" name="factor" id="factor" class="form-control w-full">
+                            <input wire:model.live="factor" type="text" name="factor" id="factor" class="form-control w-full">
                             <x-input-error for="factor" />
                         </div>
 
@@ -31,7 +31,7 @@
                                     <x-select-cantidad />
 
                                     <x-input type="text" placeholder="Escriba para buscar por fecha..."
-                                        class="w-full" wire:model="busqueda" />
+                                        class="w-full" wire:model.live="busqueda" />
 
                                 </div>
 

@@ -4,7 +4,7 @@
         Nuevo
     </x-button>
 
-    <x-dialog-modal wire:model="open">
+    <x-dialog-modal wire:model.live="open">
         <x-slot name="title">
             Nuevo comunicado
         </x-slot>
@@ -19,7 +19,7 @@
 
                             <div class="col-span-6">
                                 <label for="asunto" class="block text-sm font-medium text-gray-700">Asunto</label>
-                                <input wire:model.lazy="asunto" type="text" name="asunto" id="asunto"
+                                <input wire:model.blur="asunto" type="text" name="asunto" id="asunto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                 <x-input-error for="asunto" />
                             </div>
@@ -27,7 +27,7 @@
                             <div class="col-span-6">
                                 <label for="contenido"
                                     class="block text-sm font-medium text-gray-700">Contenido</label>
-                                <textarea wire:model.lazy="contenido" name="contenido" id="contenido" rows="15" class="mt-1 w-full form-control"></textarea>
+                                <textarea wire:model.blur="contenido" name="contenido" id="contenido" rows="15" class="mt-1 w-full form-control"></textarea>
                                 <x-input-error for="contenido" />
                             </div>
                         </div>

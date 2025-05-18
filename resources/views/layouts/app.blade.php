@@ -15,7 +15,6 @@
    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
    <!-- Styles -->
-   @livewireStyles
    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
 </head>
 
@@ -41,8 +40,6 @@
    </div>
 
    @stack('modals')
-
-   @livewireScripts
 
    @stack('js')
 </body>
