@@ -68,6 +68,6 @@ class TablaComunicado extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('El comunicado se eliminó satisfactoriamente');
+		flash()->success('El comunicado se eliminó satisfactoriamente');
 	}
 }

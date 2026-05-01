@@ -45,7 +45,7 @@ class NuevoRol extends Component
 		]);
 
 		$this->dispatch('render')->to('admin.roles.tabla-rol');
-		toastr()->livewire()->addSuccess('El registro se creó satisfactoriamente');
+		flash()->success('El registro se creó satisfactoriamente');
 	}
 
     public function getListaPermisosProperty() {

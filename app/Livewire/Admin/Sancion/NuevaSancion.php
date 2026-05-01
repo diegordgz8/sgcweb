@@ -49,6 +49,6 @@ class NuevaSancion extends Component
         ]);
 
         $this->dispatch('render')->to('admin.sancion.tabla-sancion');
-        toastr()->livewire()->addSuccess('La sanción se registró satisfactoriamente');
+        flash()->success('La sanción se registró satisfactoriamente');
     }
 }

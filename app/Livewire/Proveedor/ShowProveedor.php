@@ -76,7 +76,7 @@ class ShowProveedor extends Component
 
         $this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('El servicio fue removido satisfactoriamente');
+		flash()->success('El servicio fue removido satisfactoriamente');
 		
 
     }

@@ -102,7 +102,7 @@ class NuevoPago extends Component
 	public function mostrarForm(Factura $factura)
 	{
 		if ($this->facturaMasVieja->id != $factura->id) {
-			toastr()->livewire()->addError('No puede pagar una factura si existe otra más vieja.');
+			flash()->error('No puede pagar una factura si existe otra más vieja.');
 			return false;
 		}
 
@@ -262,7 +262,7 @@ class NuevoPago extends Component
 		$this->factura = new Factura;
 		$this->cuenta = new Cuenta;
 
-		toastr()->livewire()->addSuccess('El pago ha sido registrado, debe esperar que el condominio confirme el pago para ver los cambios.');
+		flash()->success('El pago ha sido registrado, debe esperar que el condominio confirme el pago para ver los cambios.');
 	}
 
 	public function getTasaCambioProperty()

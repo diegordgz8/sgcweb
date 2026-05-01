@@ -131,7 +131,7 @@ class TablaCuenta extends Component
 
 		$this->reset('openEdit');
 
-		toastr()->livewire()->addSuccess('La cuenta se actualizó satisfactoriamente');
+		flash()->success('La cuenta se actualizó satisfactoriamente');
 	}
 
 	public function destroy(Cuenta $cuenta)
@@ -146,6 +146,6 @@ class TablaCuenta extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('La cuenta se eliminó satisfactoriamente');
+		flash()->success('La cuenta se eliminó satisfactoriamente');
 	}
 }

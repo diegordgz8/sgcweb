@@ -96,7 +96,7 @@ class TablaTipoUnidad extends Component
 		$this->validate();
 		$this->tipoUnidad->save();
 		$this->reset('openEdit');
-		toastr()->livewire()->addSuccess('El tipo de unidad se actualizó satisfactoriamente');
+		flash()->success('El tipo de unidad se actualizó satisfactoriamente');
 	}
 
 	public function destroy(TipoUnidad $tipoUnidad)
@@ -109,6 +109,6 @@ class TablaTipoUnidad extends Component
 	{
 		$this->tipoUnidad->delete();
 		$this->reset('openDestroy');
-		toastr()->livewire()->addSuccess('El tipo de unidad se eliminó satisfactoriamente');
+		flash()->success('El tipo de unidad se eliminó satisfactoriamente');
 	}
 }

@@ -98,7 +98,7 @@ class TablaRol extends Component
 
 		$this->reset('openEdit');
 
-		toastr()->livewire()->addSuccess('El rol se actualizó satisfactoriamente');
+		flash()->success('El rol se actualizó satisfactoriamente');
 	}
 
 	public function destroy(Role $rol)
@@ -113,7 +113,7 @@ class TablaRol extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('El rol se eliminó satisfactoriamente');
+		flash()->success('El rol se eliminó satisfactoriamente');
 	}
 
     public function getListaPermisosProperty() {

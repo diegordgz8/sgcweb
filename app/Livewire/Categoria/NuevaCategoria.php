@@ -37,7 +37,7 @@ class NuevaCategoria extends Component
 		]);
 
 		$this->dispatch('render')->to('categoria.tabla-categoria');
-		toastr()->livewire()->addSuccess('La categoría se creó satisfactoriamente');
+		flash()->success('La categoría se creó satisfactoriamente');
 	}
 
 	public function render()

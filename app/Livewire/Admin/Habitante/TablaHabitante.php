@@ -94,7 +94,7 @@ class TablaHabitante extends Component
 
 		$this->reset('openEdit');
 
-		toastr()->livewire()->addSuccess('La persona se actualizó satisfactoriamente');
+		flash()->success('La persona se actualizó satisfactoriamente');
 	}
 
 	public function destroy(Integrante $integrante) {
@@ -107,6 +107,6 @@ class TablaHabitante extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('La persona se eliminó satisfactoriamente');
+		flash()->success('La persona se eliminó satisfactoriamente');
 	}
 }

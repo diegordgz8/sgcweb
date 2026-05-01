@@ -92,7 +92,7 @@ class TablaUsuario extends Component
 		$this->reset(['openEdit', 'roles']);
 
 		$this->dispatch('render')->to('tabla-usuario');
-		toastr()->livewire()->addSuccess('Los roles fueron asignados satisfactoriamente');
+		flash()->success('Los roles fueron asignados satisfactoriamente');
 	}
 
 	public function destroy(User $usuario)
@@ -107,6 +107,6 @@ class TablaUsuario extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('El usuario se eliminó satisfactoriamente');
+		flash()->success('El usuario se eliminó satisfactoriamente');
 	}
 }

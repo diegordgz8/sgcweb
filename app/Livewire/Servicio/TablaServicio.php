@@ -109,7 +109,7 @@ class TablaServicio extends Component
 		$this->reset('openEdit');
 
 		$this->dispatch('render')->to('servicio.tabla-servicio');
-		toastr()->livewire()->addSuccess('El servicio se actualizó satisfactoriamente');
+		flash()->success('El servicio se actualizó satisfactoriamente');
 	}
 
 	public function destroy(Servicio $servicio)
@@ -125,6 +125,6 @@ class TablaServicio extends Component
 		$this->reset('openDestroy');
 
 		$this->dispatch('render')->to('servicio.tabla-servicio');
-		toastr()->livewire()->addSuccess('El servicio se eliminó satisfactoriamente');
+		flash()->success('El servicio se eliminó satisfactoriamente');
 	}
 }

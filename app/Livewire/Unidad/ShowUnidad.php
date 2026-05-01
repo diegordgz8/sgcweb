@@ -75,7 +75,7 @@ class ShowUnidad extends Component
 		$this->reset('openEdit');
 
 		$this->dispatch('render')->to('unidad.show-unidad');
-		toastr()->livewire()->addSuccess('El integrante se actualizó satisfactoriamente');
+		flash()->success('El integrante se actualizó satisfactoriamente');
 	}
 
 	public function removerIntegrante(Integrante $integrante)
@@ -92,6 +92,6 @@ class ShowUnidad extends Component
 		$this->reset('openDestroy');
 
 		$this->dispatch('render')->to('unidad.show-unidad');
-		toastr()->livewire()->addSuccess('El integrante fue removido satisfactoriamente');
+		flash()->success('El integrante fue removido satisfactoriamente');
 	}
 }

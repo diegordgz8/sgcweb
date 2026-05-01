@@ -206,6 +206,6 @@ class NuevoAdministrador extends Component
 		]);
 
 		$this->dispatch('render')->to('administrador.tabla-administrador');
-		toastr()->livewire()->addSuccess('El administrador se añadió satisfactoriamente');
+		flash()->success('El administrador se añadió satisfactoriamente');
 	}
 }

@@ -56,6 +56,6 @@ class ConfigurarMensualidad extends Component
 		$this->monto = Mensualidad::orderBy('created_at', 'desc')->first()->monto;
 		$this->moneda = Mensualidad::orderBy('created_at', 'desc')->first()->moneda;
 
-		toastr()->livewire()->addSuccess('La mensaulidad fue actualizada con éxito');
+		flash()->success('La mensaulidad fue actualizada con éxito');
 	}
 }

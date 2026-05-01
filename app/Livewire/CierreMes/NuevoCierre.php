@@ -59,7 +59,7 @@ class NuevoCierre extends Component
 		$this->validate();
 
 		if(CierreMes::where('mes', $this->mes)->first()) {
-			toastr()->livewire()->addError('El mes que ha seleccionado ya ha sido cerrado.');
+			flash()->error('El mes que ha seleccionado ya ha sido cerrado.');
 			return false;
 		}
 
@@ -255,7 +255,7 @@ class NuevoCierre extends Component
 			]);
 
 			$this->dispatch('render')->to('cierre-mes.tabla-factura');
-			toastr()->livewire()->addSuccess('El cierre de mes fue satisfactorio. Se han generado las facturas.');
+			flash()->success('El cierre de mes fue satisfactorio. Se han generado las facturas.');
 
 		} catch(Exception $e) {
 			DB::rollBack();

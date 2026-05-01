@@ -51,7 +51,7 @@ class NuevoMedicamento extends Component
 		]);
 
 		$this->dispatch('render')->to('medicamento.tabla-medicamento');
-		toastr()->livewire()->addSuccess('El medicamento se creó satisfactoriamente');
+		flash()->success('El medicamento se creó satisfactoriamente');
 	}
 
 	public function render()

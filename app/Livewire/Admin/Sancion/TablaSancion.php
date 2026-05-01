@@ -78,7 +78,7 @@ class TablaSancion extends Component
         $this->validate();
         $this->sancion->save();
         $this->reset('openEdit');
-        toastr()->livewire()->addSuccess('El monto se actualizó satisfactoriamente');
+        flash()->success('El monto se actualizó satisfactoriamente');
     }
 
 }

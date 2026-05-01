@@ -100,6 +100,6 @@ class NuevaVisita extends Component
 		$this->unidad = new Unidad;
 
 		$this->dispatch('render')->to('visita.tabla-visita');
-		toastr()->livewire()->addSuccess('La visita se registró satisfactoriamente');
+		flash()->success('La visita se registró satisfactoriamente');
 	}
 }

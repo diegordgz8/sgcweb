@@ -141,7 +141,7 @@ class ShowUnidad extends Component
 
 		$this->integrante = new Integrante;
 
-		toastr()->livewire()->addSuccess('El propietario fue asignado satisfactoriamente');
+		flash()->success('El propietario fue asignado satisfactoriamente');
 	}
 
 	public function cambiarPropietario()
@@ -152,7 +152,7 @@ class ShowUnidad extends Component
 		$this->asignarPropietario();
 
 		$this->reset('openCambiar');
-		toastr()->livewire()->addSucces('El fondo se registró satisfactoriamente');
+		Succes('El fondo se registró satisfactoriamente');
 	}
 
 	public function retirar()

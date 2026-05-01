@@ -122,6 +122,6 @@ class AplicarSancion extends Component
         $this->unidad = new Unidad;
         $this->reset('sanciones');
 
-        toastr()->livewire()->addSuccess('La unidad fue sancionada satisfactoriamente');
+        flash()->success('La unidad fue sancionada satisfactoriamente');
     }
 }

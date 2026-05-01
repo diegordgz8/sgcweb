@@ -94,7 +94,7 @@ class TablaPermiso extends Component
 
 		$this->reset('openEdit');
 
-		toastr()->livewire()->addSuccess('El permiso se actualizó satisfactoriamente');
+		flash()->success('El permiso se actualizó satisfactoriamente');
 	}
 
 	public function destroy(Permission $permiso)
@@ -109,6 +109,6 @@ class TablaPermiso extends Component
 
 		$this->reset('openDestroy');
 
-		toastr()->livewire()->addSuccess('El permiso se eliminó satisfactoriamente');
+		flash()->success('El permiso se eliminó satisfactoriamente');
 	}
 }

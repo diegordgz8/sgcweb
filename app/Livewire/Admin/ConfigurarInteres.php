@@ -72,6 +72,6 @@ class ConfigurarInteres extends Component
 
         $this->reset('open');
 
-        toastr()->livewire()->addSuccess('El interés fue actualizado con éxito');
+        flash()->success('El interés fue actualizado con éxito');
     }
 }

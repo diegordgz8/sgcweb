@@ -51,7 +51,7 @@ class NuevaEnfermedad extends Component
 		]);
 
 		$this->dispatch('render')->to('enfermedad.tabla-enfermedad');
-		toastr()->livewire()->addSuccess('La enfermedad se creó satisfactoriamente');
+		flash()->success('La enfermedad se creó satisfactoriamente');
 	}
 
 	public function render()

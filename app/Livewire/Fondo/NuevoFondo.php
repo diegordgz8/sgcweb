@@ -64,6 +64,6 @@ class NuevoFondo extends Component
 		$this->cuenta = new Cuenta;
 
 		$this->dispatch('render')->to('fondo.tabla-fondo');
-		toastr()->livewire()->addSuccess('El fondo se registró satisfactoriamente');
+		flash()->success('El fondo se registró satisfactoriamente');
 	}
 }

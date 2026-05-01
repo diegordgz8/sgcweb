@@ -87,7 +87,7 @@ class TablaMedicamento extends Component
         $this->reset('openEdit');
 
         $this->dispatch('render')->to('medicamento.tabla-medicamento');
-        toastr()->livewire()->addSuccess('El medicamento se actualizó satisfactoriamente');
+        flash()->success('El medicamento se actualizó satisfactoriamente');
     }
 
     public function destroy(Medicamento $medicamento)
@@ -103,6 +103,6 @@ class TablaMedicamento extends Component
         $this->reset('openDestroy');
 
         $this->dispatch('render')->to('medicamento.tabla-medicamento');
-        toastr()->livewire()->addSuccess('El medicamento se eliminó satisfactoriamente');
+        flash()->success('El medicamento se eliminó satisfactoriamente');
     }
 }

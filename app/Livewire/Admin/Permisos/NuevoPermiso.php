@@ -39,6 +39,6 @@ class NuevoPermiso extends Component
 		]);
 
 		$this->dispatch('render')->to('admin.permisos.tabla-permiso');
-		toastr()->livewire()->addSuccess('El registro se creó satisfactoriamente');
+		flash()->success('El registro se creó satisfactoriamente');
 	}
 }

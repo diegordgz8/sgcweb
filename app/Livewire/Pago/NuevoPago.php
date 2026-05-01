@@ -327,6 +327,6 @@ class NuevoPago extends Component
 		$this->gasto = new Gasto;
 		$this->fondo = new Fondo;
 
-		toastr()->livewire()->addSuccess('El pago se ha realizado satisfactoriamente');
+		flash()->success('El pago se ha realizado satisfactoriamente');
 	}
 }

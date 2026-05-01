@@ -35,6 +35,6 @@ class TablaVisita extends Component
 		$visita->fecha_hora_salida = now();
 		$visita->save();
 
-		toastr()->livewire()->addSuccess('La salida se registró satisfactoriamente');
+		flash()->success('La salida se registró satisfactoriamente');
 	}
 }

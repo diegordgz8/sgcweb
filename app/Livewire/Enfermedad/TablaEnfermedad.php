@@ -87,7 +87,7 @@ class TablaEnfermedad extends Component
         $this->reset('openEdit');
 
         $this->dispatch('render')->to('enfermedad.tabla-enfermedad');
-        toastr()->livewire()->addSuccess('La enfermedad se actualizó satisfactoriamente');
+        flash()->success('La enfermedad se actualizó satisfactoriamente');
     }
 
     public function destroy(Enfermedad $enfermedad)
@@ -103,6 +103,6 @@ class TablaEnfermedad extends Component
         $this->reset('openDestroy');
 
         $this->dispatch('render')->to('enfermedad.tabla-enfermedad');
-        toastr()->livewire()->addSuccess('La enfermedad se eliminó satisfactoriamente');
+        flash()->success('La enfermedad se eliminó satisfactoriamente');
     }
 }

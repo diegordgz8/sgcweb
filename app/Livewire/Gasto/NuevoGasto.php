@@ -305,7 +305,7 @@ class NuevoGasto extends Component
 			$this->proveedor->id = 0;
 
 			$this->dispatch('render')->to('gasto.tabla-gasto');
-			toastr()->livewire()->addSuccess('El gasto se registró satisfactoriamente');
+			flash()->success('El gasto se registró satisfactoriamente');
 
 		} catch (Exception $e) {
 			DB::rollBack();

@@ -40,7 +40,7 @@ class NuevoTipoUnidad extends Component
         ]);
 
         $this->dispatch('render')->to('tipo-unidad.tabla-tipo-unidad');
-        toastr()->livewire()->addSuccess('El registro se creó satisfactoriamente');
+        flash()->success('El registro se creó satisfactoriamente');
     }
 
     public function render()

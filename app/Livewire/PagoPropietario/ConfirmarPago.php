@@ -55,7 +55,7 @@ class ConfirmarPago extends Component
 			'pago_propietario_id' => $pago->id,
 		]);
 
-		toastr()->livewire()->addSuccess('El pago ha sido confirmado satisfactoriamente.');
+		flash()->success('El pago ha sido confirmado satisfactoriamente.');
 	}
 
 	public function elegirFondo(PagoPropietario $pago)
@@ -83,7 +83,7 @@ class ConfirmarPago extends Component
 
 		$this->reset('openConfirmar');
 
-		toastr()->livewire()->addSuccess('El pago ha sido confirmado satisfactoriamente.');
+		flash()->success('El pago ha sido confirmado satisfactoriamente.');
 	}
 
 	public function rechazar(PagoPropietario $pago) {
@@ -91,6 +91,6 @@ class ConfirmarPago extends Component
 
 		$this->reset('openRechazar');
 
-		toastr()->livewire()->addSuccess('El pago ha sido rechazado');
+		flash()->success('El pago ha sido rechazado');
 	}
 }

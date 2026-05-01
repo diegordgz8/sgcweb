@@ -58,6 +58,6 @@ class ConfigurarIva extends Component
 
 		$this->reset('open');
 
-		toastr()->livewire()->addSuccess('El IVA fue actualizado con éxito');
+		flash()->success('El IVA fue actualizado con éxito');
 	}
 }

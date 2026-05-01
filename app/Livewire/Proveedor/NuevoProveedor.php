@@ -174,6 +174,6 @@ class NuevoProveedor extends Component
 		]);
 
 		$this->dispatch('render')->to('proveedor.tabla-proveedor');
-		toastr()->livewire()->addSuccess('El registro se creó satisfactoriamente');
+		flash()->success('El registro se creó satisfactoriamente');
 	}
 }
