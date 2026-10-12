@@ -42,9 +42,11 @@ class TablaTipoUnidad extends Component
 	public function render()
 	{
 		if ($this->readyToLoad) {
-			$tipoUnidades = TipoUnidad::where('nombre', 'like', '%' . $this->busqueda . '%')
-				->orWhere('area', 'like', '%' . $this->busqueda . '%')
-				->orWhere('descripcion', 'like', '%' . $this->busqueda . '%')
+			$tipoUnidades = TipoUnidad::where(function ($query) {
+					$query->where('nombre', 'like', '%' . $this->busqueda . '%')
+						->orWhere('area', 'like', '%' . $this->busqueda . '%')
+						->orWhere('descripcion', 'like', '%' . $this->busqueda . '%');
+				})
 				->orderBy($this->orden, $this->direccion)
 				->paginate($this->cantidad);
 		} else {

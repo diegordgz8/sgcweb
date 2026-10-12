@@ -51,9 +51,11 @@ class TablaProveedor extends Component
 	public function render()
 	{
 		if ($this->readyToLoad) {
-			$proveedores = Proveedor::where('documento', 'like', '%' . $this->busqueda . '%')
-				->orWhere('nombre', 'like', '%' . $this->busqueda . '%')
-				->orWhere('contacto', 'like', '%' . $this->busqueda . '%')
+			$proveedores = Proveedor::where(function ($query) {
+					$query->where('documento', 'like', '%' . $this->busqueda . '%')
+						->orWhere('nombre', 'like', '%' . $this->busqueda . '%')
+						->orWhere('contacto', 'like', '%' . $this->busqueda . '%');
+				})
 				->orderBy($this->orden, $this->direccion)
 				->paginate($this->cantidad);
 		} else {

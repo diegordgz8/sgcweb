@@ -35,8 +35,10 @@ class TablaMedicamento extends Component
     public function render()
     {
         if ($this->readyToLoad) {
-            $medicamentos = Medicamento::where('nombre', 'like', '%' . $this->busqueda . '%')
-                ->orWhere('descripcion', 'like', '%' . $this->busqueda . '%')
+            $medicamentos = Medicamento::where(function ($query) {
+                    $query->where('nombre', 'like', '%' . $this->busqueda . '%')
+                        ->orWhere('descripcion', 'like', '%' . $this->busqueda . '%');
+                })
                 ->orderBy($this->orden, $this->direccion)
                 ->paginate($this->cantidad);
         } else {

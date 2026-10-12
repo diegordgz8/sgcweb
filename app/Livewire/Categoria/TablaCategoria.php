@@ -35,8 +35,10 @@ class TablaCategoria extends Component
 	public function render()
 	{
 		if ($this->readyToLoad) {
-			$categorias = Categoria::where('nombre', 'like', '%' . $this->busqueda . '%')
-				->orWhere('descripcion', 'like', '%' . $this->busqueda . '%')
+			$categorias = Categoria::where(function ($query) {
+					$query->where('nombre', 'like', '%' . $this->busqueda . '%')
+						->orWhere('descripcion', 'like', '%' . $this->busqueda . '%');
+				})
 				->orderBy($this->orden, $this->direccion)
 				->paginate($this->cantidad);
 		} else {

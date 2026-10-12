@@ -35,8 +35,10 @@ class TablaEnfermedad extends Component
     public function render()
     {
         if ($this->readyToLoad) {
-            $enfermedades = Enfermedad::where('nombre', 'like', '%' . $this->busqueda . '%')
-                ->orWhere('descripcion', 'like', '%' . $this->busqueda . '%')
+            $enfermedades = Enfermedad::where(function ($query) {
+                    $query->where('nombre', 'like', '%' . $this->busqueda . '%')
+                        ->orWhere('descripcion', 'like', '%' . $this->busqueda . '%');
+                })
                 ->orderBy($this->orden, $this->direccion)
                 ->paginate($this->cantidad);
         } else {

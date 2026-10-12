@@ -41,8 +41,10 @@ class TablaUsuario extends Component
 	public function render()
 	{
 		if ($this->readyToLoad) {
-			$usuarios = User::where('name', 'like', '%' . $this->busqueda . '%')
-				->orWhere('email', 'like', '%' . $this->busqueda . '%')
+			$usuarios = User::where(function ($query) {
+					$query->where('name', 'like', '%' . $this->busqueda . '%')
+						->orWhere('email', 'like', '%' . $this->busqueda . '%');
+				})
 				->orderBy($this->orden, $this->direccion)
 				->paginate($this->cantidad);
 		} else {

@@ -53,8 +53,10 @@ class NuevoProveedor extends Component
 
 	public function getConsultaListaServiciosProperty()
 	{
-		return Servicio::where('nombre', 'LIKE', '%' . $this->busqueda . '%')
-			->orWhere('descripcion', 'LIKE', '%' . $this->busqueda . '%')
+		return Servicio::where(function ($query) {
+				$query->where('nombre', 'LIKE', '%' . $this->busqueda . '%')
+					->orWhere('descripcion', 'LIKE', '%' . $this->busqueda . '%');
+			})
 			->orderBy($this->orden, $this->direction);
 	}
 
@@ -70,8 +72,10 @@ class NuevoProveedor extends Component
 		}
 
 		$listaServicios = $this->readyToLoad ?
-			Servicio::where('nombre', 'LIKE', '%' . $this->busqueda . '%')
-			->orWhere('descripcion', 'LIKE', '%' . $this->busqueda . '%')
+			Servicio::where(function ($query) {
+				$query->where('nombre', 'LIKE', '%' . $this->busqueda . '%')
+					->orWhere('descripcion', 'LIKE', '%' . $this->busqueda . '%');
+			})
 			->orderBy($this->orden, $this->direction)
 			->paginate($this->cantidad) :
 			[];

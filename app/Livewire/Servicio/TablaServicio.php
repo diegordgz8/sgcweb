@@ -49,8 +49,10 @@ class TablaServicio extends Component
 	public function render()
 	{
 		if ($this->readyToLoad) {
-			$servicios = Servicio::where('nombre', 'like', '%' . $this->busqueda . '%')
-				->orWhere('descripcion', 'like', '%' . $this->busqueda . '%')
+			$servicios = Servicio::where(function ($query) {
+					$query->where('nombre', 'like', '%' . $this->busqueda . '%')
+						->orWhere('descripcion', 'like', '%' . $this->busqueda . '%');
+				})
 				->orderBy($this->orden, $this->direccion)
 				->paginate($this->cantidad);
 		} else {
