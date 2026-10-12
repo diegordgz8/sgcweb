@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 class Gasto extends Model
 {
@@ -36,19 +36,28 @@ class Gasto extends Model
 		$this->save();
 	}
 
-	public function getFechaFin()
+	/**
+	 * Last month (Y-m, inclusive) in which the expense is charged.
+	 */
+	public function getUltimoMesCobro(): string
 	{
-		$anoFin = Str::substr($this->mes_cobro, 0, 4);
-		$mesFin = (int)Str::substr($this->mes_cobro, 5, 2) + $this->extraordinario->num_meses;
+		$meses = $this->tipo == 'Extraordinario' ? $this->extraordinario->num_meses : 1;
 
-		while ($mesFin > 12) {
-			$mesFin -= 12;
-			$anoFin++;
+		return Carbon::createFromFormat('!Y-m', $this->mes_cobro)
+			->addMonthsNoOverflow($meses - 1)
+			->format('Y-m');
+	}
+
+	/**
+	 * Amount charged per close: the full amount, or one installment for extraordinary expenses.
+	 */
+	public function getMontoCuota(): float
+	{
+		if ($this->tipo == 'Extraordinario') {
+			return $this->monto / $this->extraordinario->num_meses;
 		}
 
-		$fechaFin = $anoFin . '-' . $mesFin;
-
-		return $fechaFin;
+		return $this->monto;
 	}
 
 	public function proveedor()

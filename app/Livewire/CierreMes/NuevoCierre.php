@@ -81,21 +81,21 @@ class NuevoCierre extends Component
 			// Se obtienen los datos de la mensualidad del condominio
 			$mensualidad = Mensualidad::orderBy('created_at', 'desc')->first();
 
-			// Se obtienen todos los gastos ordinarios que se estén cobrando en el mes
+			// Ordinary expenses are charged once, in the first close on or after mes_cobro
 			$gastosOrdinarios = Gasto::where('tipo', 'Ordinario')
 				->where('mes_cobro', '<=', $this->mes)
 				->where('estado_cobro', 'Pendiente')
-				->orWhere('estado_cobro', 'En proceso')
 				->get();
 
-			// Se obtienen todos los gastos extraordinarios que se estén cobrando en el mes
-			$gastosExtraordinarios = Gasto::where('tipo', 'Extraordinario')
+			// Extraordinary expenses are charged in installments until their last month
+			$gastosExtraordinarios = Gasto::with('extraordinario')
+				->where('tipo', 'Extraordinario')
 				->where('mes_cobro', '<=', $this->mes)
-				->where(function ($query) {
-					$query->where('estado_cobro', 'Pendiente')
-						->orWhere('estado_cobro', 'En proceso');
-				})
-				->get();
+				->whereIn('estado_cobro', ['Pendiente', 'En proceso'])
+				->get()
+				->filter(fn (Gasto $gasto) => $gasto->getUltimoMesCobro() >= $this->mes);
+
+			$gastos = $gastosOrdinarios->concat($gastosExtraordinarios);
 
 			// Se obtienen los datos del interés
 			$interes = Interes::orderBy('created_at', 'desc')->first();
@@ -118,60 +118,12 @@ class NuevoCierre extends Component
 				// Se agrega a la colección el item de la mensualidad creado anteriormente
 				$itemsFactura->push($itemMensualidad);
 
-				foreach ($gastosOrdinarios as $gasto) {
-
-					// Se verifica el tipo de cálculo del gasto para calcular el monto
-					if ($gasto->calculo_por == 'Total de inmuebles') {
-						$monto = $gasto->monto / $unidades->count();
-					} else if ($gasto->calculo_por == 'Alícuota') {
-
-						$alicuota = $unidad->tipoUnidad->area / $areaTotal;
-
-						$monto = $gasto->monto * $alicuota;
-					}
-
-					// Se crea el item para la factura
-					$item = Item::make([
+				foreach ($gastos as $gasto) {
+					$itemsFactura->push(Item::make([
 						'itemable_id' => $gasto->id,
 						'itemable_type' => Gasto::class,
-						'monto' => $monto,
-					]);
-
-					// Se agrega el item a la colección
-					$itemsFactura->push($item);
-
-					// Se cambia el estado del gasto para indicar que está en proceso de cobro
-					$gasto->estado_cobro = 'En proceso';
-					$gasto->save();
-				}
-
-				foreach ($gastosExtraordinarios as $gasto) {
-
-					if ($gasto->getFechaFin() >= $this->mes) {
-
-						// Se verifica el tipo de cálculo del gasto para calcular el monto
-						if ($gasto->calculo_por == 'Total de inmuebles') {
-							$monto = $gasto->monto / $unidades->count();
-						} else if ($gasto->calculo_por == 'Alícuota') {
-							$alicuota = $unidad->tipoUnidad->area / $areaTotal;
-
-							$monto = $gasto->monto * $alicuota;
-						}
-
-						// Se crea el item para la factura
-						$item = Item::make([
-							'itemable_id' => $gasto->id,
-							'itemable_type' => Gasto::class,
-							'monto' => $monto,
-						]);
-
-						// Se agrega el item a la colección
-						$itemsFactura->push($item);
-
-						// Se cambia el estado del gasto para indicar que está en proceso de cobro
-						$gasto->estado_cobro = 'En proceso';
-						$gasto->save();
-					}
+						'monto' => $this->montoPorUnidad($gasto, $unidad, $unidades->count(), $areaTotal),
+					]));
 				}
 
 				foreach ($unidad->sanciones()->where('estado', 'Por procesar')->get() as $sancion) {
@@ -217,33 +169,36 @@ class NuevoCierre extends Component
 					'tasa_cambio_id' => $this->tasaCambio->id,
 				]);
 
-				if ($interes) {
+				if ($interes && $interes->estado) {
 
-					if ($interes->estado) {
+					$facturaMasVieja = $unidad->facturas()->orderBy('fecha', 'asc')->first();
 
-						$facturaMasVieja = $unidad->facturas()->orderBy('fecha', 'asc')->first();
+					// Carbon 3 returns a signed diff, so measure from the old invoice forward
+					if ($facturaMasVieja && Carbon::parse($facturaMasVieja->fecha)->diffInMonths(Carbon::today()) >= $interes->meses) {
+						$factura->interes()->associate($interes);
 
-						if ($facturaMasVieja) {
-
-							if (Carbon::today()->diffInMonths($facturaMasVieja->fecha) >= $interes->meses) {
-								$factura->interes()->associate($interes);
-
-								$factura->revertirIva();
-								$factura->monto += $factura->monto * ($interes->factor / 100);
-							}
-						}
-
-						$factura->save();
+						$factura->revertirIva();
+						$factura->monto += $factura->monto * ($interes->factor / 100);
 					}
-				} else {
-					$factura->save();
 				}
+
+				$factura->save();
 
 				// Se guardan los items en la base de datos
 				foreach ($itemsFactura as $item) {
 					$item->factura()->associate($factura->id);
 					$item->save();
 				}
+			}
+
+			foreach ($gastosOrdinarios as $gasto) {
+				$gasto->estado_cobro = 'Procesado';
+				$gasto->save();
+			}
+
+			foreach ($gastosExtraordinarios as $gasto) {
+				$gasto->estado_cobro = $gasto->getUltimoMesCobro() <= $this->mes ? 'Procesado' : 'En proceso';
+				$gasto->save();
 			}
 
 			DB::commit();
@@ -261,5 +216,16 @@ class NuevoCierre extends Component
 			DB::rollBack();
 			throw $e;
 		}
+	}
+
+	private function montoPorUnidad(Gasto $gasto, Unidad $unidad, int $numeroUnidades, $areaTotal): float
+	{
+		$monto = $gasto->getMontoCuota();
+
+		if ($gasto->calculo_por == 'Alícuota') {
+			return $monto * ($unidad->tipoUnidad->area / $areaTotal);
+		}
+
+		return $monto / $numeroUnidades;
 	}
 }
