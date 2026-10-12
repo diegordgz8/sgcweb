@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Models\Condominio;
 use App\Models\Moneda;
 use App\Models\TasaCambio;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,7 @@ use Nnjeim\World\Models\Currency;
 
 /**
  * Tarjeta con las monedas del condominio. Permite agregar monedas, siempre con su
- * tasa inicial, pero nunca eliminarlas.
+ * tasa inicial, pero nunca eliminarlas, y elegir en cuál se emiten las facturas.
  */
 class ConfigurarMoneda extends Component
 {
@@ -19,6 +20,9 @@ class ConfigurarMoneda extends Component
 
 	public $moneda;
 	public $tasa;
+
+	public $openFacturacion = false;
+	public $monedaFacturacion;
 
 	protected $listeners = ['render'];
 
@@ -45,8 +49,32 @@ class ConfigurarMoneda extends Component
 		}
 
 		$base = Moneda::base();
+		$facturacion = Moneda::facturacion();
 
-		return view('livewire.admin.configurar-moneda', compact('monedas', 'base'));
+		return view('livewire.admin.configurar-moneda', compact('monedas', 'base', 'facturacion'));
+	}
+
+	public function mostrarFacturacion()
+	{
+		$this->monedaFacturacion = Moneda::facturacion();
+		$this->resetValidation();
+		$this->openFacturacion = true;
+	}
+
+	public function guardarFacturacion()
+	{
+		$this->authorize('admin.home');
+
+		$this->validateOnly('monedaFacturacion', [
+			'monedaFacturacion' => ['required', Rule::in(Moneda::codigos())],
+		]);
+
+		Condominio::firstOrFail()->update(['moneda_facturacion' => $this->monedaFacturacion]);
+
+		$this->reset('openFacturacion');
+
+		$this->dispatch('render')->to('cierre-mes.nuevo-cierre');
+		flash()->success('La moneda de facturación fue actualizada con éxito');
 	}
 
 	public function updated($propertyName)

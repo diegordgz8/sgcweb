@@ -7,17 +7,17 @@ use App\Exceptions\TasaNoDisponible;
 use App\Models\Moneda;
 use App\Models\TasaCambio;
 use App\Services\CierreMesService;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class NuevoCierre extends Component
 {
 	public $mes;
-	public $moneda;
 
 	public $open = false;
 
 	public $readyToLoad = false;
+
+	protected $listeners = ['render'];
 
 	protected $messages = [
 		'mes.before_or_equal' => 'El mes debe ser anterior o igual a este mes.',
@@ -27,24 +27,22 @@ class NuevoCierre extends Component
 	{
 		return [
 			'mes' => 'required|before_or_equal:this month',
-			'moneda' => ['required', Rule::in(Moneda::codigos())],
 		];
-	}
-
-	public function mount()
-	{
-		$this->moneda = Moneda::base();
 	}
 
 	public function render()
 	{
+		// La moneda de las facturas se configura en la administración, no en cada cierre
+		$moneda = Moneda::facturacion();
+		$nombreMoneda = Moneda::nombreDe($moneda);
+
 		// Tasas con las que se convertirán los montos de las facturas
 		$tasas = collect(Moneda::codigos())
 			->reject(fn ($codigo) => $codigo === Moneda::base())
 			->map(fn ($codigo) => TasaCambio::vigente($codigo))
 			->filter();
 
-		return view('livewire.cierre-mes.nuevo-cierre', compact('tasas'));
+		return view('livewire.cierre-mes.nuevo-cierre', compact('moneda', 'nombreMoneda', 'tasas'));
 	}
 
 	public function updated($propertyName)
@@ -59,7 +57,7 @@ class NuevoCierre extends Component
 		$this->validate();
 
 		try {
-			$cierreMes->cerrar($this->mes, $this->moneda);
+			$cierreMes->cerrar($this->mes, Moneda::facturacion());
 		} catch (MesYaCerrado $e) {
 			flash()->error('El mes que ha seleccionado ya ha sido cerrado.');
 
@@ -74,7 +72,6 @@ class NuevoCierre extends Component
 			'open',
 			'mes',
 		]);
-		$this->moneda = Moneda::base();
 
 		$this->dispatch('render')->to('cierre-mes.tabla-factura');
 		flash()->success('El cierre de mes fue satisfactorio. Se han generado las facturas.');

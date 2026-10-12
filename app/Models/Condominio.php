@@ -17,5 +17,6 @@ class Condominio extends Model
         'direccion',
         'pais',
         'zona_horaria',
+        'moneda_facturacion',
     ];
 }

@@ -27,11 +27,13 @@
 						</div>
 
 						<div class="col-span-6">
-							<label for="moneda" class="block text-sm font-medium text-gray-700">
-								Moneda
-							</label>
-							<x-select-moneda-condominio wire:model.live="moneda" name="moneda" id="moneda" class="w-full" />
-							<x-input-error for="moneda" />
+							<span class="block text-sm font-medium text-gray-700">Moneda de facturación</span>
+							<p class="mt-1 text-sm text-gray-900">
+								{{ $moneda }} - {{ $nombreMoneda }}
+							</p>
+							<p class="mt-1 text-xs text-gray-500">
+								Se configura en Administración, en la tarjeta "Monedas".
+							</p>
 						</div>
 
 						<div class="col-span-6">

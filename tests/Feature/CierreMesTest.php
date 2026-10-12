@@ -155,6 +155,23 @@ class CierreMesTest extends TestCase
         $this->assertEquals(60, $factura->monto_por_pagar);
     }
 
+    public function test_month_close_bills_in_the_configured_currency(): void
+    {
+        $this->crearUnidades([50]);
+
+        // Mensualidad de 10 VES = 0,25 USD con 1 USD = 40 VES
+        $this->cerrar($this->mes(0), 'USD');
+
+        $factura = Factura::sole();
+        $this->assertSame('USD', $factura->moneda);
+        $this->assertEquals(0.25, $factura->monto);
+        $this->assertSame('USD', CierreMes::sole()->moneda);
+
+        Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
+            ->assertSee('USD - Dólar estadounidense')
+            ->assertDontSee('wire:model.live="moneda"', false);
+    }
+
     public function test_month_cannot_be_closed_twice(): void
     {
         $this->crearUnidades([50, 50]);
@@ -195,7 +212,6 @@ class CierreMesTest extends TestCase
         [$unidad] = $this->crearUnidades([50]);
         Interes::create(['factor' => 5, 'meses' => 3, 'estado' => true]);
         $this->crearFactura($unidad, now()->subMonths(4));
-        Condominio::create(['rif' => 'J-12345678-9', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas']);
 
         $this->cerrar($this->mes(0));
 
@@ -213,7 +229,6 @@ class CierreMesTest extends TestCase
     public function test_invoice_view_without_interest_adds_vat_to_base(): void
     {
         $this->crearUnidades([50]);
-        Condominio::create(['rif' => 'J-12345678-9', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas']);
 
         $this->cerrar($this->mes(0));
 
@@ -241,8 +256,11 @@ class CierreMesTest extends TestCase
 
     private function cerrar(string $mes, string $moneda = 'VES'): void
     {
+        $condominio = Condominio::first()
+            ?? Condominio::create(['rif' => 'J-12345678-9', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas']);
+        $condominio->update(['moneda_facturacion' => $moneda]);
+
         Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
-            ->set('moneda', $moneda)
             ->set('mes', $mes)
             ->call('cerrarMes');
     }

@@ -53,6 +53,7 @@ class CtrCondominio extends Controller
 			'monedas' => 'required|array|min:1',
 			'monedas.*' => ['distinct', Rule::exists(Currency::class, 'code')],
 			'moneda_base' => ['required', Rule::in($monedas)],
+			'moneda_facturacion' => ['required', Rule::in($monedas)],
 			'monto' => 'required|numeric|gt:0',
 			'moneda' => ['required', Rule::in($monedas)],
 		];
@@ -65,6 +66,7 @@ class CtrCondominio extends Controller
 		$request->validate($reglas, [
 			'zona_horaria.exists' => 'La zona horaria seleccionada no corresponde al país.',
 			'moneda_base.in' => 'La moneda base debe ser una de las monedas seleccionadas.',
+			'moneda_facturacion.in' => 'La moneda de facturación debe ser una de las monedas seleccionadas.',
 			'moneda.in' => 'La moneda de la mensualidad debe ser una de las monedas seleccionadas.',
 			'tasas.*.required' => 'Indique la tasa de cambio de :attribute.',
 		], $this->nombresDeTasas($monedas));
@@ -76,6 +78,7 @@ class CtrCondominio extends Controller
 				'direccion' => $request->direccion,
 				'pais' => $request->pais,
 				'zona_horaria' => $request->zona_horaria,
+				'moneda_facturacion' => $request->moneda_facturacion,
 			]);
 
 			foreach ($monedas as $codigo) {

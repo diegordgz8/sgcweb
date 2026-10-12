@@ -17,10 +17,12 @@
                             pais: @js(old('pais', 'VE')),
                             monedas: @js(old('monedas', ['VES', 'USD'])),
                             base: @js(old('moneda_base', 'USD')),
+                            facturacion: @js(old('moneda_facturacion')),
                             monedaMensualidad: @js(old('moneda')),
                             tasas: @js((object) old('tasas', [])),
                             ajustar() {
                                 if (! this.monedas.includes(this.base)) this.base = this.monedas[0] ?? '';
+                                if (! this.monedas.includes(this.facturacion)) this.facturacion = this.base;
                                 if (! this.monedas.includes(this.monedaMensualidad)) this.monedaMensualidad = this.base;
                             },
                         }"
@@ -107,6 +109,18 @@
                                             Las tasas de las demás monedas se expresan contra ella. No se podrá cambiar después.
                                         </p>
                                         <x-input-error for="moneda_base" />
+                                    </div>
+
+                                    <div class="col-span-6">
+                                        <label for="moneda_facturacion" class="block text-sm font-medium text-gray-700">
+                                            Moneda de facturación:
+                                        </label>
+                                        <x-select-moneda name="moneda_facturacion" id="moneda_facturacion" class="w-full"
+                                            visibles="monedas" modelo="facturacion" />
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Moneda en la que se emiten las facturas del cierre de mes. Se puede cambiar desde la administración.
+                                        </p>
+                                        <x-input-error for="moneda_facturacion" />
                                     </div>
 
                                     <h3 class="col-span-6 text-center">Tasas de cambio iniciales</h3>

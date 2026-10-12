@@ -154,6 +154,8 @@ return [
         'zona_horaria' => 'zona horaria',
         'monedas' => 'monedas',
         'monedas.*' => 'moneda',
+        'moneda_base' => 'moneda base',
+        'moneda_facturacion' => 'moneda de facturación',
     ],
 
 ];

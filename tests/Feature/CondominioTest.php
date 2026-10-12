@@ -97,6 +97,7 @@ class CondominioTest extends TestCase
         $this->assertSame('AR', $condominio->pais);
         $this->assertSame('America/Argentina/Buenos_Aires', $condominio->zona_horaria);
         $this->assertSame('USD', Moneda::base());
+        $this->assertSame('ARS', Moneda::facturacion());
         $this->assertSame(['USD', 'ARS'], Moneda::codigos());
         $this->assertEquals(1620, TasaCambio::vigente('ARS')->tasa);
         $this->assertNull(TasaCambio::vigente('USD'));
@@ -117,7 +118,7 @@ class CondominioTest extends TestCase
     public function test_a_single_currency_needs_no_rate(): void
     {
         $this->actingAs($this->usuario)
-            ->post('/admin/condominio', $this->datos(['monedas' => ['ARS'], 'moneda_base' => 'ARS', 'tasas' => []]))
+            ->post('/admin/condominio', $this->datos(['monedas' => ['ARS'], 'moneda_base' => 'ARS', 'moneda_facturacion' => 'ARS', 'tasas' => []]))
             ->assertRedirect(route('admin.home'));
 
         $this->assertSame('ARS', Moneda::base());
@@ -127,8 +128,8 @@ class CondominioTest extends TestCase
     public function test_base_and_monthly_fee_currencies_must_be_selected_currencies(): void
     {
         $this->actingAs($this->usuario)
-            ->post('/admin/condominio', $this->datos(['moneda_base' => 'EUR', 'moneda' => 'VES']))
-            ->assertSessionHasErrors(['moneda_base', 'moneda']);
+            ->post('/admin/condominio', $this->datos(['moneda_base' => 'EUR', 'moneda_facturacion' => 'EUR', 'moneda' => 'VES']))
+            ->assertSessionHasErrors(['moneda_base', 'moneda_facturacion', 'moneda']);
 
         $this->assertNull(Condominio::first());
     }
@@ -194,6 +195,7 @@ class CondominioTest extends TestCase
             'zona_horaria' => 'America/Argentina/Buenos_Aires',
             'monedas' => ['ARS', 'USD'],
             'moneda_base' => 'USD',
+            'moneda_facturacion' => 'ARS',
             'tasas' => ['ARS' => 1620],
             'monto' => 150000,
             'moneda' => 'ARS',

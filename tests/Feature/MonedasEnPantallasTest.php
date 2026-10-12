@@ -208,4 +208,21 @@ class MonedasEnPantallasTest extends TestCase
             ->call('save')
             ->assertHasErrors(['cuentaId' => 'unique']);
     }
+    public function test_billing_currency_is_changed_from_the_currencies_card(): void
+    {
+        Condominio::create(['rif' => 'J-1', 'nombre' => 'Prueba', 'direccion' => 'Calle 1', 'moneda_facturacion' => 'USD']);
+
+        Livewire::actingAs($this->usuario)->test(ConfigurarMoneda::class)
+            ->assertSee('Facturación')
+            ->call('mostrarFacturacion')
+            ->assertSet('monedaFacturacion', 'USD')
+            ->set('monedaFacturacion', 'EUR')
+            ->call('guardarFacturacion')
+            ->assertHasErrors('monedaFacturacion')
+            ->set('monedaFacturacion', 'ARS')
+            ->call('guardarFacturacion')
+            ->assertHasNoErrors();
+
+        $this->assertSame('ARS', Moneda::facturacion());
+    }
 }

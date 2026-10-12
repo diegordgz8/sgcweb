@@ -44,6 +44,14 @@ class Moneda extends Model
     }
 
     /**
+     * Moneda en la que se emiten las facturas del cierre de mes; la base si no se configuró.
+     */
+    public static function facturacion(): ?string
+    {
+        return Condominio::value('moneda_facturacion') ?? static::base();
+    }
+
+    /**
      * Códigos de las monedas del condominio, con la base primero.
      */
     public static function codigos(): array
