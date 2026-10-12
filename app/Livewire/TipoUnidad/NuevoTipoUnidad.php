@@ -24,6 +24,8 @@ class NuevoTipoUnidad extends Component
 
     public function save()
     {
+        $this->authorize('tipo-unidad.create');
+
         $this->validate();
 
         TipoUnidad::create([

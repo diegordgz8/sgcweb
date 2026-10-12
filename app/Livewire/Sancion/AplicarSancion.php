@@ -102,6 +102,8 @@ class AplicarSancion extends Component
 
     public function save()
     {
+        $this->authorize('sancion.aplicar');
+
         $this->validate();
 
         foreach ($this->sanciones as $item) {

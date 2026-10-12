@@ -119,6 +119,8 @@ class TablaCuenta extends Component
 
 	public function update()
 	{
+		$this->authorize('cuenta.edit');
+
 		$this->cuenta->documento = $this->letra . '-' . $this->documento;
 
 		$this->validate();
@@ -142,6 +144,8 @@ class TablaCuenta extends Component
 
 	public function delete()
 	{
+		$this->authorize('cuenta.delete');
+
 		$this->cuenta->delete();
 
 		$this->reset('openDestroy');

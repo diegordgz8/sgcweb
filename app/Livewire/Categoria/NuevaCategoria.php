@@ -23,6 +23,8 @@ class NuevaCategoria extends Component
 
 	public function save()
 	{
+		$this->authorize('categoria.create');
+
 		$this->validate();
 
 		Categoria::create([

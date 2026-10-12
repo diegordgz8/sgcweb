@@ -84,6 +84,8 @@ class TablaBanco extends Component
 
     public function update()
     {
+        $this->authorize('banco.edit');
+
         $this->validate();
         $this->banco->save();
         $this->reset('openEdit');
@@ -98,6 +100,8 @@ class TablaBanco extends Component
 
     public function delete()
     {
+        $this->authorize('banco.delete');
+
         $this->banco->delete();
         $this->reset('openDestroy');
         flash()->success('El banco se eliminó satisfactoriamente');

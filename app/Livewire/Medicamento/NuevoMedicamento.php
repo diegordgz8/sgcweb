@@ -24,6 +24,8 @@ class NuevoMedicamento extends Component
 
 	public function save()
 	{
+		$this->authorize('medicamento.create');
+
 		$this->validate();
 
 		$medicamento = Medicamento::withTrashed()->where('nombre', $this->nombre)->first();

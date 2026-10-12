@@ -246,6 +246,8 @@ class NuevoGasto extends Component
 
 	public function save()
 	{
+		$this->authorize('gasto.create');
+
 		$this->validate();
 
 		DB::beginTransaction();

@@ -4,20 +4,21 @@ namespace App\Policies;
 
 use App\Models\Integrante;
 use App\Models\User;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class IntegrantePolicy
 {
-    use HandlesAuthorization;
+	/**
+	 * Staff can see any resident; an owner only the residents of their units.
+	 */
+	public function view(User $usuario, Integrante $persona): bool
+	{
+		if ($usuario->can('integrante.index')) {
+			return true;
+		}
 
-    public function view(User $usuario, Integrante $persona)
-    {
-        $unidades = $usuario->propietario->unidades;
-
-        foreach ($unidades as $item) {
-            $personas = $item->integrantes->pluck('id')->toArray();
-        }
-
-        return in_array($persona->id, $personas);
-    }
+		return $usuario->can('integrante.show')
+			&& $usuario->propietario !== null
+			&& $persona->unidad !== null
+			&& $persona->unidad->propietario_id == $usuario->propietario->id;
+	}
 }

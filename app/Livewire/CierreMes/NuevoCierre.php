@@ -44,6 +44,8 @@ class NuevoCierre extends Component
 
 	public function cerrarMes(CierreMesService $cierreMes)
 	{
+		$this->authorize('cierre-mes.create');
+
 		$this->validate();
 
 		try {

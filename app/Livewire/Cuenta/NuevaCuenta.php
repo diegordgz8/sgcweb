@@ -46,6 +46,8 @@ class NuevaCuenta extends Component
 
     public function save()
     {
+        $this->authorize('cuenta.create');
+
         $this->validate();
 
         $cuenta = Cuenta::create([

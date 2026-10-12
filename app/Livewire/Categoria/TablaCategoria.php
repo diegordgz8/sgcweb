@@ -79,6 +79,8 @@ class TablaCategoria extends Component
 
 	public function update()
 	{
+		$this->authorize('categoria.edit');
+
 		$this->validate();
 
 		$this->categoria->save();
@@ -95,6 +97,8 @@ class TablaCategoria extends Component
 	}
 
 	public function delete() {
+		$this->authorize('categoria.delete');
+
 		$this->categoria->delete();
 
 		$this->reset('openDestroy');

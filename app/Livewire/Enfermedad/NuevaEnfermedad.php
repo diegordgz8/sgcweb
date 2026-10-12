@@ -24,6 +24,8 @@ class NuevaEnfermedad extends Component
 
 	public function save()
 	{
+		$this->authorize('enfermedad.create');
+
 		$this->validate();
 
 		$enfermedad = Enfermedad::withTrashed()->where('nombre', $this->nombre)->first();

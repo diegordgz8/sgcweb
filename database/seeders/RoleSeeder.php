@@ -42,8 +42,10 @@ class RoleSeeder extends Seeder
 		Permission::create(['name' => 'cuenta.create'])->assignRole($role4);
 		Permission::create(['name' => 'cuenta.edit'])->assignRole($role4);
 		Permission::create(['name' => 'cuenta.show'])->assignRole($role4);
+		Permission::findOrCreate('cuenta.delete')->assignRole($role4);
 
 		Permission::create(['name' => 'cierre-mes.index'])->assignRole($role4);
+		Permission::findOrCreate('cierre-mes.create')->assignRole($role4);
 
 		Permission::create(['name' => 'comunicado.index'])->assignRole($role4);
 		Permission::create(['name' => 'comunicado.create'])->assignRole($role4);
@@ -64,6 +66,8 @@ class RoleSeeder extends Seeder
 		Permission::create(['name' => 'gasto.index'])->assignRole($role4);
 		Permission::create(['name' => 'gasto.create'])->assignRole($role4);
 		Permission::create(['name' => 'gasto.show'])->assignRole($role4);
+		Permission::findOrCreate('gasto.edit')->assignRole($role4);
+		Permission::findOrCreate('gasto.delete')->assignRole($role4);
 
 		Permission::create(['name' => 'integrante.index'])->assignRole($role4);
 		Permission::create(['name' => 'integrante.show'])->assignRole([$role4, $role2]);
@@ -89,6 +93,7 @@ class RoleSeeder extends Seeder
 		Permission::create(['name' => 'proveedor.create'])->assignRole($role4);
 		Permission::create(['name' => 'proveedor.edit'])->assignRole($role4);
 		Permission::create(['name' => 'proveedor.show'])->assignRole($role4);
+		Permission::findOrCreate('proveedor.delete')->assignRole($role4);
 
 		Permission::create(['name' => 'sancion.index']);
 		Permission::create(['name' => 'sancion.create']);
@@ -98,6 +103,7 @@ class RoleSeeder extends Seeder
 		Permission::create(['name' => 'servicio.index']);
 		Permission::create(['name' => 'servicio.create']);
 		Permission::create(['name' => 'servicio.edit']);
+		Permission::findOrCreate('servicio.delete');
 
 		Permission::create(['name' => 'tipo-unidad.index']);
 		Permission::create(['name' => 'tipo-unidad.create']);

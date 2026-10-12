@@ -32,6 +32,8 @@ class TablaVisita extends Component
 	}
 
 	public function registrarSalida(Visita $visita) {
+		$this->authorize('visita.create');
+
 		$visita->fecha_hora_salida = now();
 		$visita->save();
 

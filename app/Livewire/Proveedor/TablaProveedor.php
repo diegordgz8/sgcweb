@@ -110,6 +110,8 @@ class TablaProveedor extends Component
 
 	public function update()
 	{
+		$this->authorize('proveedor.edit');
+
 		$this->validate();
 
 		$this->proveedor->save();
@@ -127,6 +129,8 @@ class TablaProveedor extends Component
 
 	public function delete()
 	{
+		$this->authorize('proveedor.delete');
+
 		$this->proveedor->delete();
 
 		$this->reset('openDestroy');

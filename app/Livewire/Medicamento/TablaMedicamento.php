@@ -80,6 +80,8 @@ class TablaMedicamento extends Component
 
     public function update()
     {
+        $this->authorize('medicamento.edit');
+
         $this->validate();
 
         $this->medicamento->save();
@@ -98,6 +100,8 @@ class TablaMedicamento extends Component
 
     public function delete()
     {
+        $this->authorize('medicamento.delete');
+
         $this->medicamento->delete();
 
         $this->reset('openDestroy');

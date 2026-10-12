@@ -32,6 +32,8 @@ class NuevoServicio extends Component
 
 	public function save()
 	{
+		$this->authorize('servicio.create');
+
 		$this->validate();
 
 		$servicio = Servicio::withTrashed()->where('nombre', $this->nombre)->first();

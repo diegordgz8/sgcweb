@@ -80,6 +80,8 @@ class TablaEnfermedad extends Component
 
     public function update()
     {
+        $this->authorize('enfermedad.edit');
+
         $this->validate();
 
         $this->enfermedad->save();
@@ -98,6 +100,8 @@ class TablaEnfermedad extends Component
 
     public function delete()
     {
+        $this->authorize('enfermedad.delete');
+
         $this->enfermedad->delete();
 
         $this->reset('openDestroy');

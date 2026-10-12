@@ -130,6 +130,8 @@ class NuevoProveedor extends Component
 
 	public function save()
 	{
+		$this->authorize('proveedor.create');
+
 		$this->validate();
 
 		$proveedor = Proveedor::withTrashed()

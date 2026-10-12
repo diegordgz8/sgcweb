@@ -293,6 +293,8 @@ class NuevoPago extends Component
 
 	public function save()
 	{
+		$this->authorize('pago-condominio.create');
+
 		$this->validate();
 
 		$pago = Pago::create([

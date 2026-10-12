@@ -115,6 +115,8 @@ class NuevoIntegrante extends Component
 
 	public function save()
 	{
+		$this->authorize('update', $this->unidad);
+
 		$this->validate();
 
 		$integrante = new Integrante;

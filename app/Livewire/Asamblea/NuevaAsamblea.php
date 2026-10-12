@@ -106,6 +106,8 @@ class NuevaAsamblea extends Component
 
 	function save()
 	{
+		$this->authorize('asamblea.create');
+
 		$this->validate();
 
 		$asamblea = Asamblea::create([

@@ -78,6 +78,8 @@ class TablaComunicado extends Component
 
 	public function update()
 	{
+		$this->authorize('comunicado.edit');
+
 		$this->validate();
 
 		$this->comunicado->save();

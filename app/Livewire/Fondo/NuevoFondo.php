@@ -46,6 +46,8 @@ class NuevoFondo extends Component
 
 	public function save()
 	{
+		$this->authorize('fondo.create');
+
 		$this->validate();
 
 		Fondo::create([

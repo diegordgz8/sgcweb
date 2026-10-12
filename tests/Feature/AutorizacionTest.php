@@ -5,8 +5,13 @@ namespace Tests\Feature;
 use App\Livewire\Admin\ConfigurarIva;
 use App\Livewire\Admin\Database\Backup;
 use App\Livewire\Admin\Roles\TablaRol;
+use App\Livewire\Banco\TablaBanco;
+use App\Livewire\CierreMes\NuevoCierre;
+use App\Livewire\Gasto\TablaGasto;
 use App\Livewire\PagoPropietario\ConfirmarPago;
 use App\Livewire\PagoPropietario\NuevoPago;
+use App\Livewire\Unidad\ShowUnidad as ShowUnidadPropietario;
+use App\Models\CierreMes;
 use App\Models\Factura;
 use App\Models\Integrante;
 use App\Models\Iva;
@@ -98,6 +103,57 @@ class AutorizacionTest extends TestCase
         Livewire::actingAs($propietario)->test(NuevoPago::class)
             ->call('mostrarForm', $facturaAjena->id)
             ->assertForbidden();
+    }
+
+    public function test_owner_cannot_close_month_or_manage_modules(): void
+    {
+        $propietario = $this->usuarioConRol('Propietario');
+
+        Livewire::actingAs($propietario)->test(NuevoCierre::class)
+            ->set('mes', now()->subMonth()->format('Y-m'))
+            ->call('cerrarMes')
+            ->assertForbidden();
+        Livewire::actingAs($propietario)->test(TablaBanco::class)->call('delete')->assertForbidden();
+        Livewire::actingAs($propietario)->test(TablaGasto::class)->call('delete')->assertForbidden();
+
+        $this->assertSame(0, CierreMes::count());
+    }
+
+    public function test_owner_cannot_see_another_owners_unit(): void
+    {
+        $propietario = $this->usuarioConRol('Propietario');
+        [$propia] = $this->unidadesDe($propietario);
+        [$ajena] = $this->unidadesDe($this->usuarioConRol('Propietario'));
+
+        $this->actingAs($propietario)->get(route('unidad.show', $propia))->assertOk();
+        $this->actingAs($propietario)->get(route('unidad.show', $ajena))->assertForbidden();
+    }
+
+    public function test_owner_cannot_edit_residents_of_another_unit(): void
+    {
+        $propietario = $this->usuarioConRol('Propietario');
+        [$propia] = $this->unidadesDe($propietario);
+        [$ajena] = $this->unidadesDe($this->usuarioConRol('Propietario'));
+        $vecino = Integrante::factory()->create(['unidad_id' => $ajena->id]);
+
+        Livewire::actingAs($propietario)->test(ShowUnidadPropietario::class, ['unidad' => $propia])
+            ->call('removerIntegrante', $vecino->id)
+            ->assertForbidden();
+
+        $this->assertSame($ajena->id, $vecino->fresh()->unidad_id);
+    }
+
+    public function test_owner_can_manage_residents_of_own_unit(): void
+    {
+        $propietario = $this->usuarioConRol('Propietario');
+        [$propia] = $this->unidadesDe($propietario);
+        $hijo = Integrante::factory()->create(['unidad_id' => $propia->id]);
+
+        Livewire::actingAs($propietario)->test(ShowUnidadPropietario::class, ['unidad' => $propia])
+            ->call('removerIntegrante', $hijo->id)
+            ->call('remove');
+
+        $this->assertNull($hijo->fresh()->unidad_id);
     }
 
     private function usuarioConRol(string $rol): User

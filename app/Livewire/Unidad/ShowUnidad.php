@@ -49,6 +49,8 @@ class ShowUnidad extends Component
 
 	public function edit(Integrante $integrante)
 	{
+		$this->autorizarIntegrante($integrante);
+
 		$this->integrante = $integrante;
 
 		if($integrante->documento == '') {
@@ -65,6 +67,8 @@ class ShowUnidad extends Component
 
 	public function update()
 	{
+		$this->autorizarIntegrante($this->integrante);
+
 		$this->validate();
 
 		$this->integrante->telefono = $this->codigo . '-' . $this->telefono;
@@ -80,12 +84,16 @@ class ShowUnidad extends Component
 
 	public function removerIntegrante(Integrante $integrante)
 	{
+		$this->autorizarIntegrante($integrante);
+
 		$this->integrante = $integrante;
 		$this->openDestroy = true;
 	}
 
 	public function remove()
 	{
+		$this->autorizarIntegrante($this->integrante);
+
 		$this->integrante->unidad()->dissociate($this->unidad);
 		$this->integrante->save();
 
@@ -93,5 +101,15 @@ class ShowUnidad extends Component
 
 		$this->dispatch('render')->to('unidad.show-unidad');
 		flash()->success('El integrante fue removido satisfactoriamente');
+	}
+
+	/**
+	 * The resident must belong to this unit, and the user must be able to manage it.
+	 */
+	private function autorizarIntegrante(Integrante $integrante): void
+	{
+		$this->authorize('update', $this->unidad);
+
+		abort_unless($integrante->unidad_id == $this->unidad->id, 403);
 	}
 }

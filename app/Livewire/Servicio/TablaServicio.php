@@ -102,6 +102,8 @@ class TablaServicio extends Component
 
 	public function update()
 	{
+		$this->authorize('servicio.edit');
+
 		$this->validate();
 
 		$this->servicio->save();
@@ -120,6 +122,8 @@ class TablaServicio extends Component
 
 	public function delete()
 	{
+		$this->authorize('servicio.delete');
+
 		$this->servicio->delete();
 
 		$this->reset('openDestroy');

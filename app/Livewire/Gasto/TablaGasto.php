@@ -88,6 +88,8 @@ class TablaGasto extends Component
 
 	public function update()
 	{
+		$this->authorize('gasto.edit');
+
 		$this->validate();
 
 		foreach ($this->gasto->servicios as $item) {
@@ -110,6 +112,8 @@ class TablaGasto extends Component
 
 	public function delete()
 	{
+		$this->authorize('gasto.delete');
+
 		if ($this->gasto->delete()) {
 			$this->reset('openCancelar');
 

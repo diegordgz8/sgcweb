@@ -13,6 +13,8 @@ class CtrUnidad extends Controller
 
 	public function show(Unidad $unidad)
 	{
+		$this->authorize('view', $unidad);
+
 		return view('unidad.show', compact('unidad'));
 	}
 }

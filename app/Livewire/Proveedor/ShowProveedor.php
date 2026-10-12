@@ -70,6 +70,8 @@ class ShowProveedor extends Component
 	}
 
     public function removeServicios(){
+        $this->authorize('proveedor.edit');
+
 
 
         $this->proveedor->servicios()->detach($this->servicio);

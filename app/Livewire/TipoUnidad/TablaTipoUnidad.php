@@ -93,6 +93,8 @@ class TablaTipoUnidad extends Component
 
 	public function update()
 	{
+		$this->authorize('tipo-unidad.edit');
+
 		$this->validate();
 		$this->tipoUnidad->save();
 		$this->reset('openEdit');
@@ -107,6 +109,8 @@ class TablaTipoUnidad extends Component
 
 	public function delete()
 	{
+		$this->authorize('tipo-unidad.delete');
+
 		$this->tipoUnidad->delete();
 		$this->reset('openDestroy');
 		flash()->success('El tipo de unidad se eliminó satisfactoriamente');

@@ -69,6 +69,8 @@ class NuevaVisita extends Component
 
 	public function save()
 	{
+		$this->authorize('visita.create');
+
 		$this->validate();
 
 		Visita::create([

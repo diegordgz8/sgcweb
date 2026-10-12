@@ -23,6 +23,8 @@ class NuevoBanco extends Component
 
     public function save()
     {
+        $this->authorize('banco.create');
+
         $this->validate();
 
         Banco::create([

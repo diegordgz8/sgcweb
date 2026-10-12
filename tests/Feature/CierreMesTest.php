@@ -21,6 +21,7 @@ use App\Models\TasaCambio;
 use App\Models\TipoUnidad;
 use App\Models\Unidad;
 use App\Models\User;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -31,9 +32,14 @@ class CierreMesTest extends TestCase
 
     private Proveedor $proveedor;
 
+    private User $administrador;
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->seed(RoleSeeder::class);
+        $this->administrador = User::factory()->create()->assignRole('Condominio');
 
         TasaCambio::create(['tasa' => 40, 'fecha' => now()]);
         Iva::create(['factor' => 16, 'fecha' => now()]);
@@ -232,7 +238,7 @@ class CierreMesTest extends TestCase
 
     private function cerrar(string $mes, string $moneda = 'Bolívar'): void
     {
-        Livewire::test(NuevoCierre::class)
+        Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
             ->set('moneda', $moneda)
             ->set('mes', $mes)
             ->call('cerrarMes');

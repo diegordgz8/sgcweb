@@ -23,6 +23,8 @@ class NuevoComunicado extends Component
 
 	public function save()
 	{
+		$this->authorize('comunicado.create');
+
 		$this->validate();
 
 		Comunicado::create([
