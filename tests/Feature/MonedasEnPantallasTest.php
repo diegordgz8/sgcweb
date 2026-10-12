@@ -7,7 +7,9 @@ use App\Livewire\Admin\ConfigurarTasaCambio;
 use App\Livewire\Fondo\NuevoFondo;
 use App\Livewire\Fondo\TablaFondo;
 use App\Livewire\Pago\NuevoPago;
+use App\Models\Banco;
 use App\Models\Condominio;
+use App\Models\Cuenta;
 use App\Models\Fondo;
 use App\Models\Gasto;
 use App\Models\Iva;
@@ -183,5 +185,27 @@ class MonedasEnPantallasTest extends TestCase
             ->assertSee('Monedas')
             ->assertSee('Agregar moneda')
             ->assertSee('1 USD = 1.620,00 ARS');
+    }
+    public function test_fund_is_linked_to_the_chosen_bank_account(): void
+    {
+        Banco::factory()->create();
+        $cuenta = Cuenta::factory()->create();
+
+        Livewire::actingAs($this->usuario)->test(NuevoFondo::class)
+            ->set('descripcion', 'Banco en pesos')
+            ->set('moneda', 'ARS')
+            ->set('saldoInicial', 1000)
+            ->set('cuentaId', $cuenta->id)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertSame($cuenta->id, Fondo::where('descripcion', 'Banco en pesos')->value('cuenta_id'));
+
+        Livewire::actingAs($this->usuario)->test(NuevoFondo::class)
+            ->set('descripcion', 'Otro fondo')
+            ->set('saldoInicial', 1000)
+            ->set('cuentaId', $cuenta->id)
+            ->call('save')
+            ->assertHasErrors(['cuentaId' => 'unique']);
     }
 }

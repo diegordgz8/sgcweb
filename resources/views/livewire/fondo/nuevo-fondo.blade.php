@@ -41,14 +41,14 @@
 
                             <div class="col-span-6">
                                 <label for="cuenta" class="block text-sm font-medium text-gray-700">Cuenta afiliada:</label>
-                                <select wire:model.live="cuenta.id" name="cuenta" id="cuenta" class="form-control w-full">
-                                    <option>----</option>
+                                <select wire:model.live="cuentaId" name="cuenta" id="cuenta" class="form-control w-full">
+                                    <option value="">----</option>
                                     @foreach ($cuentas as $item)
                                         <option value="{{ $item->id }}">{{ $item->numero }} - {{ $item->banco->nombre }}
                                         </option>
                                     @endforeach
                                 </select>
-                                <x-input-error for="cuenta.id" />
+                                <x-input-error for="cuentaId" />
                             </div>
 
                         </div>

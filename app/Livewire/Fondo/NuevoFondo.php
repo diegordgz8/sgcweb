@@ -11,7 +11,8 @@ use Livewire\Component;
 class NuevoFondo extends Component
 {
 	public $descripcion, $moneda, $saldoInicial = 0;
-	public Cuenta $cuenta;
+	// Cuenta bancaria afiliada; vacío para un fondo en efectivo
+	public $cuentaId = '';
 
 	public $open = false;
 
@@ -21,17 +22,16 @@ class NuevoFondo extends Component
 			'descripcion' => 'required|max:255',
 			'saldoInicial' => 'nullable|numeric|gt:0',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			'cuenta.id' => 'nullable',
+			'cuentaId' => ['nullable', Rule::exists('cuentas', 'id'), Rule::unique('fondos', 'cuenta_id')],
 		];
 	}
 
 	protected $messages = [
-		// 'cuenta.id.required' => 'Debe seleccionar una cuenta.',
+		'cuentaId.unique' => 'La cuenta seleccionada ya tiene un fondo.',
 	];
 
 	public function mount() {
 		$this->moneda = Moneda::base();
-		$this->cuenta = new Cuenta;
 	}
 
 	public function render()
@@ -46,10 +46,6 @@ class NuevoFondo extends Component
 		$this->validateOnly($propertyName);
 	}
 
-	public function updatingCuenta($value) {
-		$this->cuenta = $value == '----' ? new Cuenta : Cuenta::find($value);
-	} 
-
 	public function save()
 	{
 		$this->authorize('fondo.create');
@@ -60,17 +56,17 @@ class NuevoFondo extends Component
 			'descripcion' => $this->descripcion,
 			'moneda' => $this->moneda,
 			'saldo' => $this->saldoInicial,
-			'cuenta_id' => $this->cuenta->id
+			'cuenta_id' => $this->cuentaId ?: null,
 		]);
 
 		$this->reset([
 			'open',
 			'descripcion',
 			'saldoInicial',
+			'cuentaId',
 		]);
 
 		$this->moneda = Moneda::base();
-		$this->cuenta = new Cuenta;
 
 		$this->dispatch('render')->to('fondo.tabla-fondo');
 		flash()->success('El fondo se registró satisfactoriamente');
