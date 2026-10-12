@@ -12,7 +12,8 @@
                 <div>
 
                     {{-- formulario --}}
-                    <form action="{{ route('admin.condominio.store') }}" method="POST">
+                    <form action="{{ route('admin.condominio.store') }}" method="POST"
+                        x-data="{ pais: @js(old('pais', 'VE')), monedas: @js(old('monedas', ['VES', 'USD'])) }">
                         <div class="shadow overflow-hidden sm:rounded-md">
                             <div class="px-4 py-5 bg-white sm:p-6">
                                 <div class="grid grid-cols-6 gap-6">
@@ -31,7 +32,7 @@
                                                     <option value="J">J</option>
                                                 </select>
                                             </div>
-                                            <input type="text" name="rif" id="rif"
+                                            <input type="text" name="rif" id="rif" value="{{ old('rif') }}"
                                                 class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md">
                                         </div>
                                         <x-input-error for="rif" />
@@ -40,17 +41,49 @@
                                     <div class="col-span-6">
                                         <label for="nombre"
                                             class="block text-sm font-medium text-gray-700">Nombre:</label>
-                                        <input type="text" name="nombre" id="nombre"
+                                        <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}"
                                             class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                         <x-input-error for="nombre" />
+                                    </div>
+
+                                    <h3 class="col-span-6 text-center">Configuración regional</h3>
+
+                                    <div class="col-span-6">
+                                        <label for="pais" class="block text-sm font-medium text-gray-700">
+                                            País:
+                                        </label>
+                                        <x-select-pais name="pais" id="pais" class="w-full" x-model="pais"
+                                            :seleccionado="old('pais', 'VE')" />
+                                        <x-input-error for="pais" />
                                     </div>
 
                                     <div class="col-span-6">
                                         <label for="direccion"
                                             class="block text-sm font-medium text-gray-700">Dirección:</label>
-                                        <input type="text" name="direccion" id="direccion"
+                                        <input type="text" name="direccion" id="direccion" value="{{ old('direccion') }}"
                                             class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                                         <x-input-error for="direccion" />
+                                    </div>
+
+                                    <div class="col-span-6">
+                                        <label for="zona_horaria" class="block text-sm font-medium text-gray-700">
+                                            Zona horaria:
+                                        </label>
+                                        <x-select-zona-horaria name="zona_horaria" id="zona_horaria" class="w-full" pais="pais"
+                                            :seleccionado="old('zona_horaria', config('app.timezone'))" />
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Solo se muestran las zonas horarias del país seleccionado.
+                                        </p>
+                                        <x-input-error for="zona_horaria" />
+                                    </div>
+
+                                    <div class="col-span-6">
+                                        <label for="monedas" class="block text-sm font-medium text-gray-700">
+                                            Monedas con las que trabajará el sistema:
+                                        </label>
+                                        <x-select-monedas name="monedas" id="monedas" class="w-full" x-model="monedas" />
+                                        <x-input-error for="monedas" />
+                                        <x-input-error for="monedas.*" />
                                     </div>
 
                                     <h3 class="col-span-6 text-center">Tasa de cambio inicial</h3>
@@ -59,7 +92,7 @@
                                         <label for="tasa" class="block text-sm font-medium text-gray-700">
                                             Tasa de cambio:
                                         </label>
-                                        <input type="text" name="tasa" id="tasa" class="form-control w-full">
+                                        <input type="text" name="tasa" id="tasa" value="{{ old('tasa') }}" class="form-control w-full">
                                         <x-input-error for="tasa" />
                                     </div>
 
@@ -69,7 +102,7 @@
                                         <label for="monto" class="block text-sm font-medium text-gray-700">
                                             Monto:
                                         </label>
-                                        <input type="text" name="monto" id="monto" class="form-control w-full">
+                                        <input type="text" name="monto" id="monto" value="{{ old('monto') }}" class="form-control w-full">
                                         <x-input-error for="monto" />
                                     </div>
 
@@ -77,10 +110,11 @@
                                         <label for="moneda" class="block text-sm font-medium text-gray-700">
                                             Moneda:
                                         </label>
-                                        <select name="moneda" id="moneda" class="form-control w-full">
-                                            <option>Bolívar</option>
-                                            <option>Dólar</option>
-                                        </select>
+                                        <x-select-moneda name="moneda" id="moneda" class="w-full" visibles="monedas"
+                                            :seleccionado="old('moneda')" />
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Solo se muestran las monedas seleccionadas en la configuración regional.
+                                        </p>
                                         <x-input-error for="moneda" />
                                     </div>
 

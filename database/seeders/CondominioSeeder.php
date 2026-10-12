@@ -20,6 +20,9 @@ class CondominioSeeder extends Seeder
             'rif' => 'J-12345678',
             'nombre' => 'Condominio Bloque 13',
             'direccion' => 'Bloque 13, Urbanización "Las Acequias", Municipio Cocorote',
+            'pais' => 'VE',
+            'zona_horaria' => 'America/Caracas',
+            'monedas' => ['VES', 'USD'],
         ]);
 
         Mensualidad::create([

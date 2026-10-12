@@ -6,6 +6,18 @@ use NumberFormatter;
 
 trait WithCurrencies
 {
+	/**
+	 * Monedas que la lógica de facturación sabe manejar, por código ISO 4217,
+	 * con el nombre con el que se guardan en la base de datos.
+	 */
+	public function monedasSoportadas(): array
+	{
+		return [
+			'VES' => 'Bolívar',
+			'USD' => 'Dólar',
+		];
+	}
+
 	public function convertirMonto($monto, $moneda, $tasa)
 	{
 		if ($moneda == 'Bolívar') {
