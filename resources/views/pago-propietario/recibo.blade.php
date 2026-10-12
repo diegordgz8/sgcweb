@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
@@ -39,7 +39,7 @@
     <div class="p-2" style="margin-top: 20px; border: 1px solid black">
         <span>N°: {{ $recibo->numero }}</span>
         <h2>Pago aprobado</h2>
-        <span>Monto: {{ $recibo->pago->monto }}</span>
+        <span>Monto: {{ $recibo->pago->monto_formateado }}</span>
     </div>
     </div>
 

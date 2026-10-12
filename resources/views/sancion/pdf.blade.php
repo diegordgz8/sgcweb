@@ -29,7 +29,7 @@
                         {{ $item->descripcion }}
                     </td>
                     <td>
-                        {{ $item->monto }}
+                        <x-monto :monto="$item->monto" :moneda="$item->moneda" />
                     </td>
                     <td>
                         {{ $item->moneda }}

@@ -5,9 +5,11 @@ namespace App\Livewire\Gasto;
 use App\Models\Asamblea;
 use App\Models\Gasto;
 use App\Models\GastoExtraordinario;
+use App\Models\Moneda;
 use App\Models\Proveedor;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -22,7 +24,7 @@ class NuevoGasto extends Component
 	public Asamblea $asamblea;
 	public $calculo;
 	public $comienzoCobro;
-	public $moneda = 'Bolívar';
+	public $moneda;
 	public float $monto = 0.00;
 	public $observaciones;
 	public Proveedor $proveedor;
@@ -47,45 +49,48 @@ class NuevoGasto extends Component
 	public $selectAll = false;
 	public $selectPage = false;
 
-	protected $rules = [
-		'descripcion' => [
-			'required',
-			'max:255',
-		],
-		'tipo' => 'required',
-		'numeroMeses' => 'exclude_unless:tipo,Extraordinario|required|numeric|gt:0',
-		'asamblea.id' => [
-			'exclude_if:tipo,Ordinario',
-			'required_if:elegidoAsamblea,si',
-		],
-		'calculo' => 'required',
-		'comienzoCobro' => [
-			'required',
-			'date',
-			'after:last month',
-		],
-		'moneda' => 'required',
-		'monto' => [
-			'required',
-			'numeric',
-		],
-		'observaciones' => 'nullable',
-		'proveedor.id' => [
-			'required',
-			'not_in:0',
-		],
-		'factura' => 'required',
-		'servicios' => [
-			'exclude_if:proveedor.id,0',
-			'array',
-			'min:1',
-		],
-		'montos.*' => [
-			'required_with:servicios.*',
-			'numeric',
-			'gt:0',
-		],
-	];
+	protected function rules()
+	{
+		return [
+			'descripcion' => [
+				'required',
+				'max:255',
+			],
+			'tipo' => 'required',
+			'numeroMeses' => 'exclude_unless:tipo,Extraordinario|required|numeric|gt:0',
+			'asamblea.id' => [
+				'exclude_if:tipo,Ordinario',
+				'required_if:elegidoAsamblea,si',
+			],
+			'calculo' => 'required',
+			'comienzoCobro' => [
+				'required',
+				'date',
+				'after:last month',
+			],
+			'moneda' => ['required', Rule::in(Moneda::codigos())],
+			'monto' => [
+				'required',
+				'numeric',
+			],
+			'observaciones' => 'nullable',
+			'proveedor.id' => [
+				'required',
+				'not_in:0',
+			],
+			'factura' => 'required',
+			'servicios' => [
+				'exclude_if:proveedor.id,0',
+				'array',
+				'min:1',
+			],
+			'montos.*' => [
+				'required_with:servicios.*',
+				'numeric',
+				'gt:0',
+			],
+		];
+	}
 
 	protected $messages = [
 		'comienzoCobro.after' => 'El comienzo de cobro no puede ser un mes anterior al actual.',
@@ -98,6 +103,7 @@ class NuevoGasto extends Component
 
 	public function mount()
 	{
+		$this->moneda = Moneda::base();
 		$this->asamblea = new Asamblea;
 		$this->proveedor = new Proveedor;
 		$this->proveedor->id = 0;
@@ -299,7 +305,6 @@ class NuevoGasto extends Component
 				'elegidoAsamblea',
 				'calculo',
 				'comienzoCobro',
-				'moneda',
 				'monto',
 				'observaciones',
 				'factura',
@@ -308,6 +313,8 @@ class NuevoGasto extends Component
 				'selectPage',
 				'selectAll',
 			]);
+
+			$this->moneda = Moneda::base();
 
 			$this->asamblea = new Asamblea;
 			$this->proveedor = new Proveedor;

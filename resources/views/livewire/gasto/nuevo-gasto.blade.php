@@ -114,10 +114,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
-                                    <option>Bolívar</option>
-                                    <option>Dólar</option>
-                                </select>
+                                <x-select-moneda-condominio wire:model.live="moneda" name="moneda" id="moneda" class="w-full" />
                                 <x-input-error for="moneda" />
                             </div>
 

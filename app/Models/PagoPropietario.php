@@ -41,6 +41,14 @@ class PagoPropietario extends Model
 		$this->save();
 	}
 
+	/**
+	 * Monto abonado a la factura, en la moneda de la factura.
+	 */
+	public function getMontoAbonadoAttribute(): float
+	{
+		return $this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at);
+	}
+
 	public function getMontoFormateadoAttribute() {
 		return $this->formatearMonto($this->monto, $this->moneda);
 	}

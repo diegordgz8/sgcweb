@@ -110,10 +110,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model.live="moneda" x-model="moneda" name="moneda" id="moneda" class="form-control w-full">
-                                    <option>Bolívar</option>
-                                    <option>Dólar</option>
-                                </select>
+                                <x-select-moneda-condominio wire:model.live="moneda" x-model="moneda" name="moneda" id="moneda" class="w-full" />
                                 <x-input-error for="moneda" />
                             </div>
 
@@ -158,13 +155,9 @@
                             </div>
 
                             @if ($factura->moneda != $moneda)
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="tasa-cambio"
-                                        class="block text-sm font-medium text-gray-700">
-                                        Tasa de cambio:
-                                    </label>
-                                    <input type="text" name="tasa-cambio" id="tasa-cambio" value="{{$this->tasaCambio->tasa}}" class="form-control w-full" readonly />
-                                </div>
+                                <p class="col-span-6 text-sm text-gray-500">
+                                    El monto se convierte de {{ $moneda }} a {{ $factura->moneda }} con las tasas de cambio vigentes.
+                                </p>
                             @endif
 
                         </div>

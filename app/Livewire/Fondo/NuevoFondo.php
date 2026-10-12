@@ -4,27 +4,33 @@ namespace App\Livewire\Fondo;
 
 use App\Models\Cuenta;
 use App\Models\Fondo;
+use App\Models\Moneda;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class NuevoFondo extends Component
 {
-	public $descripcion, $moneda = 'Bolívar', $saldoInicial = 0;
+	public $descripcion, $moneda, $saldoInicial = 0;
 	public Cuenta $cuenta;
 
 	public $open = false;
 
-	protected $rules = [
-		'descripcion' => 'required|max:255',
-		'saldoInicial' => 'nullable|numeric|gt:0',
-		'moneda' => 'required',
-		'cuenta.id' => 'nullable',
-	];
+	protected function rules()
+	{
+		return [
+			'descripcion' => 'required|max:255',
+			'saldoInicial' => 'nullable|numeric|gt:0',
+			'moneda' => ['required', Rule::in(Moneda::codigos())],
+			'cuenta.id' => 'nullable',
+		];
+	}
 
 	protected $messages = [
 		// 'cuenta.id.required' => 'Debe seleccionar una cuenta.',
 	];
 
 	public function mount() {
+		$this->moneda = Moneda::base();
 		$this->cuenta = new Cuenta;
 	}
 
@@ -61,8 +67,9 @@ class NuevoFondo extends Component
 			'open',
 			'descripcion',
 			'saldoInicial',
-			'moneda',
 		]);
+
+		$this->moneda = Moneda::base();
 		$this->cuenta = new Cuenta;
 
 		$this->dispatch('render')->to('fondo.tabla-fondo');

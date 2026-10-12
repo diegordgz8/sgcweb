@@ -34,6 +34,14 @@ class Pago extends Model
 	}
 
 	/**
+	 * Monto abonado al gasto, en la moneda del gasto.
+	 */
+	public function getMontoAbonadoAttribute(): float
+	{
+		return $this->convertirMonto($this->monto, $this->moneda, $this->gasto->moneda, $this->created_at);
+	}
+
+	/**
 	 * Debita el fondo en la moneda del pago y abona al gasto el monto convertido a la moneda
 	 * del gasto, con las tasas vigentes al registrar el pago.
 	 */

@@ -42,17 +42,18 @@
                                     Monto restante por pagar:
                                 </label>
                                 <input type="text" name="monto-por-pagar" id="monto-por-pagar" readonly
-                                    value="{{ $montoFormateado }}" class="form-control w-full">
+                                    value="{{ $gasto->exists ? $this->formatearMonto($gasto->saldo, $gasto->moneda) : '' }}"
+                                    class="form-control w-full">
                             </div>
 
-                            @if ($gasto->moneda != $moneda && $this->tasaCambio)
+                            @if ($gasto->moneda != $moneda)
                                 <div class="col-span-6 sm:col-span-3">
                                     <label for="monto-por-pagar-convertido"
                                         class="block text-sm font-medium text-gray-700">
                                         Monto restante por pagar (convertido):
                                     </label>
                                     <input type="text" name="monto-por-pagar-convertido" id="monto-por-pagar-convertido"
-                                        value="{{ $montoGastoConvertidoFormateado }}" readonly
+                                        value="{{ $this->formatearMonto($montoGastoConvertido, $moneda) }}" readonly
                                         class="form-control w-full">
                                 </div>
                             @endif
@@ -98,10 +99,7 @@
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">
                                     Moneda:
                                 </label>
-                                <select wire:model.live="moneda" name="moneda" id="moneda" class="form-control w-full">
-                                    <option>Bolívar</option>
-                                    <option>Dólar</option>
-                                </select>
+                                <x-select-moneda-condominio wire:model.live="moneda" name="moneda" id="moneda" class="w-full" />
                                 <x-input-error for="moneda" />
                             </div>
 
@@ -186,14 +184,9 @@
                             @endswitch
 
                             @if ($gasto->moneda != $moneda)
-                                <div class="col-span-6 sm:col-span-3">
-                                    <label for="tasa-cambio" class="block text-sm font-medium text-gray-700">
-                                        Tasa de cambio:
-                                    </label>
-                                    <input wire:model.live="tasaCambio.tasa" type="text" name="tasa-cambio"
-                                        id="tasa-cambio" class="form-control w-full">
-                                    <x-input-error for="tasaCambio.tasa" />
-                                </div>
+                                <p class="col-span-6 text-sm text-gray-500">
+                                    El monto se convierte de {{ $moneda }} a {{ $gasto->moneda }} con las tasas de cambio vigentes.
+                                </p>
                             @endif
 
                     </div>

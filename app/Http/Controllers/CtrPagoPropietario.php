@@ -41,12 +41,6 @@ class CtrPagoPropietario extends Controller
 	{
 		$condominio = Condominio::first();
 
-		if ($recibo->pago->moneda == 'Bolívar') {
-			$recibo->pago->monto .= ' Bs';
-		} else if ($recibo->pago->moneda == 'Dólar') {
-			$recibo->pago->monto .= '$';
-		}
-
 		$pdf = PDF::loadView('pago-propietario.recibo', compact('recibo', 'condominio'));
 		return $pdf->stream('recibo.pdf');
 	}

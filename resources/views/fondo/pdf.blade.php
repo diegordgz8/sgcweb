@@ -48,7 +48,7 @@
                         {{ $item->moneda }}
                     </td>
                     <td>
-                        {{ $item->saldo }}
+                        <x-monto :monto="$item->saldo" :moneda="$item->moneda" />
                     </td>
                     <td>
                         @if ($item->cuenta)

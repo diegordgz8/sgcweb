@@ -3,14 +3,16 @@
 namespace App\Livewire\Fondo;
 
 use App\Models\Fondo;
+use App\Models\Moneda;
+use App\Traits\WithCurrencies;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
-use NumberFormatter;
 
 class TablaFondo extends Component
 {
 	use WithPagination;
+	use WithCurrencies;
 
 	public Fondo $fondo;
 
@@ -26,7 +28,8 @@ class TablaFondo extends Component
 	public $openEdit = false;
 	public $openDestroy = false;
 
-	public $moneda = '2';
+	// Código de la moneda por la que se filtra; vacío muestra todas
+	public $moneda = '';
 	public $minimo = '';
 	public $maximo = '';
 
@@ -63,22 +66,9 @@ class TablaFondo extends Component
 			$fondos = [];
 		}
 
-		return view('livewire.fondo.tabla-fondo', compact('fondos'));
-	}
+		$monedas = Moneda::codigos();
 
-	private function formatearMonto($monto, $moneda)
-	{
-		$formatoDinero = new NumberFormatter('es_VE', NumberFormatter::CURRENCY);
-		$bolivar = 'VES';
-		$dolar = 'USD';
-
-		if ($moneda == 'Bolívar') {
-			$montoFormateado = $formatoDinero->formatCurrency($monto, $bolivar);
-		} else if ($moneda == 'Dólar') {
-			$montoFormateado = $formatoDinero->formatCurrency($monto, $dolar);
-		}
-
-		return $montoFormateado;
+		return view('livewire.fondo.tabla-fondo', compact('fondos', 'monedas'));
 	}
 
 	public function updated($propertyName)
@@ -118,18 +108,8 @@ class TablaFondo extends Component
 	{
 		$fondos = Fondo::all();
 
-		switch ($this->moneda) {
-			case '0':
-				$fondos = $fondos->intersect(Fondo::where('moneda', 'Dólar')->get());
-				break;
-
-			case '1':
-				$fondos = $fondos->intersect(Fondo::where('moneda', 'Bolívar')->get());
-				break;
-
-			default:
-				# code...
-				break;
+		if ($this->moneda != '') {
+			$fondos = $fondos->intersect(Fondo::where('moneda', $this->moneda)->get());
 		}
 
 		if ($this->minimo != '') {

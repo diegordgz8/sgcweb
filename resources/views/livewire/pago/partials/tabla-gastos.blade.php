@@ -50,28 +50,10 @@
                                             {{ $item->fecha }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $item->monto }}
-
-                                            @switch($item->moneda)
-                                                @case('Bolívar')
-                                                    Bs.
-                                                @break
-                                                @case('Dólar')
-                                                    $
-                                                @break
-                                            @endswitch
+                                            <x-monto :monto="$item->monto" :moneda="$item->moneda" />
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            {{ $item->saldo }}
-
-                                            @switch($item->moneda)
-                                                @case('Bolívar')
-                                                    Bs.
-                                                @break
-                                                @case('Dólar')
-                                                    $
-                                                @break
-                                            @endswitch
+                                            <x-monto :monto="$item->saldo" :moneda="$item->moneda" />
                                         </td>
                                     </tr>
                                 @endforeach

@@ -14,21 +14,17 @@
 
                         <label for="todos-moneda"
                             class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model.live="moneda" type="radio" name="moneda" id="todos-moneda" value="2">
+                            <input wire:model.live="moneda" type="radio" name="moneda" id="todos-moneda" value="">
                             Todas
                         </label>
 
-                        <label for="bolivar"
-                            class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model.live="moneda" type="radio" name="moneda" id="bolivar" value="1">
-                            Bolívar
-                        </label>
-
-                        <label for="dolar"
-                            class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
-                            <input wire:model.live="moneda" type="radio" name="moneda" id="dolar" value="0">
-                            Dólar
-                        </label>
+                        @foreach ($monedas as $codigo)
+                            <label for="moneda-{{ $codigo }}"
+                                class="text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-gray-700 hover:bg-gray-100">
+                                <input wire:model.live="moneda" type="radio" name="moneda" id="moneda-{{ $codigo }}" value="{{ $codigo }}">
+                                {{ $codigo }}
+                            </label>
+                        @endforeach
                     </div>
 
                     <div>

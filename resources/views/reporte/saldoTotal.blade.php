@@ -45,10 +45,10 @@
                         {{ $item->descripcion }}
                     </td>
                     <td>
-                        {{ $item->moneda }}
+                        <x-monto :monto="$item->saldo" :moneda="$item->moneda" />
                     </td>
                     <td>
-                        {{ $item->saldo }}
+                        {{ $item->moneda }}
                     </td>
                     <td>
                         @if ($item->cuenta)
@@ -59,21 +59,24 @@
             @endforeach
         </tbody>
         <tfoot>
-            <tr>
-                <td colspan="2"></td>
-                <th>Saldo en efectivo</th>
-                <td>{{$fondos->whereNull('cuenta_id')->sum('saldo')}}</td>
-            </tr>
-            <tr>
-                <td colspan="2"></td>
-                <th>Saldo digital</th>
-                <td>{{$fondos->whereNotNull('cuenta_id')->sum('saldo')}}</td>
-            </tr>
-            <tr>
-                <td colspan="2" border="2" style="border: 0px;"></td>
-                <th>Total</th>
-                <td>{{$fondos->sum('saldo')}}</td>
-            </tr>
+            {{-- Los saldos de monedas distintas no se suman entre sí: un subtotal por moneda --}}
+            @foreach ($fondos->groupBy('moneda') as $moneda => $fondosMoneda)
+                <tr>
+                    <td colspan="2"></td>
+                    <th>Saldo en efectivo ({{ $moneda }})</th>
+                    <td><x-monto :monto="$fondosMoneda->whereNull('cuenta_id')->sum('saldo')" :moneda="$moneda" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2"></td>
+                    <th>Saldo digital ({{ $moneda }})</th>
+                    <td><x-monto :monto="$fondosMoneda->whereNotNull('cuenta_id')->sum('saldo')" :moneda="$moneda" /></td>
+                </tr>
+                <tr>
+                    <td colspan="2" border="2" style="border: 0px;"></td>
+                    <th>Total ({{ $moneda }})</th>
+                    <td><x-monto :monto="$fondosMoneda->sum('saldo')" :moneda="$moneda" /></td>
+                </tr>
+            @endforeach
     </tfoot>
     </table>
 </body>

@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Admin\Sancion;
 
+use App\Models\Moneda;
 use App\Models\Sancion;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -27,10 +29,13 @@ class TablaSancion extends Component
 
 	public $readyToLoad = false;
 
-	public $rules = [
-        'sancion.monto' => 'required|numeric|gt:0',
-        'sancion.moneda' => 'required',
-    ];
+	protected function rules()
+	{
+		return [
+			'sancion.monto' => 'required|numeric|gt:0',
+			'sancion.moneda' => ['required', Rule::in(Moneda::codigos())],
+		];
+	}
 
 	public function render()
 	{

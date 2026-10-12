@@ -46,11 +46,11 @@
                     </td>
                     @if ($item->tipo == 'Crédito')
                         <td>
-                            {{ $item->monto }}
+                            <x-monto :monto="$item->monto" :moneda="$item->moneda" />
                         </td>
                     @else
                         <td class="text-red-500">
-                            -{{ $item->monto }}
+                            <x-monto :monto="-$item->monto" :moneda="$item->moneda" />
                         </td>
                     @endif
                     <td>

@@ -35,10 +35,7 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda:</label>
-                                <select name="moneda" id="moneda" class="form-control w-full" wire:model.live="moneda">
-                                    <option>Bolívar</option>
-                                    <option>Dólar</option>
-                                </select>
+                                <x-select-moneda-condominio name="moneda" id="moneda" class="w-full" wire:model.live="moneda" />
                                 <x-input-error for="moneda" />
                             </div>
 
