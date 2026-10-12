@@ -75,6 +75,8 @@ class TablaSancion extends Component
 
     public function update()
     {
+        $this->authorize('sancion.edit');
+
         $this->validate();
         $this->sancion->save();
         $this->reset('openEdit');

@@ -103,6 +103,8 @@ class ShowUnidad extends Component
 
 	public function asignarPropietario()
 	{
+		$this->authorize('admin.unidad.edit');
+
 		$this->validate();
 
 		$integrante = $this->integrante;
@@ -146,6 +148,8 @@ class ShowUnidad extends Component
 
 	public function cambiarPropietario()
 	{
+		$this->authorize('admin.unidad.edit');
+
 		$this->validate();
 
 		$this->retirar();
@@ -157,6 +161,8 @@ class ShowUnidad extends Component
 
 	public function retirar()
 	{
+		$this->authorize('admin.unidad.edit');
+
 		$integrantes = $this->unidad->integrantes;
 
 		foreach ($integrantes as $item) {

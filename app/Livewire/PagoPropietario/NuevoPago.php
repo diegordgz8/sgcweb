@@ -101,6 +101,8 @@ class NuevoPago extends Component
 
 	public function mostrarForm(Factura $factura)
 	{
+		$this->authorize('pagar', $factura);
+
 		if ($this->facturaMasVieja->id != $factura->id) {
 			flash()->error('No puede pagar una factura si existe otra más vieja.');
 			return false;
@@ -227,6 +229,8 @@ class NuevoPago extends Component
 
 	public function save()
 	{
+		$this->authorize('pagar', $this->factura);
+
 		$this->validate();
 
 		$datos = [

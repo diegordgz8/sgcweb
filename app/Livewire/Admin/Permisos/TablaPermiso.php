@@ -88,6 +88,8 @@ class TablaPermiso extends Component
 
 	public function update()
 	{
+		$this->authorize('admin.permiso.edit');
+
 		$this->validate();
 
 		$this->permiso->save();
@@ -105,6 +107,8 @@ class TablaPermiso extends Component
 
 	public function delete()
 	{
+		$this->authorize('admin.permiso.delete');
+
 		$this->permiso->delete();
 
 		$this->reset('openDestroy');

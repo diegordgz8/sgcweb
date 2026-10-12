@@ -42,6 +42,8 @@ class NuevaUnidad extends Component
 	}
 
 	public function save() {
+		$this->authorize('admin.unidad.create');
+
 		$this->validate();
 
 		Unidad::create([

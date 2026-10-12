@@ -48,6 +48,8 @@ class ConfigurarInteres extends Component
 
     public function actualizar()
     {
+        $this->authorize('admin.home');
+
         $this->validate();
 
         if ($this->interes) {

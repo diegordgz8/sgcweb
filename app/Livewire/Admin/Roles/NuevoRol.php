@@ -30,6 +30,8 @@ class NuevoRol extends Component
 
 	public function save()
 	{
+		$this->authorize('admin.rol.create');
+
 		$this->validate();
 
         $rol = Role::create([

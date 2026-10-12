@@ -14,27 +14,27 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'admin.index')->middleware('can:admin.home')->name('home');
 
-Route::get('backup', Backup::class)->name('backup');
+Route::get('backup', Backup::class)->middleware('can:admin.database')->name('backup');
 
-Route::resource('administrador', CtrAdministrador::class)->only(['index', 'show'])->names('administrador');
+Route::resource('administrador', CtrAdministrador::class)->only(['index', 'show'])->middleware('can:admin.administrador.index')->names('administrador');
 
-Route::get('condominio', [CtrCondominio::class, 'index'])->name('condominio');
+Route::get('condominio', [CtrCondominio::class, 'index'])->middleware('can:admin.home')->name('condominio');
 
-Route::post('condominio', [CtrCondominio::class, 'store'])->name('condominio.store');
+Route::post('condominio', [CtrCondominio::class, 'store'])->middleware('can:admin.home')->name('condominio.store');
 
-Route::resource('comunicado', CtrComunicado::class)->only('index', 'show')->names('comunicado');
+Route::resource('comunicado', CtrComunicado::class)->only('index', 'show')->middleware('can:admin.comunicado.index')->names('comunicado');
 
-Route::resource('habitante', CtrHabitante::class)->only(['index', 'show'])->names('habitante');
+Route::resource('habitante', CtrHabitante::class)->only(['index', 'show'])->middleware('can:integrante.index')->names('habitante');
 
-Route::get('permisos', TablaPermiso::class)->name('permiso.index');
+Route::get('permisos', TablaPermiso::class)->middleware('can:admin.permiso.index')->name('permiso.index');
 
-Route::get('roles', TablaRol::class)->name('rol.index');
+Route::get('roles', TablaRol::class)->middleware('can:admin.rol.index')->name('rol.index');
 
 // Route::get('roles', CtrProveedor::class)->name('rol.show');
 
-Route::resource('sancion', CtrSancion::class)->only(['index', 'show'])->names('sancion');
+Route::resource('sancion', CtrSancion::class)->only(['index', 'show'])->middleware('can:sancion.index')->names('sancion');
 
-Route::resource('unidad', CtrUnidad::class)->only(['index', 'show'])->names('unidad');
+Route::resource('unidad', CtrUnidad::class)->only(['index', 'show'])->middleware('can:admin.unidad.index')->names('unidad');
 
 Route::get('usuario', [CtrUser::class, 'index'])->middleware('can:admin.usuario.index')->name('usuario.index');
 

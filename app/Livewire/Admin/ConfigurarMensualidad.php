@@ -44,6 +44,8 @@ class ConfigurarMensualidad extends Component
 
 	public function actualizar()
 	{
+		$this->authorize('admin.home');
+
 		$this->validate();
 
 		Mensualidad::create([

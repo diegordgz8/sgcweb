@@ -85,6 +85,8 @@ class TablaAdministrador extends Component
 
 	public function update()
 	{
+		$this->authorize('admin.administrador.edit');
+
 		$this->validate();
 
 		$this->administrador->save();
@@ -102,6 +104,8 @@ class TablaAdministrador extends Component
 
 	public function delete()
 	{
+		$this->authorize('admin.administrador.delete');
+
 		$this->administrador->delete();
 
 		$this->reset('openDestroy');

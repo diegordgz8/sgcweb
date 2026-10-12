@@ -67,6 +67,8 @@ class RoleSeeder extends Seeder
 
 		Permission::create(['name' => 'integrante.index'])->assignRole($role4);
 		Permission::create(['name' => 'integrante.show'])->assignRole([$role4, $role2]);
+		Permission::findOrCreate('integrante.edit')->assignRole($role4);
+		Permission::findOrCreate('integrante.delete')->assignRole($role4);
 
 		Permission::create(['name' => 'medicamento.index']);
 		Permission::create(['name' => 'medicamento.show']);
@@ -113,6 +115,7 @@ class RoleSeeder extends Seeder
 
 		Permission::create(['name' => 'admin.administrador.index']);
 		Permission::create(['name' => 'admin.administrador.create']);
+		Permission::findOrCreate('admin.administrador.edit');
 		Permission::create(['name' => 'admin.administrador.delete']);
 
 		Permission::create(['name' => 'admin.comunicado.index']);

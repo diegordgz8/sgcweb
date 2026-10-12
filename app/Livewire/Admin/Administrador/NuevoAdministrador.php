@@ -146,6 +146,8 @@ class NuevoAdministrador extends Component
 
 	public function save()
 	{
+		$this->authorize('admin.administrador.create');
+
 		$this->validate();
 
 		$integrante = Integrante::where('letra', $this->letra)

@@ -88,6 +88,8 @@ class TablaHabitante extends Component
 
 	public function update()
 	{
+		$this->authorize('integrante.edit');
+
 		$this->validate();
 
 		$this->integrante->save();
@@ -103,6 +105,8 @@ class TablaHabitante extends Component
 	}
 
 	public function delete() {
+		$this->authorize('integrante.delete');
+
 		$this->integrante->delete();
 
 		$this->reset('openDestroy');

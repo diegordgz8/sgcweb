@@ -85,6 +85,8 @@ class TablaUsuario extends Component
 
 	public function update()
 	{
+		$this->authorize('admin.usuario.edit');
+
 		$this->validate();
 
 		$this->usuario->roles()->sync($this->roles);
@@ -103,6 +105,8 @@ class TablaUsuario extends Component
 
 	public function delete()
 	{
+		$this->authorize('admin.usuario.delete');
+
 		$this->usuario->delete();
 
 		$this->reset('openDestroy');

@@ -42,6 +42,8 @@ class ConfirmarPago extends Component
 
 	public function confirmar(PagoPropietario $pago)
 	{
+		$this->authorize('pago-propietario.confirmar');
+
 		$pago->pagarFactura();
 
 		$ultimoRecibo = Recibo::orderBy('created_at', 'desc')->first();
@@ -60,6 +62,8 @@ class ConfirmarPago extends Component
 
 	public function elegirFondo(PagoPropietario $pago)
 	{
+		$this->authorize('pago-propietario.confirmar');
+
 		$this->pago = $pago;
 		$this->fondos = Fondo::doesntHave('cuenta')->where('moneda', $this->pago->moneda)->get();
 		$this->openConfirmar = true;
@@ -67,6 +71,8 @@ class ConfirmarPago extends Component
 
 	public function aceptar(Fondo $fondo)
 	{
+		$this->authorize('pago-propietario.confirmar');
+
 		$this->pago->fondo()->associate($fondo);
 		$this->pago->aceptarPago();
 
@@ -87,6 +93,8 @@ class ConfirmarPago extends Component
 	}
 
 	public function rechazar(PagoPropietario $pago) {
+		$this->authorize('pago-propietario.confirmar');
+
 		$pago->rechazar();
 
 		$this->reset('openRechazar');

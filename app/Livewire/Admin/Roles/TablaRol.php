@@ -91,6 +91,8 @@ class TablaRol extends Component
 
 	public function update()
 	{
+		$this->authorize('admin.rol.edit');
+
 		$this->validate();
 
         $this->rol->permissions()->sync($this->permisos);
@@ -109,6 +111,8 @@ class TablaRol extends Component
 
 	public function delete()
 	{
+		$this->authorize('admin.rol.delete');
+
 		$this->rol->delete();
 
 		$this->reset('openDestroy');

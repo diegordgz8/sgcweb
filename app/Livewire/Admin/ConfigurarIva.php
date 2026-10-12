@@ -38,6 +38,8 @@ class ConfigurarIva extends Component
 
 	public function actualizar()
 	{
+		$this->authorize('admin.home');
+
 		$this->validate();
 
 		$ivaActual = Iva::orderBy('created_at', 'desc')->first();

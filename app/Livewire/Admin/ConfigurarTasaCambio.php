@@ -47,6 +47,8 @@ class ConfigurarTasaCambio extends Component
 
     public function actualizar()
     {
+        $this->authorize('admin.home');
+
         $this->validate();
 
         if ($this->tasa) {

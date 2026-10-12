@@ -42,6 +42,8 @@ class Backup extends Component
 
     public function respaldar()
     {
+        $this->authorize('admin.database.backup');
+
         $this->creandoBackup = true;
         Artisan::call('backup:run --only-db');
 
@@ -51,6 +53,8 @@ class Backup extends Component
 
     public function restaurar()
     {
+        $this->authorize('admin.database.restore');
+
         $zip = new ZipArchive;
         $zip->open(storage_path('app/backups/SGC-Web/' . $this->zippedBackup));
         $zip->extractTo(storage_path('app/backups/SGC-Web'));

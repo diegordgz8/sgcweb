@@ -64,6 +64,8 @@ class TablaComunicado extends Component
 	}
 
 	public function delete() {
+		$this->authorize('admin.comunicado.delete');
+
 		$this->comunicado->delete();
 
 		$this->reset('openDestroy');

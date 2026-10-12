@@ -27,6 +27,8 @@ class NuevoPermiso extends Component
 
 	public function save()
 	{
+		$this->authorize('admin.permiso.create');
+
 		$this->validate();
 
         Permission::create([
