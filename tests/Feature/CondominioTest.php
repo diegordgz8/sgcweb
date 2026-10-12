@@ -155,6 +155,35 @@ class CondominioTest extends TestCase
         $this->assertNull(Condominio::first());
     }
 
+    public function test_setup_is_not_available_once_the_condominium_exists(): void
+    {
+        Condominio::create(['rif' => 'J-1', 'nombre' => 'Existente', 'direccion' => 'Calle 1']);
+
+        $this->actingAs($this->usuario)
+            ->get('/admin/condominio')
+            ->assertRedirect(route('admin.home'));
+
+        $this->actingAs($this->usuario)
+            ->post('/admin/condominio', $this->datos())
+            ->assertRedirect(route('admin.home'));
+
+        $this->assertSame(1, Condominio::count());
+        $this->assertSame(0, Moneda::count());
+    }
+
+    public function test_setup_explains_when_currencies_remain_from_a_previous_install(): void
+    {
+        Moneda::create(['codigo' => 'USD', 'es_base' => true]);
+
+        $this->actingAs($this->usuario)
+            ->from('/admin/condominio')
+            ->post('/admin/condominio', $this->datos())
+            ->assertRedirect('/admin/condominio')
+            ->assertSessionHasErrors('monedas');
+
+        $this->assertNull(Condominio::first());
+    }
+
     private function datos(array $cambios = []): array
     {
         return array_merge([

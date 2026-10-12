@@ -18,11 +18,26 @@ class CtrCondominio extends Controller
 {
 	public function index()
 	{
+		if (Condominio::exists()) {
+			return $this->yaConfigurado();
+		}
+
 		return view('admin.condominio.index');
 	}
 
 	public function store(Request $request)
 	{
+		if (Condominio::exists()) {
+			return $this->yaConfigurado();
+		}
+
+		// Las monedas no se eliminan nunca, así que solo se pueden elegir en una instalación nueva
+		if (Moneda::exists()) {
+			return back()->withInput()->withErrors([
+				'monedas' => 'Ya hay monedas registradas de una instalación anterior. La configuración inicial solo se puede hacer con la base de datos vacía.',
+			]);
+		}
+
 		$monedas = (array) $request->input('monedas');
 
 		$reglas = [
@@ -83,6 +98,13 @@ class CtrCondominio extends Controller
 				'moneda' => $request->moneda,
 			]);
 		});
+
+		return redirect()->route('admin.home');
+	}
+
+	private function yaConfigurado()
+	{
+		flash()->info('El condominio ya está configurado.');
 
 		return redirect()->route('admin.home');
 	}
