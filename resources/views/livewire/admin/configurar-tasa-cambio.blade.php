@@ -16,13 +16,33 @@
                 <div class="px-4 py-5 bg-white sm:p-6">
                     <div class="grid grid-cols-6 gap-6">
 
-                        <div class="col-span-6">
-                            <label for="tasa" class="block text-sm font-medium text-gray-700">
-                                Tasa de cambio:
-                            </label>
-                            <input wire:model.live="tasa.tasa" type="text" name="tasa" id="tasa" class="form-control w-full">
-                            <x-input-error for="tasa.tasa" />
-                        </div>
+                        @if ($moneda)
+                            <div class="col-span-6 sm:col-span-2">
+                                <label for="moneda-tasa" class="block text-sm font-medium text-gray-700">
+                                    Moneda:
+                                </label>
+                                <x-select-moneda-condominio sin-base wire:model.live="moneda" name="moneda" id="moneda-tasa"
+                                    class="w-full" />
+                                <x-input-error for="moneda" />
+                            </div>
+
+                            <div class="col-span-6 sm:col-span-4">
+                                <label for="tasa" class="block text-sm font-medium text-gray-700">
+                                    Tasa de cambio:
+                                </label>
+                                <div class="flex items-center gap-2 text-sm text-gray-700">
+                                    <span class="whitespace-nowrap">1 {{ $base }} =</span>
+                                    <input wire:model.blur="tasa" type="text" name="tasa" id="tasa" class="form-control w-full">
+                                    <span>{{ $moneda }}</span>
+                                </div>
+                                <x-input-error for="tasa" />
+                            </div>
+                        @else
+                            <p class="col-span-6 text-sm text-gray-600">
+                                El condominio trabaja solo con {{ $base }}, así que no hay tasas de cambio que actualizar.
+                                Puede agregar más monedas desde la tarjeta "Monedas".
+                            </p>
+                        @endif
 
                         <div class="col-span-6">
                             <div class="space-y-4">
@@ -73,7 +93,7 @@
 
                                                                     <td class="px-6 py-4 whitespace-nowrap">
                                                                         <div class="text-sm font-medium text-gray-900">
-                                                                            {{ $item->tasa }}
+                                                                            {{ $item->tasa_formateada }}
                                                                         </div>
                                                                     </td>
 
@@ -116,9 +136,11 @@
                 Cancelar
             </x-secondary-button>
 
-            <x-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
-                Actualizar
-            </x-button>
+            @if ($moneda)
+                <x-button wire:click="actualizar" wire:loading.attr="disabled" class="disabled:opacity-25">
+                    Actualizar
+                </x-button>
+            @endif
         </x-slot>
     </x-dialog-modal>
 </div>

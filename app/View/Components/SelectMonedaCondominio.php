@@ -16,13 +16,15 @@ class SelectMonedaCondominio extends Component
     /**
      * Create a new component instance.
      *
+     * @param  bool  $sinBase  Excluye la moneda base, por ejemplo para cargar tasas de cambio
      * @return void
      */
-    public function __construct($seleccionado = null)
+    public function __construct($seleccionado = null, $sinBase = false)
     {
         $this->seleccionado = $seleccionado;
 
         $this->monedas = collect(Moneda::codigos())
+            ->when($sinBase, fn ($codigos) => $codigos->reject(fn ($codigo) => $codigo === Moneda::base()))
             ->mapWithKeys(fn ($codigo) => [$codigo => $codigo . ' - ' . Moneda::nombreDe($codigo)]);
     }
 
