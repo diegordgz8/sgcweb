@@ -4,6 +4,7 @@ namespace App\Livewire\Asamblea;
 
 use App\Models\Asamblea;
 use App\Models\Integrante;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaAsamblea extends Component
     public $asamblea;
 
     public $busqueda;
+    #[Locked]
     public $orden = 'fecha';
+    #[Locked]
     public $direccion = 'desc';
     public $cantidad = '10';
 
@@ -64,6 +67,10 @@ class TablaAsamblea extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['descripcion', 'fecha'], true)) {
+            return;
+        }
+
         if($this->orden == $orden){
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

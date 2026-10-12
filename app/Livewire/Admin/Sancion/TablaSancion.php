@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Sancion;
 
 use App\Models\Sancion;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaSancion extends Component
 	public Sancion $sancion;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'descripcion';
+	#[Locked]
 	public $direccion = "desc";
 	public $cantidad = "10";
 
@@ -55,6 +58,10 @@ class TablaSancion extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['descripcion', 'monto'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

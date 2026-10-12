@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Roles;
 
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
@@ -16,7 +17,9 @@ class TablaRol extends Component
     public $permisos = [];
 
     public $busqueda;
+    #[Locked]
     public $orden = 'name';
+    #[Locked]
     public $direccion = 'asc';
     public $cantidad = '10';
 
@@ -69,6 +72,10 @@ class TablaRol extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['name'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

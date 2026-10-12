@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Interes;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ConfigurarInteres extends Component
@@ -12,7 +13,9 @@ class ConfigurarInteres extends Component
     public $interes;
 
     public $busqueda = '';
+    #[Locked]
     public $orden = 'created_at';
+    #[Locked]
     public $direccion = 'desc';
     public $cantidad = '10';
 

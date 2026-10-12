@@ -5,6 +5,7 @@ namespace App\Livewire\Sancion;
 use App\Models\AplicarSancion as ModelsAplicarSancion;
 use App\Models\Sancion;
 use App\Models\Unidad;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,7 +19,9 @@ class AplicarSancion extends Component
     public $readyToLoad = false;
 
     public $busqueda = '';
+    #[Locked]
     public $orden = 'numero';
+    #[Locked]
     public $direccion = 'asc';
     public $cantidad = '10';
 
@@ -88,6 +91,10 @@ class AplicarSancion extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['numero'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

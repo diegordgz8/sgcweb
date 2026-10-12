@@ -3,6 +3,7 @@
 namespace App\Livewire\Gasto;
 
 use App\Models\Gasto;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,7 +16,9 @@ class ShowGasto extends Component
 	public $readyToLoad = false;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 
@@ -39,6 +42,10 @@ class ShowGasto extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

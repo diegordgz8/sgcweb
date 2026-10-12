@@ -3,6 +3,7 @@
 namespace App\Livewire\Servicio;
 
 use App\Models\Proveedor;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,7 +16,9 @@ class ShowServicio extends Component
     public $servicio;
 
     public $busqueda = '';
+    #[Locked]
     public $direccion = 'desc';
+    #[Locked]
     public $orden = 'nombre';
     public $cantidad = '10';
 
@@ -54,6 +57,10 @@ class ShowServicio extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['contacto', 'documento', 'nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

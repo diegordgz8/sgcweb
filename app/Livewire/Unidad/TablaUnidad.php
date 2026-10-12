@@ -5,6 +5,7 @@ namespace App\Livewire\Unidad;
 use App\Models\Categoria;
 use App\Models\Unidad;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class TablaUnidad extends Component
@@ -12,7 +13,9 @@ class TablaUnidad extends Component
 	public $unidad;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'numero';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -57,6 +60,10 @@ class TablaUnidad extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['numero'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

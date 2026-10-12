@@ -3,6 +3,7 @@
 namespace App\Livewire\Proveedor;
 
 use App\Models\Servicio;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -18,7 +19,9 @@ class ShowProveedor extends Component
     public $openDestroy = false;
 
     public $busqueda = '';
+    #[Locked]
     public $direccion = 'desc';
+    #[Locked]
     public $orden = 'nombre';
     public $cantidad = '10';
 
@@ -52,6 +55,10 @@ class ShowProveedor extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

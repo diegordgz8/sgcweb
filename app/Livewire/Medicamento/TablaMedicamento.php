@@ -3,6 +3,7 @@
 namespace App\Livewire\Medicamento;
 
 use App\Models\Medicamento;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaMedicamento extends Component
     public Medicamento $medicamento;
 
     public $busqueda = '';
+    #[Locked]
     public $orden = 'nombre';
+    #[Locked]
     public $direccion = "asc";
     public $cantidad = '10';
 
@@ -60,6 +63,10 @@ class TablaMedicamento extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

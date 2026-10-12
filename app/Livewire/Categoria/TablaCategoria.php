@@ -3,6 +3,7 @@
 namespace App\Livewire\Categoria;
 
 use App\Models\Categoria;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaCategoria extends Component
 	public Categoria $categoria;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -59,6 +62,10 @@ class TablaCategoria extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

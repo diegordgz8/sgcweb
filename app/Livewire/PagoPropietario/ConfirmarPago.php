@@ -7,6 +7,7 @@ use App\Models\PagoPropietario;
 use App\Models\Recibo;
 use App\Traits\WithCurrencies;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -16,7 +17,9 @@ class ConfirmarPago extends Component
 	use WithCurrencies;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'fecha';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 

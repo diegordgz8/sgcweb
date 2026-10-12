@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Permisos;
 
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Permission;
@@ -14,7 +15,9 @@ class TablaPermiso extends Component
     public Permission $permiso;
 
     public $busqueda;
+    #[Locked]
     public $orden = 'name';
+    #[Locked]
     public $direccion = 'asc';
     public $cantidad = '10';
 
@@ -67,6 +70,10 @@ class TablaPermiso extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['name'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

@@ -4,6 +4,7 @@ namespace App\Livewire\Gasto;
 
 use App\Models\Gasto;
 use App\Models\Proveedor;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,7 +13,9 @@ class TablaGasto extends Component
 	use WithPagination;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'created_at';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 

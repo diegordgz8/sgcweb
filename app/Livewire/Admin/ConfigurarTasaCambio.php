@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\TasaCambio;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ConfigurarTasaCambio extends Component
@@ -12,7 +13,9 @@ class ConfigurarTasaCambio extends Component
     public TasaCambio $tasa;
 
     public $busqueda = '';
+    #[Locked]
     public $orden = 'created_at';
+    #[Locked]
     public $direccion = 'desc';
     public $cantidad = '10';
 

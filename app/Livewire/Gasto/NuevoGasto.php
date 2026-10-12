@@ -8,6 +8,7 @@ use App\Models\GastoExtraordinario;
 use App\Models\Proveedor;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -37,7 +38,9 @@ class NuevoGasto extends Component
 	public $readyToLoad = false;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 
@@ -217,6 +220,10 @@ class NuevoGasto extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';
