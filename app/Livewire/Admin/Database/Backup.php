@@ -4,7 +4,7 @@ namespace App\Livewire\Admin\Database;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use ZipArchive;
 
@@ -15,29 +15,29 @@ class Backup extends Component
 
     public $openRestaurar = false;
 
-    protected $rules = [
-        'backup' => 'required|not_in:0',
+    protected $messages = [
+        'zippedBackup.required' => 'Debe seleccionar un archivo.',
+        'zippedBackup.in' => 'Debe seleccionar un archivo.',
     ];
 
-    protected $messages = [
-        'backup.required' => 'Debe seleccionar un archivo.',
-        'backup.not_in' => 'Debe seleccionar un archivo.',
-    ];
+    protected function rules()
+    {
+        // Only backups that exist in the backups folder, never an arbitrary path
+        return [
+            'zippedBackup' => ['required', Rule::in($this->respaldosDisponibles())],
+        ];
+    }
 
     public function render()
     {
-        $files = [];
-
-        foreach (Storage::allFiles('backups') as $item) {
-            $files[] = Str::substr($item, 16);
-        }
+        $files = $this->respaldosDisponibles();
 
         return view('livewire.admin.database.backup', compact('files'));
     }
 
-    public function updatedBackup($propertyName)
+    public function updatedZippedBackup()
     {
-        $this->validateOnly($propertyName);
+        $this->validateOnly('zippedBackup');
     }
 
     public function respaldar()
@@ -55,16 +55,37 @@ class Backup extends Component
     {
         $this->authorize('admin.database.restore');
 
+        $this->validate();
+
+        $carpeta = Storage::disk('backups')->path($this->carpetaRespaldos());
+
         $zip = new ZipArchive;
-        $zip->open(storage_path('app/backups/SGC-Web/' . $this->zippedBackup));
-        $zip->extractTo(storage_path('app/backups/SGC-Web'));
+        $zip->open($carpeta . DIRECTORY_SEPARATOR . $this->zippedBackup);
+        $zip->extractTo($carpeta);
         $zip->close();
 
-        Artisan::call('db:restore --path=C:/laragon/www/sgcweb/storage/app/backups/SGC-Web/db-dumps/postgresql-sgcweb.backup');
+        Artisan::call('db:restore', ['--path' => $carpeta . '/db-dumps/postgresql-sgcweb.backup']);
 
-        Storage::deleteDirectory('backups/SGC-Web/db-dumps');
+        Storage::disk('backups')->deleteDirectory($this->carpetaRespaldos() . '/db-dumps');
 
         $this->reset('openRestaurar');
         flash()->success('Se ha restaurado la base de datos satisfactoriamente');
+    }
+
+    /**
+     * Zip file names (without folder) of the backups created by spatie/laravel-backup.
+     */
+    private function respaldosDisponibles(): array
+    {
+        return collect(Storage::disk('backups')->files($this->carpetaRespaldos()))
+            ->filter(fn ($archivo) => str_ends_with($archivo, '.zip'))
+            ->map(fn ($archivo) => basename($archivo))
+            ->values()
+            ->all();
+    }
+
+    private function carpetaRespaldos(): string
+    {
+        return config('backup.backup.name');
     }
 }

@@ -42,7 +42,7 @@
                     @endforeach
 
                 </select>
-				<x-input-error for="backup" />
+				<x-input-error for="zippedBackup" />
             </div>
 
                 <div wire:loading class="p-2">

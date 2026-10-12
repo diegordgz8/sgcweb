@@ -23,6 +23,8 @@ use App\Models\Unidad;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -154,6 +156,22 @@ class AutorizacionTest extends TestCase
             ->call('remove');
 
         $this->assertNull($hijo->fresh()->unidad_id);
+    }
+
+    public function test_restore_only_accepts_existing_backup_files(): void
+    {
+        Storage::fake('backups');
+        Storage::disk('backups')->put(config('backup.backup.name').'/2026-10-01-00-00-00.zip', 'zip');
+        Artisan::spy();
+
+        $vista = Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class);
+
+        $vista->set('zippedBackup', '../../../.env')
+            ->call('restaurar')
+            ->assertHasErrors('zippedBackup');
+
+        $this->assertSame(['2026-10-01-00-00-00.zip'], $vista->viewData('files'));
+        Artisan::shouldNotHaveReceived('call');
     }
 
     private function usuarioConRol(string $rol): User
