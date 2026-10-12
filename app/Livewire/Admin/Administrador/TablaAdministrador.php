@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Administrador;
 
 use App\Models\Administrador;
 use App\Models\Integrante;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaAdministrador extends Component
 	public Administrador $administrador;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'id';
+	#[Locked]
 	public $direccion = 'desc';
 	public $cantidad = '10';
 
@@ -64,6 +67,10 @@ class TablaAdministrador extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['id'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

@@ -6,6 +6,7 @@ use App\Models\Fondo;
 use App\Models\Gasto;
 use App\Models\Pago;
 use App\Models\TasaCambio;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use NumberFormatter;
@@ -38,7 +39,9 @@ class NuevoPago extends Component
 	public $open = false;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'fecha';
+	#[Locked]
 	public $direccion = 'desc';
 	public $cantidad = '10';
 

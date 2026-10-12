@@ -3,12 +3,15 @@
 namespace App\Livewire\Visita;
 
 use App\Models\Visita;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ListaVisita extends Component
 {
     public $busqueda;
+    #[Locked]
     public $orden = 'fecha_hora_entrada';
+    #[Locked]
     public $direccion = 'asc';
     public $cantidad = '10';
 
@@ -40,6 +43,10 @@ class ListaVisita extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['apellido', 'ci', 'fecha_hora_entrada', 'fecha_hora_salida', 'nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

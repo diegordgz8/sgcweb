@@ -8,6 +8,7 @@ use App\Models\PagoPropietario;
 use App\Models\TasaCambio;
 use App\Traits\WithCurrencies;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -34,7 +35,9 @@ class NuevoPago extends Component
 	public $open = false;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'fecha';
+	#[Locked]
 	public $direccion = 'desc';
 	public $cantidad = '10';
 
@@ -215,6 +218,10 @@ class NuevoPago extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['fecha'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

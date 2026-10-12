@@ -3,6 +3,7 @@
 namespace App\Livewire\TipoUnidad;
 
 use App\Models\TipoUnidad;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaTipoUnidad extends Component
 	public $tipoUnidad;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -73,6 +76,10 @@ class TablaTipoUnidad extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['area', 'descripcion', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

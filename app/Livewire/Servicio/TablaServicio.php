@@ -4,6 +4,7 @@ namespace App\Livewire\Servicio;
 
 use App\Models\Categoria;
 use App\Models\Servicio;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaServicio extends Component
 	public Servicio $servicio;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 
@@ -81,6 +84,10 @@ class TablaServicio extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

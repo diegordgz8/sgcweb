@@ -3,6 +3,7 @@
 namespace App\Livewire\Enfermedad;
 
 use App\Models\Enfermedad;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaEnfermedad extends Component
     public Enfermedad $enfermedad;
 
     public $busqueda = '';
+    #[Locked]
     public $orden = 'nombre';
+    #[Locked]
     public $direccion = "asc";
     public $cantidad = '10';
 
@@ -60,6 +63,10 @@ class TablaEnfermedad extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['descripcion', 'nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

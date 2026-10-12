@@ -4,6 +4,7 @@ namespace App\Livewire\Comunicado;
 
 use App\Models\Comunicado;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,7 +15,9 @@ class TablaComunicado extends Component
 	public Comunicado $comunicado;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'created_at';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -58,6 +61,10 @@ class TablaComunicado extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['created_at', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

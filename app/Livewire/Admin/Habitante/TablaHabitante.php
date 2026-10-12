@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Habitante;
 
 use App\Models\Integrante;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaHabitante extends Component
 	public $integrante;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -68,6 +71,10 @@ class TablaHabitante extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['apellido', 'documento', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

@@ -3,6 +3,7 @@
 namespace App\Livewire\Proveedor;
 
 use App\Models\Proveedor;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaProveedor extends Component
 	public Proveedor $proveedor;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'nombre';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 
@@ -89,6 +92,10 @@ class TablaProveedor extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['contacto', 'documento', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

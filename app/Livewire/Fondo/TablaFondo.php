@@ -3,6 +3,7 @@
 namespace App\Livewire\Fondo;
 
 use App\Models\Fondo;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use NumberFormatter;
@@ -14,7 +15,9 @@ class TablaFondo extends Component
 	public Fondo $fondo;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'descripcion';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -95,6 +98,10 @@ class TablaFondo extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['descripcion'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

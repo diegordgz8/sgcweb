@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Mensualidad;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ConfigurarMensualidad extends Component
@@ -13,7 +14,9 @@ class ConfigurarMensualidad extends Component
 	public $open = false;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'created_at';
+	#[Locked]
 	public $direccion = 'desc';
 	public $cantidad = '10';
 

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
@@ -15,7 +16,9 @@ class TablaUsuario extends Component
 	public $roles = [];
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'name';
+	#[Locked]
 	public $direccion = "asc";
 	public $cantidad = '10';
 
@@ -63,6 +66,10 @@ class TablaUsuario extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['email', 'name'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

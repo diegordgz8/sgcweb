@@ -4,6 +4,7 @@ namespace App\Livewire\Asamblea;
 
 use App\Models\Asamblea;
 use App\Models\Integrante;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -20,7 +21,9 @@ class NuevaAsamblea extends Component
 	public $selectPage = false;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'documento';
+	#[Locked]
 	public $direccion = 'desc';
 	public $cantidad = '10';
 
@@ -92,6 +95,10 @@ class NuevaAsamblea extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['apellido', 'documento', 'nombre'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

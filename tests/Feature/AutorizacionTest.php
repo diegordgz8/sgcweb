@@ -25,6 +25,7 @@ use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -180,6 +181,16 @@ class AutorizacionTest extends TestCase
             ->assertDontSeeHtml('$set(\'openRestaurar\', true)');
 
         Artisan::shouldNotHaveReceived('call');
+    }
+
+    public function test_table_sort_cannot_be_tampered_with(): void
+    {
+        $vista = Livewire::actingAs($this->usuarioConRol('Administrador'))->test(TablaBanco::class);
+
+        $vista->call('orden', 'password')->assertSet('orden', 'nombre');
+
+        $this->expectException(CannotUpdateLockedPropertyException::class);
+        $vista->set('direccion', 'asc, (select 1)');
     }
 
     private function usuarioConRol(string $rol): User

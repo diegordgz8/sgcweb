@@ -3,6 +3,7 @@
 namespace App\Livewire\Pago;
 
 use App\Models\Pago;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 use NumberFormatter;
@@ -16,7 +17,9 @@ class TablaPago extends Component
 	private $dolar = 'USD';
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'fecha';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 

@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Iva;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ConfigurarIva extends Component
@@ -13,7 +14,9 @@ class ConfigurarIva extends Component
 
 	public $busqueda = '';
 	public $cantidad = '10';
+	#[Locked]
 	public $orden = 'created_at';
+	#[Locked]
 	public $direccion = 'desc';
 
 	protected $rules = [

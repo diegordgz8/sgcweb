@@ -4,6 +4,7 @@ namespace App\Livewire\Cuenta;
 
 use App\Models\Banco;
 use App\Models\Cuenta;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Illuminate\Support\Str;
 use Livewire\WithPagination;
@@ -19,7 +20,9 @@ class TablaCuenta extends Component
 	public $telefono;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'numero';
+	#[Locked]
 	public $direccion = "desc";
 	public $cantidad = "10";
 
@@ -91,6 +94,10 @@ class TablaCuenta extends Component
 
 	public function orden($orden)
 	{
+		if (! in_array($orden, ['documento', 'numero', 'tipo'], true)) {
+			return;
+		}
+
 		if ($this->orden == $orden) {
 			if ($this->direccion == 'desc') {
 				$this->direccion = 'asc';

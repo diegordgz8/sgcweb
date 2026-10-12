@@ -3,6 +3,7 @@
 namespace App\Livewire\Visita;
 
 use App\Models\Visita;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaVisita extends Component
 	public Visita $visita;
 
 	public $busqueda;
+	#[Locked]
 	public $orden = 'fecha_hora_entrada';
+	#[Locked]
 	public $direccion = 'asc';
 	public $cantidad = '10';
 

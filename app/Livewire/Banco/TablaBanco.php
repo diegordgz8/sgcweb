@@ -3,6 +3,7 @@
 namespace App\Livewire\Banco;
 
 use App\Models\Banco;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,7 +14,9 @@ class TablaBanco extends Component
     public $banco;
 
     public $busqueda;
+    #[Locked]
     public $orden = 'nombre';
+    #[Locked]
     public $direccion = "asc";
     public $cantidad = "10";
 
@@ -64,6 +67,10 @@ class TablaBanco extends Component
 
     public function orden($orden)
     {
+        if (! in_array($orden, ['nombre'], true)) {
+            return;
+        }
+
         if ($this->orden == $orden) {
             if ($this->direccion == 'desc') {
                 $this->direccion = 'asc';

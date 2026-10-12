@@ -3,6 +3,7 @@
 namespace App\Livewire\CierreMes;
 
 use App\Models\Factura;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,7 +12,9 @@ class TablaFactura extends Component
 	use WithPagination;
 
 	public $busqueda = '';
+	#[Locked]
 	public $orden = 'created_at';
+	#[Locked]
 	public $direccion = "desc";
 	public $cantidad = '10';
 
