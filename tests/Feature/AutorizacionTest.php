@@ -158,19 +158,27 @@ class AutorizacionTest extends TestCase
         $this->assertNull($hijo->fresh()->unidad_id);
     }
 
-    public function test_restore_only_accepts_existing_backup_files(): void
+    public function test_backup_list_shows_existing_backup_files(): void
+    {
+        Storage::fake('backups');
+        Storage::disk('backups')->put(config('backup.backup.name').'/2026-10-01-00-00-00.zip', 'zip');
+
+        $vista = Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class);
+
+        $this->assertSame(['2026-10-01-00-00-00.zip'], $vista->viewData('files'));
+    }
+
+    public function test_restore_is_disabled_and_never_touches_the_database(): void
     {
         Storage::fake('backups');
         Storage::disk('backups')->put(config('backup.backup.name').'/2026-10-01-00-00-00.zip', 'zip');
         Artisan::spy();
 
-        $vista = Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class);
-
-        $vista->set('zippedBackup', '../../../.env')
+        Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class)
+            ->set('zippedBackup', '2026-10-01-00-00-00.zip')
             ->call('restaurar')
-            ->assertHasErrors('zippedBackup');
+            ->assertDontSeeHtml('$set(\'openRestaurar\', true)');
 
-        $this->assertSame(['2026-10-01-00-00-00.zip'], $vista->viewData('files'));
         Artisan::shouldNotHaveReceived('call');
     }
 

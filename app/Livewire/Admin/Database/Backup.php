@@ -55,6 +55,12 @@ class Backup extends Component
     {
         $this->authorize('admin.database.restore');
 
+        // db:restore runs migrate:fresh and then psql, but the project uses MySQL:
+        // it would wipe the database without restoring it. Disabled until R-19.
+        flash()->error('La restauración de respaldos está deshabilitada temporalmente.');
+
+        return;
+
         $this->validate();
 
         $carpeta = Storage::disk('backups')->path($this->carpetaRespaldos());

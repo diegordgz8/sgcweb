@@ -16,8 +16,7 @@
                         <span class="text-red-500 text-xl font-semibold">Procesando, por favor espere...</span>
                     </div>
 
-                    <x-btn-admin wire:click="$set('openRestaurar', true)" nombre="Restaurar" imagen="img/iconos/recuperacion.png"
-                        class="cursor-pointer" />
+                    {{-- Restore is disabled until it is rewritten for MySQL (R-19) --}}
                 </div>
 
             </div>
