@@ -14,6 +14,7 @@ use App\Models\Interes;
 use App\Models\Item;
 use App\Models\Iva;
 use App\Models\Mensualidad;
+use App\Models\Moneda;
 use App\Models\Propietario;
 use App\Models\Proveedor;
 use App\Models\Sancion;
@@ -41,9 +42,11 @@ class CierreMesTest extends TestCase
         $this->seed(RoleSeeder::class);
         $this->administrador = User::factory()->create()->assignRole('Condominio');
 
-        TasaCambio::create(['tasa' => 40, 'fecha' => now()]);
+        Moneda::create(['codigo' => 'USD', 'es_base' => true]);
+        Moneda::create(['codigo' => 'VES']);
+        TasaCambio::create(['moneda' => 'VES', 'tasa' => 40, 'fecha' => now()]);
         Iva::create(['factor' => 16, 'fecha' => now()]);
-        Mensualidad::create(['monto' => 10, 'moneda' => 'Bolívar']);
+        Mensualidad::create(['monto' => 10, 'moneda' => 'VES']);
 
         $this->proveedor = Proveedor::factory()->create();
     }
@@ -116,9 +119,9 @@ class CierreMesTest extends TestCase
     public function test_dollar_expense_is_converted_with_exchange_rate(): void
     {
         $unidades = $this->crearUnidades([50]);
-        $gasto = $this->crearGasto('Ordinario', 5, $this->mes(0), moneda: 'Dólar');
+        $gasto = $this->crearGasto('Ordinario', 5, $this->mes(0), moneda: 'USD');
 
-        $this->cerrar($this->mes(0), 'Bolívar');
+        $this->cerrar($this->mes(0), 'VES');
 
         $this->assertEquals([200.0], $this->montosCobrados($gasto, $unidades[0], $this->mes(0)));
     }
@@ -126,7 +129,7 @@ class CierreMesTest extends TestCase
     public function test_pending_sanction_is_charged_once(): void
     {
         [$unidad] = $this->crearUnidades([50]);
-        $sancion = Sancion::create(['descripcion' => 'Ruido', 'monto' => 25, 'moneda' => 'Bolívar']);
+        $sancion = Sancion::create(['descripcion' => 'Ruido', 'monto' => 25, 'moneda' => 'VES']);
         $unidad->sanciones()->attach($sancion, ['monto_pagar' => 25]);
 
         $this->cerrar($this->mes(0));
@@ -236,7 +239,7 @@ class CierreMesTest extends TestCase
         return now()->startOfMonth()->subMonths(6)->addMonths($desplazamiento)->format('Y-m');
     }
 
-    private function cerrar(string $mes, string $moneda = 'Bolívar'): void
+    private function cerrar(string $mes, string $moneda = 'VES'): void
     {
         Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
             ->set('moneda', $moneda)
@@ -269,7 +272,7 @@ class CierreMesTest extends TestCase
         float $monto,
         string $mesCobro,
         string $calculo = 'Total de inmuebles',
-        string $moneda = 'Bolívar',
+        string $moneda = 'VES',
         ?int $numeroMeses = null,
     ): Gasto {
         $gasto = Gasto::create([
@@ -297,11 +300,10 @@ class CierreMesTest extends TestCase
             'numero' => 'F-'.uniqid(),
             'monto' => $monto,
             'monto_por_pagar' => $monto,
-            'moneda' => 'Bolívar',
+            'moneda' => 'VES',
             'fecha' => $fecha,
             'unidad_id' => $unidad->id,
             'iva_id' => Iva::first()->id,
-            'tasa_cambio_id' => TasaCambio::first()->id,
         ]);
     }
 

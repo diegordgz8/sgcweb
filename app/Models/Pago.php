@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\WithCurrencies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Pago extends Model
 {
 	use HasFactory;
+	use WithCurrencies;
 
 	protected $table = 'pagos_gastos';
 
@@ -19,7 +21,6 @@ class Pago extends Model
 		'referencia',
 		'forma_pago',
 		'moneda',
-		'tasa_cambio',
 	];
 
 	public function gasto()
@@ -32,21 +33,14 @@ class Pago extends Model
 		return $this->belongsTo(Fondo::class);
 	}
 
-	public function pagarGasto(bool $conCambio)
+	/**
+	 * Debita el fondo en la moneda del pago y abona al gasto el monto convertido a la moneda
+	 * del gasto, con las tasas vigentes al registrar el pago.
+	 */
+	public function pagarGasto(): void
 	{
-		$this->fondo->debitar($this->monto);
+		$this->fondo->debitar($this->convertirMonto($this->monto, $this->moneda, $this->fondo->moneda, $this->created_at));
 
-		if ($conCambio) {
-			if ($this->moneda == 'Bolívar') {
-				$montoConvertido = $this->monto / $this->tasa_cambio;
-			} else if ($this->moneda == 'Dólar') {
-				$montoConvertido = $this->monto * $this->tasa_cambio;
-			}
-
-			$this->gasto->pagar($montoConvertido);
-		} else {
-
-			$this->gasto->pagar($this->monto);
-		}
+		$this->gasto->pagar($this->convertirMonto($this->monto, $this->moneda, $this->gasto->moneda, $this->created_at));
 	}
 }

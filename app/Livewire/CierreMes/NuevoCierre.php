@@ -3,38 +3,48 @@
 namespace App\Livewire\CierreMes;
 
 use App\Exceptions\MesYaCerrado;
+use App\Exceptions\TasaNoDisponible;
+use App\Models\Moneda;
 use App\Models\TasaCambio;
 use App\Services\CierreMesService;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class NuevoCierre extends Component
 {
 	public $mes;
-	public $moneda = 'Bolívar';
-	public TasaCambio $tasaCambio;
+	public $moneda;
 
 	public $open = false;
 
 	public $readyToLoad = false;
 
-	protected $rules = [
-		'mes' => 'required|before_or_equal:this month',
-		'moneda' => 'required',
-		'tasaCambio.tasa' => 'required|numeric|gt:0',
-	];
-
 	protected $messages = [
 		'mes.before_or_equal' => 'El mes debe ser anterior o igual a este mes.',
 	];
 
+	protected function rules()
+	{
+		return [
+			'mes' => 'required|before_or_equal:this month',
+			'moneda' => ['required', Rule::in(Moneda::codigos())],
+		];
+	}
+
 	public function mount()
 	{
-		$this->tasaCambio = TasaCambio::orderBy('created_at', 'desc')->first();
+		$this->moneda = Moneda::base();
 	}
 
 	public function render()
 	{
-		return view('livewire.cierre-mes.nuevo-cierre');
+		// Tasas con las que se convertirán los montos de las facturas
+		$tasas = collect(Moneda::codigos())
+			->reject(fn ($codigo) => $codigo === Moneda::base())
+			->map(fn ($codigo) => TasaCambio::vigente($codigo))
+			->filter();
+
+		return view('livewire.cierre-mes.nuevo-cierre', compact('tasas'));
 	}
 
 	public function updated($propertyName)
@@ -49,9 +59,13 @@ class NuevoCierre extends Component
 		$this->validate();
 
 		try {
-			$cierreMes->cerrar($this->mes, $this->moneda, $this->tasaCambio);
+			$cierreMes->cerrar($this->mes, $this->moneda);
 		} catch (MesYaCerrado $e) {
 			flash()->error('El mes que ha seleccionado ya ha sido cerrado.');
+
+			return false;
+		} catch (TasaNoDisponible $e) {
+			flash()->error($e->getMessage());
 
 			return false;
 		}
@@ -59,8 +73,8 @@ class NuevoCierre extends Component
 		$this->reset([
 			'open',
 			'mes',
-			'moneda',
 		]);
+		$this->moneda = Moneda::base();
 
 		$this->dispatch('render')->to('cierre-mes.tabla-factura');
 		flash()->success('El cierre de mes fue satisfactorio. Se han generado las facturas.');

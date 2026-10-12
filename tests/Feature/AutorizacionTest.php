@@ -15,6 +15,7 @@ use App\Models\CierreMes;
 use App\Models\Factura;
 use App\Models\Integrante;
 use App\Models\Iva;
+use App\Models\Moneda;
 use App\Models\PagoPropietario;
 use App\Models\Propietario;
 use App\Models\TasaCambio;
@@ -39,7 +40,9 @@ class AutorizacionTest extends TestCase
 
         $this->seed(RoleSeeder::class);
         Iva::create(['factor' => 16, 'fecha' => now()]);
-        TasaCambio::create(['tasa' => 40, 'fecha' => now()]);
+        Moneda::create(['codigo' => 'USD', 'es_base' => true]);
+        Moneda::create(['codigo' => 'VES']);
+        TasaCambio::create(['moneda' => 'VES', 'tasa' => 40, 'fecha' => now()]);
     }
 
     public function test_owner_cannot_open_admin_pages(): void
@@ -220,11 +223,10 @@ class AutorizacionTest extends TestCase
             'numero' => 'F-'.uniqid(),
             'monto' => 100,
             'monto_por_pagar' => 100,
-            'moneda' => 'Bolívar',
+            'moneda' => 'VES',
             'fecha' => now(),
             'unidad_id' => $unidad->id,
             'iva_id' => Iva::first()->id,
-            'tasa_cambio_id' => TasaCambio::first()->id,
         ]);
     }
 
@@ -236,8 +238,7 @@ class AutorizacionTest extends TestCase
             'fecha' => now(),
             'referencia' => '123456',
             'forma_pago' => 'Transferencia',
-            'moneda' => 'Bolívar',
-            'tasa_cambio_id' => TasaCambio::first()->id,
+            'moneda' => 'VES',
             'unidad_id' => $factura->unidad_id,
             'factura_id' => $factura->id,
         ]);

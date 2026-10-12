@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Regional settings of the condominium, chosen from the nnjeim/world data:
- * country (ISO2), timezone (IANA) and working currencies (ISO 4217 codes).
+ * country (ISO2) and timezone (IANA). Its currencies live in the monedas table.
  */
 return new class extends Migration
 {
@@ -15,14 +15,13 @@ return new class extends Migration
 		Schema::table('condominio', function (Blueprint $table) {
 			$table->char('pais', 2)->nullable()->after('direccion');
 			$table->string('zona_horaria')->nullable()->after('pais');
-			$table->json('monedas')->nullable()->after('zona_horaria');
 		});
 	}
 
 	public function down(): void
 	{
 		Schema::table('condominio', function (Blueprint $table) {
-			$table->dropColumn(['pais', 'zona_horaria', 'monedas']);
+			$table->dropColumn(['pais', 'zona_horaria']);
 		});
 	}
 };

@@ -10,5 +10,5 @@ class CierreMes extends Model
     use HasFactory;
 
     protected $table = 'cierres_mes';
-    protected $fillable = ['mes', 'moneda', 'tasa_cambio_id'];
+    protected $fillable = ['mes', 'moneda'];
 }

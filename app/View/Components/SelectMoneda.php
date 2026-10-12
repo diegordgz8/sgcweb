@@ -2,55 +2,40 @@
 
 namespace App\View\Components;
 
-use Illuminate\Support\Str;
+use App\Models\Moneda;
 use Illuminate\View\Component;
-use Locale;
 use Nnjeim\World\World;
-use ResourceBundle;
 
 class SelectMoneda extends Component
 {
     public $monedas;
     public $seleccionado;
     public $visibles;
+    public $modelo;
 
     /**
      * Create a new component instance.
      *
      * @param  string|null  $visibles  Expresión de Alpine con los códigos que se deben mostrar
+     * @param  string|null  $modelo  Variable de Alpine que guarda el código seleccionado
      * @return void
      */
-    public function __construct($seleccionado = null, $visibles = null)
+    public function __construct($seleccionado = null, $visibles = null, $modelo = null)
     {
         $this->seleccionado = $seleccionado;
         $this->visibles = $visibles;
+        $this->modelo = $modelo;
 
         // Las monedas vienen por país, por eso se eliminan las repetidas
         $this->monedas = World::currencies(['fields' => 'code,symbol'])->data
             ->unique('code')
             ->sortBy('code')
-            ->map(fn ($moneda) => array_merge($moneda, [
-                'name' => $this->nombreTraducido($moneda['code']) ?? $moneda['name'],
-            ]));
-    }
+            ->map(function ($moneda) {
+                // world solo trae los nombres en inglés; si intl no conoce la moneda se deja ese
+                $nombre = Moneda::nombreDe($moneda['code']);
 
-    /**
-     * Nombre de la moneda en el idioma de la aplicación, según los datos de intl (ICU).
-     * La librería world solo trae los nombres en inglés.
-     */
-    private function nombreTraducido(string $codigo): ?string
-    {
-        $locale = app()->getLocale();
-
-        foreach (array_unique([$locale, Locale::getPrimaryLanguage($locale)]) as $idioma) {
-            $nombre = ResourceBundle::create($idioma, 'ICUDATA-curr')?->get('Currencies')?->get($codigo)?->get(1);
-
-            if ($nombre) {
-                return Str::ucfirst($nombre);
-            }
-        }
-
-        return null;
+                return array_merge($moneda, ['name' => $nombre !== $moneda['code'] ? $nombre : $moneda['name']]);
+            });
     }
 
     /**
