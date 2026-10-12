@@ -21,13 +21,13 @@ class NuevoGasto extends Component
 	public $descripcion;
 	public $tipo = 'Ordinario';
 	public $numeroMeses;
-	public Asamblea $asamblea;
+	public $asambleaId = 0;
 	public $calculo;
 	public $comienzoCobro;
 	public $moneda;
 	public float $monto = 0.00;
 	public $observaciones;
-	public Proveedor $proveedor;
+	public $proveedorId = 0;
 	public $factura;
 
 	public $servicios = [];
@@ -58,9 +58,11 @@ class NuevoGasto extends Component
 			],
 			'tipo' => 'required',
 			'numeroMeses' => 'exclude_unless:tipo,Extraordinario|required|numeric|gt:0',
-			'asamblea.id' => [
+			'asambleaId' => [
 				'exclude_if:tipo,Ordinario',
-				'required_if:elegidoAsamblea,si',
+				'exclude_unless:elegidoAsamblea,si',
+				'not_in:0',
+				'exists:asambleas,id',
 			],
 			'calculo' => 'required',
 			'comienzoCobro' => [
@@ -74,13 +76,14 @@ class NuevoGasto extends Component
 				'numeric',
 			],
 			'observaciones' => 'nullable',
-			'proveedor.id' => [
+			'proveedorId' => [
 				'required',
 				'not_in:0',
+				'exists:proveedores,id',
 			],
 			'factura' => 'required',
 			'servicios' => [
-				'exclude_if:proveedor.id,0',
+				'exclude_if:proveedorId,0',
 				'array',
 				'min:1',
 			],
@@ -94,8 +97,9 @@ class NuevoGasto extends Component
 
 	protected $messages = [
 		'comienzoCobro.after' => 'El comienzo de cobro no puede ser un mes anterior al actual.',
-		'proveedor.id.required' => 'Debe seleccionar un proveedor.',
-		'proveedor.id.not_in' => 'Debe seleccionar un proveedor.',
+		'proveedorId.required' => 'Debe seleccionar un proveedor.',
+		'proveedorId.not_in' => 'Debe seleccionar un proveedor.',
+		'asambleaId.not_in' => 'Debe seleccionar una asamblea.',
 		'servicios.min' => 'Debe seleccionar al menos un servicio.',
 		'montos.*.required_with' => 'El monto es requerido.',
 		'montos.*.gt' => 'El monto debe ser mayor que 0.',
@@ -104,9 +108,6 @@ class NuevoGasto extends Component
 	public function mount()
 	{
 		$this->moneda = Moneda::base();
-		$this->asamblea = new Asamblea;
-		$this->proveedor = new Proveedor;
-		$this->proveedor->id = 0;
 	}
 
 	public function render()
@@ -125,7 +126,7 @@ class NuevoGasto extends Component
 
 	public function getConsultaServiciosProperty()
 	{
-		return $this->proveedor->servicios()
+		return Proveedor::findOrNew($this->proveedorId)->servicios()
 			->where(function ($query) {
 				$query->where('nombre', 'LIKE', '%' . $this->busqueda . '%')
 					->orWhere('descripcion', 'LIKE', '%' . $this->busqueda . '%');
@@ -155,39 +156,20 @@ class NuevoGasto extends Component
 		$this->resetPage();
 	}
 
-	public function updatingAsamblea($value)
-	{
-		$this->asamblea = $value == '--' ? new Asamblea : Asamblea::find($value);
-	}
-
 	public function updatingCalculo($value)
 	{
 		$this->calculo = $value == '----' ? '' : $value;
 		$this->validateOnly('calculo');
 	}
 
-	public function updatingProveedor($value)
-	{
-		if ($value == '----') {
-			$this->proveedor = new Proveedor;
-			$this->proveedor->id = 0;
-		} else {
-			Proveedor::find($value);
-		}
-	}
-
-	public function updatedProveedor()
+	public function updatedProveedorId()
 	{
 		$this->selectAll = false;
 		$this->selectPage = false;
 
 		$this->servicios = [];
 		$this->montos = [];
-	}
-
-	public function updatingServicios()
-	{
-		$this->reset('monto');
+		$this->monto = 0;
 	}
 
 	public function updatedServicios($value, $key)
@@ -203,11 +185,6 @@ class NuevoGasto extends Component
 		$this->selectPage = false;
 
 		$this->sumarMontos();
-	}
-
-	public function updatingMontos()
-	{
-		$this->reset('monto');
 	}
 
 	public function updatedMontos($value, $key)
@@ -242,19 +219,18 @@ class NuevoGasto extends Component
 		}
 	}
 
+	/**
+	 * El monto del gasto es la suma de los montos de los servicios seleccionados.
+	 */
 	private function sumarMontos()
 	{
+		$this->monto = 0;
+
 		foreach ($this->montos as $key => $monto) {
-
-			// if ($monto != null) {
-
-			if (in_array($key, $this->servicios)) {
-				$this->monto = $this->monto + $monto;
+			if (in_array($key, $this->servicios) && is_numeric($monto)) {
+				$this->monto += $monto;
 			}
-			// }
 		}
-
-		number_format($this->monto, 2, ',', '.');
 	}
 
 	public function save()
@@ -275,7 +251,7 @@ class NuevoGasto extends Component
 				'monto' => $this->monto,
 				'saldo' => $this->monto,
 				'observaciones' => $this->observaciones,
-				'proveedor_id' => $this->proveedor->id,
+				'proveedor_id' => $this->proveedorId,
 				'factura' => $this->factura,
 			]);
 
@@ -285,8 +261,8 @@ class NuevoGasto extends Component
 					'num_meses' => $this->numeroMeses,
 				]);
 
-				if ($this->elegidoAsamblea) {
-					$gastoExtraordinario->asamblea()->associate($this->asamblea);
+				if ($this->elegidoAsamblea == 'si') {
+					$gastoExtraordinario->asamblea()->associate($this->asambleaId);
 					$gastoExtraordinario->save();
 				}
 			}
@@ -316,9 +292,8 @@ class NuevoGasto extends Component
 
 			$this->moneda = Moneda::base();
 
-			$this->asamblea = new Asamblea;
-			$this->proveedor = new Proveedor;
-			$this->proveedor->id = 0;
+			$this->asambleaId = 0;
+			$this->proveedorId = 0;
 
 			$this->dispatch('render')->to('gasto.tabla-gasto');
 			flash()->success('El gasto se registró satisfactoriamente');

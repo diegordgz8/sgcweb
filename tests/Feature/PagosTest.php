@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\Gasto\NuevoGasto;
 use App\Livewire\Pago\NuevoPago as NuevoPagoGasto;
 use App\Livewire\PagoPropietario\ConfirmarPago;
 use App\Livewire\PagoPropietario\NuevoPago as NuevoPagoPropietario;
 use App\Models\Banco;
+use App\Models\Categoria;
 use App\Models\Cuenta;
 use App\Models\Factura;
 use App\Models\Fondo;
@@ -16,6 +18,7 @@ use App\Models\Moneda;
 use App\Models\PagoPropietario;
 use App\Models\Propietario;
 use App\Models\Proveedor;
+use App\Models\Servicio;
 use App\Models\TasaCambio;
 use App\Models\TipoUnidad;
 use App\Models\Unidad;
@@ -104,6 +107,7 @@ class PagosTest extends TestCase
 
         Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
             ->call('mostrarForm', $factura->id)
+            ->set('formaPago', 'Transferencia')
             ->assertDontSee($cuenta->numeroOculto)
             ->set('descripcion', 'Cuota')
             ->set('fecha', now()->format('Y-m-d'))
@@ -161,6 +165,91 @@ class PagosTest extends TestCase
             ->set('monto', 6000)
             ->call('save')
             ->assertHasErrors(['monto' => 'lte']);
+    }
+
+    public function test_owner_payment_only_offers_accounts_whose_fund_is_in_the_payment_currency(): void
+    {
+        [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
+        $cuentaPesos = $this->cuentaConFondo('ARS');
+        $cuentaDolares = $this->cuentaConFondo('USD');
+
+        $prueba = Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+            ->call('mostrarForm', $factura->id)
+            ->set('formaPago', 'Transferencia')
+            ->assertSee($cuentaPesos->numeroOculto)
+            ->assertDontSee($cuentaDolares->numeroOculto)
+            ->set('cuentaId', $cuentaPesos->id)
+            ->set('moneda', 'USD')
+            ->assertSet('cuentaId', 0)
+            ->assertSee($cuentaDolares->numeroOculto)
+            ->assertDontSee($cuentaPesos->numeroOculto);
+
+        // Una cuenta de otra moneda se rechaza aunque se envíe a mano
+        $prueba->set('cuentaId', $cuentaPesos->id)
+            ->set('descripcion', 'Cuota')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('referencia', '52412356')
+            ->set('monto', 50)
+            ->call('save')
+            ->assertHasErrors(['cuentaId' => 'exists']);
+    }
+
+    public function test_expense_amount_is_the_sum_of_the_provider_services(): void
+    {
+        Categoria::factory()->create();
+        $proveedor = Proveedor::factory()->create();
+        [$pintura, $limpieza] = Servicio::factory()->count(2)->create();
+        $proveedor->servicios()->attach([$pintura->id, $limpieza->id]);
+
+        Livewire::actingAs($this->usuarioCondominio())->test(NuevoGasto::class)
+            ->set('readyToLoad', true)
+            ->set('proveedorId', $proveedor->id)
+            ->assertSee($pintura->nombre)
+            ->set('servicios', [(string) $pintura->id, (string) $limpieza->id])
+            ->set("montos.{$pintura->id}", 1500)
+            ->set("montos.{$limpieza->id}", 500)
+            ->assertSet('monto', 2000.0)
+            ->set('descripcion', 'Mantenimiento')
+            ->set('calculo', 'Total de inmuebles')
+            ->set('comienzoCobro', now()->format('Y-m'))
+            ->set('moneda', 'ARS')
+            ->set('factura', 'F-10')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $gasto = Gasto::sole();
+        $this->assertEquals(2000, $gasto->monto);
+        $this->assertSame('ARS', $gasto->moneda);
+        $this->assertSame($proveedor->id, $gasto->proveedor_id);
+        $this->assertSame(2, $gasto->servicios()->count());
+    }
+
+    public function test_expense_payment_by_transfer_lists_bank_funds_in_the_payment_currency(): void
+    {
+        $gasto = Gasto::create([
+            'descripcion' => 'Ascensor', 'tipo' => 'Ordinario', 'calculo_por' => 'Total de inmuebles',
+            'mes_cobro' => now()->format('Y-m'), 'moneda' => 'ARS', 'monto' => 1000, 'saldo' => 1000,
+            'proveedor_id' => Proveedor::factory()->create()->id, 'factura' => 'F-3',
+        ]);
+        $cuentaPesos = $this->cuentaConFondo('ARS');
+        $cuentaDolares = $this->cuentaConFondo('USD');
+        $cuentaPesos->fondo->update(['saldo' => 5000]);
+
+        Livewire::actingAs($this->usuarioCondominio())->test(NuevoPagoGasto::class)
+            ->call('mostrarForm', $gasto)
+            ->set('formaPago', 'Transferencia')
+            ->assertSee($cuentaPesos->numeroOculto)
+            ->assertDontSee($cuentaDolares->numeroOculto)
+            ->set('fondoId', $cuentaPesos->fondo->id)
+            ->set('descripcion', 'Pago del ascensor')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('recibo', '1003')
+            ->set('referencia', '1234')
+            ->set('monto', 1000)
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertEquals(4000, $cuentaPesos->fondo->fresh()->saldo);
     }
 
     private function usuarioCondominio(): User

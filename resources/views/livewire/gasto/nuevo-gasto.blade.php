@@ -73,7 +73,7 @@
                                         <label for="asamblea" class="block text-sm font-medium text-gray-700">
                                             Asamblea:
                                         </label>
-                                        <select wire:model.live="asamblea.id" name="asamblea" id="asamblea"
+                                        <select wire:model.live="asambleaId" name="asamblea" id="asamblea"
                                             class="form-control w-full">
                                             <option value="0"> -- </option>
                                             @foreach ($asambleas as $item)
@@ -81,7 +81,7 @@
                                                     {{ $item->descripcion }}</option>
                                             @endforeach
                                         </select>
-                                        <x-input-error for="asamblea.id" />
+                                        <x-input-error for="asambleaId" />
                                     </div>
                                 {{-- @endif --}}
                             {{-- @endif --}}
@@ -149,20 +149,20 @@
                                 <label for="proveedor" class="block text-sm font-medium text-gray-700">
                                     Proveedor:
                                 </label>
-                                <select wire:model.live="proveedor.id" name="proveedor" id="proveedor"
+                                <select wire:model.live="proveedorId" name="proveedor" id="proveedor"
                                     class="form-control w-full">
-                                    <option>----</option>
+                                    <option value="0">----</option>
                                     @foreach ($proveedores as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                     @endforeach
                                 </select>
-                                <x-input-error for="proveedor.id" />
+                                <x-input-error for="proveedorId" />
 								<x-input-error for="servicios" />
                             </div>
 
                         </div>
 
-                        @if ($this->proveedor->id)
+                        @if ($proveedorId)
                             <div class="py-4">
                                 @include('livewire.gasto.partials.tabla-servicios')
                             </div>
