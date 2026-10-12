@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Livewire\CierreMes\NuevoCierre;
+use App\Livewire\ShowFactura;
 use App\Models\CierreMes;
+use App\Models\Condominio;
 use App\Models\Factura;
 use App\Models\Gasto;
 use App\Models\GastoExtraordinario;
@@ -176,6 +178,39 @@ class CierreMesTest extends TestCase
 
         $nueva = Factura::where('unidad_id', $unidad->id)->whereNotNull('cierre_mes_id')->sole();
         $this->assertSame($interes->id, $nueva->interes_id);
+    }
+
+    public function test_interest_is_charged_on_base_with_vat_on_top(): void
+    {
+        // Monthly fee of 10 includes 16% VAT: base 8.62, interest 5% on base, VAT on base + interest
+        [$unidad] = $this->crearUnidades([50]);
+        Interes::create(['factor' => 5, 'meses' => 3, 'estado' => true]);
+        $this->crearFactura($unidad, now()->subMonths(4));
+        Condominio::create(['rif' => 'J-12345678-9', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas']);
+
+        $this->cerrar($this->mes(0));
+
+        $factura = Factura::whereNotNull('cierre_mes_id')->sole();
+        $this->assertEquals(10.5, $factura->monto);
+        $this->assertEquals(10.5, $factura->monto_por_pagar);
+
+        $vista = Livewire::test(ShowFactura::class, ['factura' => $factura]);
+        $this->assertEqualsWithDelta(10 / 1.16, $vista->get('sub'), 0.001);
+        $this->assertEqualsWithDelta(10 / 1.16 * 0.05, $vista->get('montoInteres'), 0.001);
+        $this->assertEqualsWithDelta(10 / 1.16 * 1.05 * 0.16, $vista->get('montoIva'), 0.001);
+        $this->assertEqualsWithDelta(10.5, $vista->get('total'), 0.001);
+    }
+
+    public function test_invoice_view_without_interest_adds_vat_to_base(): void
+    {
+        $this->crearUnidades([50]);
+        Condominio::create(['rif' => 'J-12345678-9', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas']);
+
+        $this->cerrar($this->mes(0));
+
+        $vista = Livewire::test(ShowFactura::class, ['factura' => Factura::sole()]);
+        $this->assertEquals(0, $vista->get('montoInteres'));
+        $this->assertEqualsWithDelta(10, $vista->get('total'), 0.001);
     }
 
     public function test_invoice_is_marked_paid_after_partial_payments(): void

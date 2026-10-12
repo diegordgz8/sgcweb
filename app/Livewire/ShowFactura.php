@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Condominio;
 use App\Models\Factura;
-use App\Models\Iva;
 use App\Traits\WithCurrencies;
 use Livewire\Component;
 
@@ -23,29 +22,20 @@ class ShowFactura extends Component
 
 	public function mount()
 	{
-		$this->iva = Iva::orderBy('created_at', 'desc')->first();
-
 		foreach ($this->factura->items as $item) {
 			$item->montoSinIva = $this->revertirIva($item->monto);
 
 			$this->sub += $item->montoSinIva;
 		}
 
+		// Interest is charged on the pre-tax base, and VAT applies to base plus interest
 		if ($this->factura->interes) {
 			$this->montoInteres = $this->sub * ($this->factura->interes->factor / 100);
-
-			// $this->subConInteres = $this->sub + $this->montoInteres;
-			$this->subConInteres = $this->factura->monto;
-
-			$this->montoIva = $this->subConInteres * ($this->factura->iva->factor / 100);
-
-			$this->total = $this->subConInteres + $this->montoIva;
-		} else {
-
-			$this->montoIva = $this->sub * ($this->factura->iva->factor / 100);
-
-			$this->total = $this->sub + $this->montoIva;
 		}
+
+		$this->subConInteres = $this->sub + $this->montoInteres;
+		$this->montoIva = $this->subConInteres * ($this->factura->iva->factor / 100);
+		$this->total = $this->subConInteres + $this->montoIva;
 	}
 
 	public function render()
@@ -57,7 +47,6 @@ class ShowFactura extends Component
 
 	private function revertirIva($monto)
 	{
-		$montoSinIva = $monto / (($this->iva->factor / 100) + 1);
-		return $montoSinIva;
+		return $monto / (($this->factura->iva->factor / 100) + 1);
 	}
 }

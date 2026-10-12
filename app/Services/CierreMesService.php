@@ -167,8 +167,10 @@ class CierreMesService
 		if ($facturaMasVieja && Carbon::parse($facturaMasVieja->fecha)->diffInMonths(Carbon::today()) >= $this->interes->meses) {
 			$factura->interes()->associate($this->interes);
 
-			$factura->revertirIva();
-			$factura->monto += $factura->monto * ($this->interes->factor / 100);
+			// Items already include VAT and VAT also applies to the interest, so scaling the
+			// total is the same as charging interest on the pre-tax base and adding VAT after.
+			$factura->monto *= 1 + ($this->interes->factor / 100);
+			$factura->monto_por_pagar = $factura->monto;
 		}
 	}
 

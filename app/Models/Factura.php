@@ -40,11 +40,6 @@ class Factura extends Model
 		$this->save();
 	}
 
-	public function revertirIva()
-	{
-		$this->monto = $this->monto / (($this->iva->factor / 100) + 1);
-	}
-
 	public function getMontoFormateadoAttribute() {
 		return $this->formatearMonto($this->monto, $this->moneda);
 	}
