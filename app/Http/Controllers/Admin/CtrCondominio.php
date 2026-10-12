@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Condominio;
 use App\Models\Mensualidad;
+use App\Models\Moneda;
 use App\Models\TasaCambio;
-use App\Traits\WithCurrencies;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Nnjeim\World\Models\Country;
 use Nnjeim\World\Models\Currency;
@@ -15,8 +16,6 @@ use Nnjeim\World\Models\Timezone;
 
 class CtrCondominio extends Controller
 {
-	use WithCurrencies;
-
 	public function index()
 	{
 		return view('admin.condominio.index');
@@ -24,7 +23,9 @@ class CtrCondominio extends Controller
 
 	public function store(Request $request)
 	{
-		$request->validate([
+		$monedas = (array) $request->input('monedas');
+
+		$reglas = [
 			'rif' => 'required|max:10',
 			'nombre' => 'required',
 			'direccion' => 'required',
@@ -36,36 +37,61 @@ class CtrCondominio extends Controller
 			],
 			'monedas' => 'required|array|min:1',
 			'monedas.*' => ['distinct', Rule::exists(Currency::class, 'code')],
-			'tasa' => 'required|numeric|gt:0',
+			'moneda_base' => ['required', Rule::in($monedas)],
 			'monto' => 'required|numeric|gt:0',
-			'moneda' => [
-				'required',
-				Rule::in((array) $request->input('monedas')),
-				Rule::in(array_keys($this->monedasSoportadas())),
-			],
-		], [
+			'moneda' => ['required', Rule::in($monedas)],
+		];
+
+		// Cada moneda que no es la base necesita su tasa inicial: 1 base = tasa unidades de la moneda
+		foreach (array_diff($monedas, [$request->input('moneda_base')]) as $codigo) {
+			$reglas["tasas.$codigo"] = 'required|numeric|gt:0';
+		}
+
+		$request->validate($reglas, [
 			'zona_horaria.exists' => 'La zona horaria seleccionada no corresponde al país.',
-			'moneda.in' => 'La moneda de la mensualidad debe ser una de las monedas seleccionadas. Por ahora el sistema solo puede facturar en ' . implode(' o ', array_keys($this->monedasSoportadas())) . '.',
-		]);
+			'moneda_base.in' => 'La moneda base debe ser una de las monedas seleccionadas.',
+			'moneda.in' => 'La moneda de la mensualidad debe ser una de las monedas seleccionadas.',
+			'tasas.*.required' => 'Indique la tasa de cambio de :attribute.',
+		], $this->nombresDeTasas($monedas));
 
-		Condominio::create([
-			'rif' => 'J-' . $request->rif,
-			'nombre' => $request->nombre,
-			'direccion' => $request->direccion,
-			'pais' => $request->pais,
-			'zona_horaria' => $request->zona_horaria,
-			'monedas' => $request->monedas,
-		]);
+		DB::transaction(function () use ($request, $monedas) {
+			Condominio::create([
+				'rif' => 'J-' . $request->rif,
+				'nombre' => $request->nombre,
+				'direccion' => $request->direccion,
+				'pais' => $request->pais,
+				'zona_horaria' => $request->zona_horaria,
+			]);
 
-		TasaCambio::create([
-			'tasa' => $request->tasa,
-		]);
+			foreach ($monedas as $codigo) {
+				Moneda::create([
+					'codigo' => $codigo,
+					'es_base' => $codigo === $request->moneda_base,
+				]);
 
-		Mensualidad::create([
-			'monto' => $request->monto,
-			'moneda' => $this->monedasSoportadas()[$request->moneda],
-		]);
+				if ($codigo !== $request->moneda_base) {
+					TasaCambio::create([
+						'moneda' => $codigo,
+						'tasa' => $request->input("tasas.$codigo"),
+						'fecha' => now(),
+					]);
+				}
+			}
+
+			Mensualidad::create([
+				'monto' => $request->monto,
+				'moneda' => $request->moneda,
+			]);
+		});
 
 		return redirect()->route('admin.home');
+	}
+
+	/**
+	 * Nombres de los campos de tasa para los mensajes de validación, por ejemplo "ARS".
+	 */
+	private function nombresDeTasas(array $monedas): array
+	{
+		return collect($monedas)->mapWithKeys(fn ($codigo) => ["tasas.$codigo" => $codigo])->all();
 	}
 }

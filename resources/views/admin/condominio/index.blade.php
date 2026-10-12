@@ -13,7 +13,18 @@
 
                     {{-- formulario --}}
                     <form action="{{ route('admin.condominio.store') }}" method="POST"
-                        x-data="{ pais: @js(old('pais', 'VE')), monedas: @js(old('monedas', ['VES', 'USD'])) }">
+                        x-data="{
+                            pais: @js(old('pais', 'VE')),
+                            monedas: @js(old('monedas', ['VES', 'USD'])),
+                            base: @js(old('moneda_base', 'USD')),
+                            monedaMensualidad: @js(old('moneda')),
+                            tasas: @js((object) old('tasas', [])),
+                            ajustar() {
+                                if (! this.monedas.includes(this.base)) this.base = this.monedas[0] ?? '';
+                                if (! this.monedas.includes(this.monedaMensualidad)) this.monedaMensualidad = this.base;
+                            },
+                        }"
+                        x-init="ajustar(); $watch('monedas', () => ajustar())">
                         <div class="shadow overflow-hidden sm:rounded-md">
                             <div class="px-4 py-5 bg-white sm:p-6">
                                 <div class="grid grid-cols-6 gap-6">
@@ -86,14 +97,40 @@
                                         <x-input-error for="monedas.*" />
                                     </div>
 
-                                    <h3 class="col-span-6 text-center">Tasa de cambio inicial</h3>
-
                                     <div class="col-span-6">
-                                        <label for="tasa" class="block text-sm font-medium text-gray-700">
-                                            Tasa de cambio:
+                                        <label for="moneda_base" class="block text-sm font-medium text-gray-700">
+                                            Moneda base:
                                         </label>
-                                        <input type="text" name="tasa" id="tasa" value="{{ old('tasa') }}" class="form-control w-full">
-                                        <x-input-error for="tasa" />
+                                        <x-select-moneda name="moneda_base" id="moneda_base" class="w-full"
+                                            visibles="monedas" modelo="base" />
+                                        <p class="mt-1 text-xs text-gray-500">
+                                            Las tasas de las demás monedas se expresan contra ella. No se podrá cambiar después.
+                                        </p>
+                                        <x-input-error for="moneda_base" />
+                                    </div>
+
+                                    <h3 class="col-span-6 text-center">Tasas de cambio iniciales</h3>
+
+                                    <p class="col-span-6 text-sm text-gray-500" x-show="monedas.length < 2">
+                                        Con una sola moneda no hace falta tasa de cambio.
+                                    </p>
+
+                                    <template x-for="codigo in monedas.filter(item => item !== base)" :key="codigo">
+                                        <div class="col-span-6">
+                                            <label x-bind:for="'tasa-' + codigo" class="block text-sm font-medium text-gray-700">
+                                                Tasa de <span x-text="codigo"></span>:
+                                            </label>
+                                            <div class="flex items-center gap-2 text-sm text-gray-700">
+                                                <span class="whitespace-nowrap" x-text="'1 ' + base + ' ='"></span>
+                                                <input type="text" x-bind:name="'tasas[' + codigo + ']'" x-bind:id="'tasa-' + codigo"
+                                                    x-bind:value="tasas[codigo] ?? ''" class="form-control w-full">
+                                                <span x-text="codigo"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <div class="col-span-6 -mt-4">
+                                        <x-input-error for="tasas.*" />
                                     </div>
 
                                     <h3 class="col-span-6 text-center">Mensualidad inicial</h3>
@@ -110,8 +147,8 @@
                                         <label for="moneda" class="block text-sm font-medium text-gray-700">
                                             Moneda:
                                         </label>
-                                        <x-select-moneda name="moneda" id="moneda" class="w-full" visibles="monedas"
-                                            :seleccionado="old('moneda')" />
+                                        <x-select-moneda name="moneda" id="moneda" class="w-full"
+                                            visibles="monedas" modelo="monedaMensualidad" />
                                         <p class="mt-1 text-xs text-gray-500">
                                             Solo se muestran las monedas seleccionadas en la configuración regional.
                                         </p>
