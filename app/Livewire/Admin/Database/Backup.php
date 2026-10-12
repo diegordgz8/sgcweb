@@ -2,11 +2,10 @@
 
 namespace App\Livewire\Admin\Database;
 
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
+use App\Services\RespaldoService;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
-use ZipArchive;
+use Throwable;
 
 class Backup extends Component
 {
@@ -24,13 +23,13 @@ class Backup extends Component
     {
         // Only backups that exist in the backups folder, never an arbitrary path
         return [
-            'zippedBackup' => ['required', Rule::in($this->respaldosDisponibles())],
+            'zippedBackup' => ['required', Rule::in(app(RespaldoService::class)->disponibles())],
         ];
     }
 
-    public function render()
+    public function render(RespaldoService $respaldos)
     {
-        $files = $this->respaldosDisponibles();
+        $files = $respaldos->disponibles();
 
         return view('livewire.admin.database.backup', compact('files'));
     }
@@ -40,58 +39,38 @@ class Backup extends Component
         $this->validateOnly('zippedBackup');
     }
 
-    public function respaldar()
+    public function respaldar(RespaldoService $respaldos)
     {
         $this->authorize('admin.database.backup');
 
-        $this->creandoBackup = true;
-        Artisan::call('backup:run --only-db');
+        try {
+            $respaldos->crear();
+        } catch (Throwable $e) {
+            report($e);
+            flash()->error('No se pudo crear el respaldo de la base de datos.');
+
+            return;
+        }
 
         flash()->success('Se ha creado el respaldo de la base de datos satisfactoriamente');
-        $this->creandoBackup = false;
     }
 
-    public function restaurar()
+    public function restaurar(RespaldoService $respaldos)
     {
         $this->authorize('admin.database.restore');
 
-        // db:restore runs migrate:fresh and then psql, but the project uses MySQL:
-        // it would wipe the database without restoring it. Disabled until R-19.
-        flash()->error('La restauración de respaldos está deshabilitada temporalmente.');
-
-        return;
-
         $this->validate();
 
-        $carpeta = Storage::disk('backups')->path($this->carpetaRespaldos());
+        try {
+            $respaldos->restaurar($this->zippedBackup);
+        } catch (Throwable $e) {
+            report($e);
+            flash()->error('No se pudo restaurar la base de datos: ' . $e->getMessage());
 
-        $zip = new ZipArchive;
-        $zip->open($carpeta . DIRECTORY_SEPARATOR . $this->zippedBackup);
-        $zip->extractTo($carpeta);
-        $zip->close();
-
-        Artisan::call('db:restore', ['--path' => $carpeta . '/db-dumps/postgresql-sgcweb.backup']);
-
-        Storage::disk('backups')->deleteDirectory($this->carpetaRespaldos() . '/db-dumps');
+            return;
+        }
 
         $this->reset('openRestaurar');
         flash()->success('Se ha restaurado la base de datos satisfactoriamente');
-    }
-
-    /**
-     * Zip file names (without folder) of the backups created by spatie/laravel-backup.
-     */
-    private function respaldosDisponibles(): array
-    {
-        return collect(Storage::disk('backups')->files($this->carpetaRespaldos()))
-            ->filter(fn ($archivo) => str_ends_with($archivo, '.zip'))
-            ->map(fn ($archivo) => basename($archivo))
-            ->values()
-            ->all();
-    }
-
-    private function carpetaRespaldos(): string
-    {
-        return config('backup.backup.name');
     }
 }

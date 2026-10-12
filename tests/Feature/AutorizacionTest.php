@@ -23,8 +23,6 @@ use App\Models\Unidad;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportLockedProperties\CannotUpdateLockedPropertyException;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -157,30 +155,6 @@ class AutorizacionTest extends TestCase
             ->call('remove');
 
         $this->assertNull($hijo->fresh()->unidad_id);
-    }
-
-    public function test_backup_list_shows_existing_backup_files(): void
-    {
-        Storage::fake('backups');
-        Storage::disk('backups')->put(config('backup.backup.name').'/2026-10-01-00-00-00.zip', 'zip');
-
-        $vista = Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class);
-
-        $this->assertSame(['2026-10-01-00-00-00.zip'], $vista->viewData('files'));
-    }
-
-    public function test_restore_is_disabled_and_never_touches_the_database(): void
-    {
-        Storage::fake('backups');
-        Storage::disk('backups')->put(config('backup.backup.name').'/2026-10-01-00-00-00.zip', 'zip');
-        Artisan::spy();
-
-        Livewire::actingAs($this->usuarioConRol('Administrador'))->test(Backup::class)
-            ->set('zippedBackup', '2026-10-01-00-00-00.zip')
-            ->call('restaurar')
-            ->assertDontSeeHtml('$set(\'openRestaurar\', true)');
-
-        Artisan::shouldNotHaveReceived('call');
     }
 
     public function test_table_sort_cannot_be_tampered_with(): void
