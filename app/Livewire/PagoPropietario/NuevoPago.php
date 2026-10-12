@@ -5,6 +5,7 @@ namespace App\Livewire\PagoPropietario;
 use App\Exceptions\TasaNoDisponible;
 use App\Models\Factura;
 use App\Models\Cuenta;
+use App\Models\Fondo;
 use App\Models\Moneda;
 use App\Models\PagoPropietario;
 use App\Traits\WithCurrencies;
@@ -28,7 +29,7 @@ class NuevoPago extends Component
 	public $moneda;
 
 	public Factura $factura;
-	public Cuenta $cuenta;
+	public $cuentaId = 0;
 
 	public bool $conCambio = false;
 	// Saldo de la factura expresado en la moneda del pago, con las tasas vigentes
@@ -53,7 +54,12 @@ class NuevoPago extends Component
 			'fecha' => 'required|before_or_equal:today',
 			'formaPago' => 'required',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			'cuenta.id' => 'exclude_unless:formaPago,Transferencia,Pago móvil,Punto de venta,Depósito|not_in:0',
+			// La cuenta debe tener un fondo, que es donde se acredita el pago al confirmarlo
+			'cuentaId' => [
+				'exclude_unless:formaPago,Transferencia,Pago móvil,Punto de venta,Depósito',
+				'not_in:0',
+				Rule::exists('fondos', 'cuenta_id'),
+			],
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil|required|min:4|max:8',
 			'monto' => ['required', 'numeric', 'gt:0', 'lte:' . (float) $this->montoFacturaConvertido],
 		];
@@ -61,15 +67,14 @@ class NuevoPago extends Component
 
 	protected $messages = [
 		'fecha.before_or_equal' => 'La fecha debe ser anterior o igual al día actual.',
-		'cuenta.id.required' => 'Debe seleccionar una cuenta.',
-		'cuenta.id.not_in' => 'Debe seleccionar una cuenta.',
+		'cuentaId.not_in' => 'Debe seleccionar una cuenta.',
+		'cuentaId.exists' => 'La cuenta seleccionada no tiene un fondo asociado.',
 		'monto.lte' => 'El monto no debe ser mayor al total de la deuda.',
 	];
 
 	public function mount()
 	{
 		$this->factura = new Factura;
-		$this->cuenta = new Cuenta;
 	}
 
 	public function render()
@@ -79,9 +84,9 @@ class NuevoPago extends Component
 			->paginate($this->cantidad);
 
 		if ($this->formaPago == 'Pago móvil') {
-			$cuentas = Cuenta::where('publica', true)->whereNotNull('telefono')->get();
+			$cuentas = Cuenta::where('publica', true)->has('fondo')->whereNotNull('telefono')->get();
 		} else {
-			$cuentas = Cuenta::where('publica', true)->get();
+			$cuentas = Cuenta::where('publica', true)->has('fondo')->get();
 		}
 
 		$this->facturaMasVieja = $facturas->sortBy('fecha')->first();
@@ -126,26 +131,13 @@ class NuevoPago extends Component
 		$this->formaPago = $value == '----' ? null : $value;
 		$this->validateOnly('formaPago');
 
-		$this->cuenta = new Cuenta;
-		$this->cuenta->id = 0;
+		$this->cuentaId = 0;
 	}
 
 	public function updatedMoneda()
 	{
-		$this->cuenta = new Cuenta;
-
 		$this->convertirSaldo();
 		$this->validarMonto();
-	}
-
-	public function updatingCuenta($value)
-	{
-		if ($value == 0) {
-			$this->cuenta = new Cuenta;
-		} else {
-
-			$this->cuenta = Cuenta::find($value);
-		};
 	}
 
 	private function validarMonto()
@@ -212,7 +204,7 @@ class NuevoPago extends Component
 		];
 
 		if ($this->formaPago == 'Transferencia' || $this->formaPago == 'Pago móvil') {
-			$datos['fondo_id'] = $this->cuenta->fondo->id;
+			$datos['fondo_id'] = Fondo::where('cuenta_id', $this->cuentaId)->value('id');
 		}
 
 		$pago = PagoPropietario::create($datos);
@@ -230,7 +222,7 @@ class NuevoPago extends Component
 		]);
 
 		$this->factura = new Factura;
-		$this->cuenta = new Cuenta;
+		$this->cuentaId = 0;
 
 		flash()->success('El pago ha sido registrado, debe esperar que el condominio confirme el pago para ver los cambios.');
 	}

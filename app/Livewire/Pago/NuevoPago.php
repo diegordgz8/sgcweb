@@ -27,7 +27,7 @@ class NuevoPago extends Component
 	public $moneda;
 
 	public Gasto $gasto;
-	public Fondo $fondo;
+	public $fondoId = 0;
 
 	// Saldo del gasto expresado en la moneda del pago, con las tasas vigentes
 	public $montoGastoConvertido;
@@ -45,8 +45,8 @@ class NuevoPago extends Component
 	{
 		$monto = ['required', 'numeric', 'gt:0', 'lte:' . (float) $this->montoGastoConvertido];
 
-		if ($this->fondo->id > 0) {
-			$monto[] = 'lte:fondo.saldo';
+		if ($fondo = Fondo::find($this->fondoId)) {
+			$monto[] = 'lte:' . (float) $fondo->saldo;
 		}
 
 		return [
@@ -55,22 +55,21 @@ class NuevoPago extends Component
 			'recibo' => 'required|numeric|unique:pagos_gastos,recibo',
 			'formaPago' => 'required',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			'fondo.id' => 'required|not_in:0',
+			'fondoId' => 'required|not_in:0|exists:fondos,id',
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil,Cheque|min:4|max:8',
 			'monto' => $monto,
 		];
 	}
 
 	protected $messages = [
-		'fondo.id.required' => 'Debe seleccionar un fondo.',
-		'fondo.id.not_in' => 'Debe seleccionar un fondo.',
+		'fondoId.required' => 'Debe seleccionar un fondo.',
+		'fondoId.not_in' => 'Debe seleccionar un fondo.',
 		'monto.lte' => 'El monto no debe ser mayor al saldo del fondo seleccionado o al total de la deuda.',
 	];
 
 	public function mount()
 	{
 		$this->gasto = new Gasto;
-		$this->fondo = new Fondo;
 		$this->moneda = Moneda::base();
 	}
 
@@ -136,23 +135,19 @@ class NuevoPago extends Component
 		$this->formaPago = $value == '----' ? null : $value;
 		$this->validateOnly('formaPago');
 
-		$this->fondo = new Fondo;
-		$this->fondo->id = 0;
+		$this->fondoId = 0;
 	}
 
 	public function updatedMoneda()
 	{
-		$this->fondo = new Fondo;
-		$this->fondo->id = 0;
+		$this->fondoId = 0;
 
 		$this->convertirSaldo();
 		$this->validarMonto();
 	}
 
-	public function updatingFondo($value)
+	public function updatedFondoId()
 	{
-		$this->fondo = $value == 0 ? new Fondo : Fondo::find($value);
-
 		$this->validarMonto();
 	}
 
@@ -197,7 +192,7 @@ class NuevoPago extends Component
 		]);
 
 		$pago->gasto()->associate($this->gasto);
-		$pago->fondo()->associate($this->fondo);
+		$pago->fondo()->associate(Fondo::find($this->fondoId));
 
 		$pago->save();
 
@@ -215,7 +210,7 @@ class NuevoPago extends Component
 
 		$this->moneda = Moneda::base();
 		$this->gasto = new Gasto;
-		$this->fondo = new Fondo;
+		$this->fondoId = 0;
 
 		flash()->success('El pago se ha realizado satisfactoriamente');
 	}

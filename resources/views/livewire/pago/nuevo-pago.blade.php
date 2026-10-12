@@ -107,7 +107,7 @@
                                 <label for="fondo" class="block text-sm font-medium text-gray-700">
                                     Fondo:
                                 </label>
-                                <select wire:model.live="fondo.id" name="fondo" id="fondo" class="form-control w-full">
+                                <select wire:model.live="fondoId" name="fondo" id="fondo" class="form-control w-full">
                                     <option value="0">----</option>
 
                                     @if ($formaPago == 'Pago móvil')
@@ -139,7 +139,7 @@
                                     @endif
 
                                 </select>
-                                <x-input-error for="fondo.id" />
+                                <x-input-error for="fondoId" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-2">
