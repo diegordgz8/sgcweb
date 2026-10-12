@@ -131,7 +131,7 @@
                                     @else
 
                                         @foreach ($fondos as $item)
-                                            <option value="{{ $item->id }}">{{ $item->cuenta->numero }} -
+                                            <option value="{{ $item->id }}">{{ $item->cuenta->numeroOculto }} -
                                                 {{ $item->saldoFormateado }}
                                             </option>
                                         @endforeach

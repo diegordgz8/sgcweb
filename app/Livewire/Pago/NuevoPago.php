@@ -83,16 +83,8 @@ class NuevoPago extends Component
 
 			if ($this->formaPago == 'Transferencia' || $this->formaPago == 'Punto de venta') {
 				$fondos = Fondo::has('cuenta')->where('moneda', $this->moneda)->get();
-
-				foreach ($fondos as $item) {
-					$item->cuenta->ocultarNumero();
-				}
 			} else	if ($this->formaPago == 'Pago móvil') {
 				$fondos = Fondo::has('cuenta')->where('moneda', $this->moneda)->get()->whereNotNull('cuenta.telefono');
-
-				foreach ($fondos as $item) {
-					$item->cuenta->ocultarNumero();
-				}
 			} else {
 				$fondos = Fondo::doesntHave('cuenta')->where('moneda', $this->moneda)->get();
 			}

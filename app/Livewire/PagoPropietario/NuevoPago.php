@@ -54,11 +54,11 @@ class NuevoPago extends Component
 			'fecha' => 'required|before_or_equal:today',
 			'formaPago' => 'required',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			// La cuenta debe tener un fondo, que es donde se acredita el pago al confirmarlo
+			// La cuenta debe tener un fondo en la moneda del pago, que es donde se acredita al confirmarlo
 			'cuentaId' => [
 				'exclude_unless:formaPago,Transferencia,Pago móvil,Punto de venta,Depósito',
 				'not_in:0',
-				Rule::exists('fondos', 'cuenta_id'),
+				Rule::exists('fondos', 'cuenta_id')->where('moneda', $this->moneda),
 			],
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil|required|min:4|max:8',
 			'monto' => ['required', 'numeric', 'gt:0', 'lte:' . (float) $this->montoFacturaConvertido],
@@ -68,7 +68,7 @@ class NuevoPago extends Component
 	protected $messages = [
 		'fecha.before_or_equal' => 'La fecha debe ser anterior o igual al día actual.',
 		'cuentaId.not_in' => 'Debe seleccionar una cuenta.',
-		'cuentaId.exists' => 'La cuenta seleccionada no tiene un fondo asociado.',
+		'cuentaId.exists' => 'La cuenta seleccionada no tiene un fondo en la moneda del pago.',
 		'monto.lte' => 'El monto no debe ser mayor al total de la deuda.',
 	];
 
@@ -84,9 +84,9 @@ class NuevoPago extends Component
 			->paginate($this->cantidad);
 
 		if ($this->formaPago == 'Pago móvil') {
-			$cuentas = Cuenta::where('publica', true)->has('fondo')->whereNotNull('telefono')->get();
+			$cuentas = $this->cuentasEnMoneda()->whereNotNull('telefono')->get();
 		} else {
-			$cuentas = Cuenta::where('publica', true)->has('fondo')->get();
+			$cuentas = $this->cuentasEnMoneda()->get();
 		}
 
 		$this->facturaMasVieja = $facturas->sortBy('fecha')->first();
@@ -136,8 +136,19 @@ class NuevoPago extends Component
 
 	public function updatedMoneda()
 	{
+		$this->cuentaId = 0;
+
 		$this->convertirSaldo();
 		$this->validarMonto();
+	}
+
+	/**
+	 * Cuentas públicas cuyo fondo está en la moneda del pago.
+	 */
+	private function cuentasEnMoneda()
+	{
+		return Cuenta::where('publica', true)
+			->whereHas('fondo', fn ($fondo) => $fondo->where('moneda', $this->moneda));
 	}
 
 	private function validarMonto()
