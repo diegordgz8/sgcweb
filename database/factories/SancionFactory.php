@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Moneda;
 use App\Models\Sancion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,7 +25,7 @@ class SancionFactory extends Factory
         return [
             'descripcion' => $this->faker->unique()->word,
             'monto' => $this->faker->randomFloat(2, 1, 10),
-            'moneda'=> $this->faker->randomElement(['Bolívar', 'Dólar']),
+            'moneda'=> $this->faker->randomElement(Moneda::codigos() ?: ['USD']),
         ];
     }
 }
