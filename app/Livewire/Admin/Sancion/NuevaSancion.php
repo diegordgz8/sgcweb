@@ -2,24 +2,33 @@
 
 namespace App\Livewire\Admin\Sancion;
 
+use App\Models\Moneda;
 use App\Models\Sancion;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class NuevaSancion extends Component
 {
 
-    public $descripcion, $monto,/*  $tasaCambio, */ $moneda = 'Bolívar';
+    public $descripcion, $monto, $moneda;
 
     public $open = false;
 
     public $readyToLoad = false;
 
-    public $rules = [
-        'descripcion' => 'required',
-        'monto' => 'required|numeric|gt:0',
-        'moneda' => 'required',
-    ];
+    protected function rules()
+    {
+        return [
+            'descripcion' => 'required',
+            'monto' => 'required|numeric|gt:0',
+            'moneda' => ['required', Rule::in(Moneda::codigos())],
+        ];
+    }
 
+    public function mount()
+    {
+        $this->moneda = Moneda::base();
+    }
 
     public function render()
     {
@@ -45,8 +54,9 @@ class NuevaSancion extends Component
             'open',
             'descripcion',
             'monto',
-            'moneda',
         ]);
+
+        $this->moneda = Moneda::base();
 
         $this->dispatch('render')->to('admin.sancion.tabla-sancion');
         flash()->success('La sanción se registró satisfactoriamente');

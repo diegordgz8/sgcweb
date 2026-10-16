@@ -2,33 +2,48 @@
 
 namespace App\Traits;
 
+use App\Exceptions\TasaNoDisponible;
+use App\Models\Moneda;
+use App\Models\TasaCambio;
 use NumberFormatter;
 
+/**
+ * Conversión y formato de montos entre las monedas del condominio.
+ * Toda conversión pasa por la moneda base con las tasas vigentes a la fecha indicada.
+ */
 trait WithCurrencies
 {
-	public function convertirMonto($monto, $moneda, $tasa)
+	/**
+	 * Unidades de la moneda que equivalen a 1 unidad de la moneda base.
+	 */
+	public function tasaDe(string $moneda, $fecha = null): float
 	{
-		if ($moneda == 'Bolívar') {
-			$montoConvertido = $monto * $tasa;
-		} else if ($moneda == 'Dólar') {
-			$montoConvertido = $monto / $tasa;
+		if ($moneda === Moneda::base()) {
+			return 1.0;
 		}
 
-        return $montoConvertido;
+		$tasa = TasaCambio::vigente($moneda, $fecha);
+
+		if (! $tasa) {
+			throw TasaNoDisponible::para($moneda, $fecha ?? now());
+		}
+
+		return (float) $tasa->tasa;
 	}
 
-    public function formatearMonto($monto, $moneda)
-    {
-        $formatoDinero = new NumberFormatter('es_VE', NumberFormatter::CURRENCY);
-        $bolivar = 'VES';
-        $dolar = 'USD';
+	public function convertirMonto($monto, string $de, string $a, $fecha = null): float
+	{
+		if ($de === $a) {
+			return (float) $monto;
+		}
 
-        if ($moneda == 'Bolívar') {
-            $montoFormateado = $formatoDinero->formatCurrency($monto, $bolivar);
-        } else if ($moneda == 'Dólar') {
-            $montoFormateado = $formatoDinero->formatCurrency($monto, $dolar);
-        }
+		return round($monto / $this->tasaDe($de, $fecha) * $this->tasaDe($a, $fecha), 2);
+	}
 
-        return $montoFormateado;
-    }
+	public function formatearMonto($monto, string $moneda): string
+	{
+		$formato = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);
+
+		return $formato->formatCurrency((float) $monto, $moneda);
+	}
 }

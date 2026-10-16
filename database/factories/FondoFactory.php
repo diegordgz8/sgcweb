@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Fondo;
+use App\Models\Moneda;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FondoFactory extends Factory
@@ -21,7 +22,7 @@ class FondoFactory extends Factory
 	 */
 	public function definition()
 	{
-		$moneda = $this->faker->randomElement(['Bolívar', 'Dólar']);
+		$moneda = $this->faker->randomElement(Moneda::codigos() ?: ['USD']);
 
 		$saldo = 400 * rand(1, 4);
 

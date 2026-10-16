@@ -2,20 +2,17 @@
 
 namespace App\Livewire\PagoPropietario;
 
+use App\Traits\WithCurrencies;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
-use NumberFormatter;
 
 class TablaPago extends Component
 {
 	use WithPagination;
-
-	private NumberFormatter $formatoDinero;
-	private $bolivar = 'VES';
-	private $dolar = 'USD';
+	use WithCurrencies;
 
 	public $busqueda;
 	#[Locked]
@@ -28,8 +25,6 @@ class TablaPago extends Component
 
 	public function render()
 	{
-		$this->formatoDinero = new NumberFormatter('es_VE', NumberFormatter::CURRENCY);
-
 		$pagos = new Collection;
 
 		$unidades = Auth::user()->propietario->unidades;
@@ -54,14 +49,7 @@ class TablaPago extends Component
 		}
 
 		foreach ($pagos as $pago) {
-
-			if ($pago->moneda == 'Bolívar') {
-
-				$pago->montoFormateado = $this->formatoDinero->format($pago->monto);
-			} else if ($pago->moneda == 'Dólar') {
-
-				$pago->montoFormateado = $this->formatoDinero->formatCurrency($pago->monto, $this->dolar);
-			}
+			$pago->montoFormateado = $this->formatearMonto($pago->monto, $pago->moneda);
 		}
 
 		return view('livewire.pago-propietario.tabla-pago', compact('pagos'));

@@ -22,16 +22,7 @@
                         Monto:
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {{ $pagoCondominio->monto }}
-
-                        @switch($pagoCondominio->moneda)
-                            @case('Bolívar')
-                                Bs.
-                            @break
-                            @case('Dólar')
-                                $
-                            @break
-                        @endswitch
+                        <x-monto :monto="$pagoCondominio->monto" :moneda="$pagoCondominio->moneda" />
                     </dd>
                 </div>
 
@@ -87,10 +78,10 @@
                 @if ($pagoCondominio->moneda != $pagoCondominio->gasto->moneda)
                 <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                     <dt class="text-sm font-medium text-gray-500">
-                        Tasa de cambio:
+                        Monto abonado al gasto:
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {{ $pagoCondominio->tasa_cambio }} Bs.S
+                        <x-monto :monto="$pagoCondominio->monto_abonado" :moneda="$pagoCondominio->gasto->moneda" />
                     </dd>
                 </div>
                 @endif

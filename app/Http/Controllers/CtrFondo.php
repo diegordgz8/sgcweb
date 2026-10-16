@@ -46,18 +46,8 @@ class CtrFondo extends Controller
 		$maximo = Str::before($filtros, '-');
 		$fondos = Fondo::all();
 
-		switch ($moneda) {
-			case '0':
-				$fondos = $fondos->intersect(Fondo::where('moneda', 'Dólar')->get());
-				break;
-
-			case '1':
-				$fondos = $fondos->intersect(Fondo::where('moneda', 'Bolívar')->get());
-				break;
-
-			default:
-				# code...
-				break;
+		if ($moneda != '') {
+			$fondos = $fondos->intersect(Fondo::where('moneda', $moneda)->get());
 		}
 
 		if ($minimo != '') {

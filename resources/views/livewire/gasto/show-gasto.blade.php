@@ -84,16 +84,7 @@
                         Monto:
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                        {{ $gasto->monto }}
-
-                        @switch($gasto->moneda)
-                            @case('Bolívar')
-                                Bs.
-                            @break
-                            @case('Dólar')
-                                $
-                            @break
-                        @endswitch
+                        <x-monto :monto="$gasto->monto" :moneda="$gasto->moneda" />
                     </dd>
                 </div>
 
@@ -239,16 +230,7 @@
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap">
                                                             <div class="text-sm font-medium text-gray-900">
-                                                                {{ $item->pivot->monto }}
-
-                                                                @switch($gasto->moneda)
-                                                                    @case('Bolívar')
-                                                                        Bs.
-                                                                    @break
-                                                                    @case('Dólar')
-                                                                        $
-                                                                    @break
-                                                                @endswitch
+                                                                <x-monto :monto="$item->pivot->monto" :moneda="$gasto->moneda" />
                                                             </div>
                                                         </td>
                                                         <td class="px-6 py-4 whitespace-nowrap space-x-1 text-xs">

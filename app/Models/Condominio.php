@@ -15,5 +15,8 @@ class Condominio extends Model
         'rif',
         'nombre',
         'direccion',
+        'pais',
+        'zona_horaria',
+        'moneda_facturacion',
     ];
 }

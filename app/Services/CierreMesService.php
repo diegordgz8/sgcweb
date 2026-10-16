@@ -11,7 +11,6 @@ use App\Models\Item;
 use App\Models\Iva;
 use App\Models\Mensualidad;
 use App\Models\Sancion;
-use App\Models\TasaCambio;
 use App\Models\Unidad;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -26,7 +25,6 @@ class CierreMesService
 {
 	private string $mes;
 	private string $moneda;
-	private TasaCambio $tasaCambio;
 	private CierreMes $cierre;
 	private ?Interes $interes;
 	private Iva $iva;
@@ -34,7 +32,7 @@ class CierreMesService
 	private int $numeroUnidades;
 	private float $areaTotal;
 
-	public function cerrar(string $mes, string $moneda, TasaCambio $tasaCambio): CierreMes
+	public function cerrar(string $mes, string $moneda): CierreMes
 	{
 		if (CierreMes::where('mes', $mes)->exists()) {
 			throw MesYaCerrado::para($mes);
@@ -42,13 +40,11 @@ class CierreMesService
 
 		$this->mes = $mes;
 		$this->moneda = $moneda;
-		$this->tasaCambio = $tasaCambio;
 
 		return DB::transaction(function () {
 			$this->cierre = CierreMes::create([
 				'mes' => $this->mes,
 				'moneda' => $this->moneda,
-				'tasa_cambio_id' => $this->tasaCambio->id,
 			]);
 
 			$unidades = Unidad::has('propietario')->get();
@@ -128,8 +124,9 @@ class CierreMesService
 
 		$montoFactura = 0;
 
+		// Cada item está en la moneda de su origen; se pasa a la de la factura con las tasas del cierre
 		foreach ($items as $item) {
-			$item->convertirMonto($this->moneda, $this->tasaCambio->tasa);
+			$item->convertirA($this->moneda, $this->cierre->created_at);
 			$montoFactura += $item->monto;
 		}
 
@@ -142,7 +139,6 @@ class CierreMesService
 			'cierre_mes_id' => $this->cierre->id,
 			'unidad_id' => $unidad->id,
 			'iva_id' => $this->iva->id,
-			'tasa_cambio_id' => $this->tasaCambio->id,
 		]);
 
 		$this->aplicarInteres($factura, $unidad);

@@ -61,16 +61,7 @@
                                                     {{ $gasto->descripcion }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    {{ $gasto->monto }}
-
-                                                    @switch($gasto->moneda)
-                                                        @case('Bolívar')
-                                                            Bs.
-                                                        @break
-                                                        @case('Dólar')
-                                                            $
-                                                        @break
-                                                    @endswitch
+                                                    <x-monto :monto="$gasto->monto" :moneda="$gasto->moneda" />
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     @if ($gasto->extraordinario)

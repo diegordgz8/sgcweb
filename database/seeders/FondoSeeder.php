@@ -18,14 +18,14 @@ class FondoSeeder extends Seeder
         Fondo::create([
             'descripcion' => 'Efectivo en bolívares',
             'saldo' => 2000,
-            'moneda' => 'Bolívar',
+            'moneda' => 'VES',
         ]);
 
         // Fondo en efectivo en dólares
         Fondo::create([
             'descripcion' => 'Efectivo en dólares',
             'saldo' => 1000,
-            'moneda' => 'Dólar',
+            'moneda' => 'USD',
         ]);
     }
 }

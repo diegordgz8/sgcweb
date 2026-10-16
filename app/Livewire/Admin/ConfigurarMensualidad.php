@@ -3,13 +3,15 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Mensualidad;
+use App\Models\Moneda;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class ConfigurarMensualidad extends Component
 {
 	public $monto;
-	public $moneda = 'Bolívar';
+	public $moneda;
 
 	public $open = false;
 
@@ -20,10 +22,13 @@ class ConfigurarMensualidad extends Component
 	public $direccion = 'desc';
 	public $cantidad = '10';
 
-	protected $rules = [
-		'monto' => 'required|numeric|gt:0',
-		'moneda' => 'required',
-	];
+	protected function rules()
+	{
+		return [
+			'monto' => 'required|numeric|gt:0',
+			'moneda' => ['required', Rule::in(Moneda::codigos())],
+		];
+	}
 
 	public function mount()
 	{

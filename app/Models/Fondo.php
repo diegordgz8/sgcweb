@@ -16,13 +16,13 @@ class Fondo extends Model
 	{
 		$egresos = DB::table('pagos_gastos')
 			->join('fondos', 'pagos_gastos.fondo_id', '=', 'fondos.id')
-			->select(['pagos_gastos.id', 'monto', 'fecha', 'pagos_gastos.descripcion'])
+			->select(['pagos_gastos.id', 'monto', 'pagos_gastos.moneda', 'fecha', 'pagos_gastos.descripcion'])
 			->where('fondo_id', $this->id)
 			->get();
 
 		$ingresos = DB::table('pagos_propietario')
 			->join('fondos', 'fondo_id', '=', 'fondos.id')
-			->select(['pagos_propietario.id', 'monto', 'fecha', 'pagos_propietario.descripcion'])
+			->select(['pagos_propietario.id', 'monto', 'pagos_propietario.moneda', 'fecha', 'pagos_propietario.descripcion'])
 			->where('fondo_id', $this->id)
 			->get();
 

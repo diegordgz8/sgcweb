@@ -20,35 +20,33 @@ class PagoPropietario extends Model
 		'referencia',
 		'forma_pago',
 		'moneda',
-		'tasa_cambio_id',
 		'fondo_id',
 		'unidad_id',
 		'factura_id',
 	];
 
+	/**
+	 * Abona a la factura y al fondo el monto convertido a la moneda de cada uno,
+	 * con las tasas vigentes al registrar el pago.
+	 */
 	public function pagarFactura()
 	{
-		$conCambio = $this->moneda != $this->factura->moneda;
-
-		if ($conCambio) {
-			if ($this->moneda == 'Bolívar') {
-				$montoConvertido = $this->monto / $this->tasa->tasa;
-			} else if ($this->moneda == 'Dólar') {
-				$montoConvertido = $this->monto * $this->tasa->tasa;
-			}
-
-			$this->factura->pagar($montoConvertido);
-		} else {
-
-			$this->factura->pagar($this->monto);
-		}
+		$this->factura->pagar($this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at));
 
 		if ($this->fondo) {
-			$this->fondo->acreditar($this->monto);
+			$this->acreditarFondo();
 		}
 
 		$this->estado = 'Confirmado';
 		$this->save();
+	}
+
+	/**
+	 * Monto abonado a la factura, en la moneda de la factura.
+	 */
+	public function getMontoAbonadoAttribute(): float
+	{
+		return $this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at);
 	}
 
 	public function getMontoFormateadoAttribute() {
@@ -57,10 +55,15 @@ class PagoPropietario extends Model
 
 	public function aceptarPago()
 	{
-		$this->fondo->acreditar($this->monto);
+		$this->acreditarFondo();
 
 		$this->estado = 'Confirmado';
 		$this->save();
+	}
+
+	private function acreditarFondo(): void
+	{
+		$this->fondo->acreditar($this->convertirMonto($this->monto, $this->moneda, $this->fondo->moneda, $this->created_at));
 	}
 
 	public function rechazar() {
@@ -86,9 +89,5 @@ class PagoPropietario extends Model
 	public function recibo()
 	{
 		return $this->hasOne(Recibo::class);
-	}
-
-	public function tasa() {
-		return $this->belongsTo(TasaCambio::class, 'tasa_cambio_id');
 	}
 }

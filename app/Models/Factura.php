@@ -20,7 +20,6 @@ class Factura extends Model
 		'unidad_id',
 		'iva_id',
 		'interes_id',
-		'tasa_cambio_id',
 		'cierre_mes_id',
 	];
 
@@ -62,9 +61,5 @@ class Factura extends Model
 
 	public function interes() {
 		return $this->belongsTo(Interes::class);
-	}
-
-	public function tasa() {
-		return $this->belongsTo(TasaCambio::class);
 	}
 }

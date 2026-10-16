@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\WithCurrencies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
 {
 	use HasFactory;
+	use WithCurrencies;
 
 	protected $fillable = [
 		'itemable_id',
@@ -25,18 +27,11 @@ class Item extends Model
 		return $this->morphTo();
 	}
 
-	public function convertirMonto($moneda, $tasa)
+	/**
+	 * Pasa el monto de la moneda de su origen (mensualidad, gasto o sanción) a la moneda indicada.
+	 */
+	public function convertirA(string $moneda, $fecha = null): void
 	{
-		if ($this->itemable->moneda != $moneda) {
-
-			if ($this->itemable->moneda == 'Bolívar') {
-				$montoConvertido = $this->monto / $tasa;
-
-			} else if ($this->itemable->moneda == 'Dólar') {
-				$montoConvertido = $this->monto * $tasa;
-			}
-
-			$this->monto = $montoConvertido;
-		}
+		$this->monto = $this->convertirMonto($this->monto, $this->itemable->moneda, $moneda, $fecha);
 	}
 }
