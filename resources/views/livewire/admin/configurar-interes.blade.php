@@ -20,16 +20,16 @@
                             <label for="factor" class="block text-sm font-medium text-gray-700">
                                 Factor (%):
                             </label>
-                            <input wire:model.live="interes.factor" type="text" name="factor" id="factor" class="form-control w-full">
-                            <x-input-error for="interes.factor" />
+                            <input wire:model.live="form.factor" type="text" name="factor" id="factor" class="form-control w-full">
+                            <x-input-error for="form.factor" />
                         </div>
 
                         <div class="col-span-6">
                             <label for="meses" class="block text-sm font-medium text-gray-700">
                                 Número de meses que debe tener una factura para que se aplique el interés:
                             </label>
-                            <input wire:model.live="interes.meses" type="text" name="meses" id="meses" class="form-control w-full">
-                            <x-input-error for="interes.meses" />
+                            <input wire:model.live="form.meses" type="text" name="meses" id="meses" class="form-control w-full">
+                            <x-input-error for="form.meses" />
                         </div>
 
                         <div class="col-span-6">
@@ -37,13 +37,13 @@
                                 Activar intereses?
                             </label>
                             <div>
-                                <input wire:model.live="interes.estado" type="radio" name="activar-intereses" id="si" value="1">
+                                <input wire:model.live="form.estado" type="radio" name="activar-intereses" id="si" value="1">
                                 <label for="si">Sí</label>
-                                <input wire:model.live="interes.estado" type="radio" name="activar-intereses" id="no" value="0"
+                                <input wire:model.live="form.estado" type="radio" name="activar-intereses" id="no" value="0"
                                     class="ml-2">
                                 <label for="no">No</label>
                             </div>
-                            <x-input-error for="interes.estado" />
+                            <x-input-error for="form.estado" />
                         </div>
 
                         <div class="col-span-6">

@@ -140,8 +140,8 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="enfermedad.nombre">
-                                <x-input-error for="enfermedad.nombre" />
+                                    wire:model.live="form.nombre">
+                                <x-input-error for="form.nombre" />
                             </div>
 
                             <div class="col-span-6">
@@ -149,8 +149,8 @@
                                     class="block text-sm font-medium text-gray-700">Descripción</label>
                                 <input type="text" name="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="enfermedad.descripcion">
-                                <x-input-error for="enfermedad.descripcion" />
+                                    wire:model.live="form.descripcion">
+                                <x-input-error for="form.descripcion" />
                             </div>
 
                         </div>

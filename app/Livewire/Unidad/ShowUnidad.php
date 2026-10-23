@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Unidad;
 
+use App\Livewire\Forms\IntegranteUnidadForm;
 use App\Models\Enfermedad;
 use App\Models\Integrante;
 use App\Models\Medicamento;
@@ -15,6 +16,8 @@ class ShowUnidad extends Component
 
 	public Integrante $integrante;
 
+	public IntegranteUnidadForm $form;
+
 	public $enfermedades = [];
 	public $medicamentos = [];
 
@@ -25,16 +28,8 @@ class ShowUnidad extends Component
 	public $openDestroy = false;
 
 	protected $rules = [
-		'integrante.letra' => 'nullable',
-		'integrante.documento' => 'nullable|digits_between:6,8',
-		'integrante.nombre' => 'required|max:20',
-		'integrante.s_nombre' => 'nullable|max:20',
-		'integrante.apellido' => 'required|max:20',
-		'integrante.s_apellido' => 'nullable|max:20',
-		'integrante.fecha_nacimiento' => 'required|before_or_equal:today',
 		'codigo' => 'nullable',
 		'telefono' => 'nullable|digits:7',
-		'integrante.email' => 'nullable|email|max:45',
 	];
 
 	protected $listeners = ['render'];
@@ -51,10 +46,11 @@ class ShowUnidad extends Component
 	{
 		$this->autorizarIntegrante($integrante);
 
-		$this->integrante = $integrante;
+		$this->form->setIntegrante($integrante);
+		$this->resetValidation();
 
 		if($integrante->documento == '') {
-			$this->integrante->letra = 'V';
+			$this->form->letra = 'V';
 		}
 
 		$this->codigo = Str::substr($integrante->telefono, 0, 4);
@@ -67,14 +63,14 @@ class ShowUnidad extends Component
 
 	public function update()
 	{
-		$this->autorizarIntegrante($this->integrante);
+		$integrante = $this->form->integrante;
+		$this->autorizarIntegrante($integrante);
 
 		$this->validate();
 
-		$this->integrante->telefono = $this->codigo . '-' . $this->telefono;
-		$this->integrante->enfermedades()->sync($this->enfermedades);
-		$this->integrante->medicamentos()->sync($this->medicamentos);
-		$this->integrante->save();
+		$integrante->enfermedades()->sync($this->enfermedades);
+		$integrante->medicamentos()->sync($this->medicamentos);
+		$this->form->update($this->codigo . '-' . $this->telefono);
 
 		$this->reset('openEdit');
 

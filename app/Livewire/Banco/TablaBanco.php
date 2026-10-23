@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Banco;
 
+use App\Livewire\Forms\BancoForm;
 use App\Models\Banco;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaBanco extends Component
     use WithPagination;
 
     public $banco;
+
+    public BancoForm $form;
 
     public $busqueda;
     #[Locked]
@@ -26,10 +29,6 @@ class TablaBanco extends Component
 
     public $openEdit = false;
     public $openDestroy = false;
-
-    protected $rules = [
-        'banco.nombre' => 'required|max:60',
-    ];
 
     public function mount()
     {
@@ -85,7 +84,8 @@ class TablaBanco extends Component
 
     public function edit(Banco $banco)
     {
-        $this->banco = $banco;
+        $this->form->setBanco($banco);
+        $this->resetValidation();
         $this->openEdit = true;
     }
 
@@ -93,8 +93,7 @@ class TablaBanco extends Component
     {
         $this->authorize('banco.edit');
 
-        $this->validate();
-        $this->banco->save();
+        $this->form->update();
         $this->reset('openEdit');
         flash()->success('El banco se actualizó satisfactoriamente');
     }

@@ -26,13 +26,13 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de unidad:</label>
-                                <select wire:model.live="tipo.id" name="tipo" id="tipo" class="form-control mt-1 w-full">
-                                    <option value="0"> -- </option>
+                                <select wire:model.live="tipoUnidadId" name="tipo" id="tipo" class="form-control mt-1 w-full">
+                                    <option value=""> -- </option>
                                     @foreach ($tipoUnidades as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                     @endforeach
                                 </select>
-                                <x-input-error for="tipo.id" />
+                                <x-input-error for="tipoUnidadId" />
                             </div>
 
                             <div class="col-span-6">

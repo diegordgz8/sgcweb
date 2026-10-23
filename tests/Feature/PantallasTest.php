@@ -13,7 +13,6 @@ use App\Models\TasaCambio;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Features\SupportLegacyModels\CannotBindToModelDataWithoutValidationRuleException;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -63,22 +62,27 @@ class PantallasTest extends TestCase
 
         Livewire::actingAs(User::factory()->create()->assignRole('Administrador'))->test(TablaBanco::class)
             ->call('edit', $banco->id)
-            ->assertSet('banco.nombre', 'Banco de Prueba')
-            ->set('banco.nombre', 'Banco Renombrado')
+            ->assertSet('form.nombre', 'Banco de Prueba')
+            ->set('form.nombre', 'Banco Renombrado')
             ->call('update')
             ->assertHasNoErrors();
 
         $this->assertSame('Banco Renombrado', $banco->fresh()->nombre);
     }
 
-    public function test_only_fields_with_validation_rules_can_be_bound(): void
+    public function test_edit_form_validates_and_cannot_touch_the_model_directly(): void
     {
-        $banco = Banco::factory()->create();
+        $banco = Banco::factory()->create(['nombre' => 'Banco de Prueba']);
 
         $vista = Livewire::actingAs(User::factory()->create()->assignRole('Administrador'))->test(TablaBanco::class)
-            ->call('edit', $banco->id);
+            ->call('edit', $banco->id)
+            ->set('form.nombre', '')
+            ->call('update')
+            ->assertHasErrors(['form.nombre' => 'required']);
 
-        $this->expectException(CannotBindToModelDataWithoutValidationRuleException::class);
-        $vista->set('banco.id', 999);
+        $this->assertSame('Banco de Prueba', $banco->fresh()->nombre);
+
+        $this->expectException(\Throwable::class);
+        $vista->set('form.banco.id', 999);
     }
 }

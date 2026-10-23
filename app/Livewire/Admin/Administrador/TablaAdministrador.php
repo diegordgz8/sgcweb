@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Administrador;
 
+use App\Livewire\Forms\AdministradorForm;
 use App\Models\Administrador;
 use App\Models\Integrante;
 use Livewire\Attributes\Locked;
@@ -14,6 +15,8 @@ class TablaAdministrador extends Component
 
 	public Administrador $administrador;
 
+	public AdministradorForm $form;
+
 	public $busqueda;
 	#[Locked]
 	public $orden = 'id';
@@ -25,21 +28,6 @@ class TablaAdministrador extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected function rules()
-	{
-		return [
-			// 'administrador.integrante.letra' => 'required',
-			// 'administrador.integrante.documento' => 'required',
-			// 'administrador.integrante.nombre' => 'required',
-			// 'administrador.integrante.s_nombre' => 'nullable',
-			// 'administrador.integrante.apellido' => 'required',
-			// 'administrador.integrante.s_apellido' => 'nullable',
-			// 'administrador.integrante.telefono' => 'nullable',
-			// 'administrador.integrante.email' => 'nullable',
-			'administrador.rol' => 'required',
-		];
-	}
 
 	protected $listeners = ['render'];
 
@@ -85,7 +73,8 @@ class TablaAdministrador extends Component
 
 	public function edit(Administrador $administrador)
 	{
-		$this->administrador = $administrador;
+		$this->form->setAdministrador($administrador);
+		$this->resetValidation();
 
 		$this->openEdit = true;
 	}
@@ -94,9 +83,7 @@ class TablaAdministrador extends Component
 	{
 		$this->authorize('admin.administrador.edit');
 
-		$this->validate();
-
-		$this->administrador->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

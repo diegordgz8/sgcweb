@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin\Roles;
 
-use Illuminate\Validation\Rule;
+use App\Livewire\Forms\RolForm;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -14,6 +14,8 @@ class TablaRol extends Component
     use WithPagination;
 
     public Role $rol;
+
+    public RolForm $form;
     public $permisos = [];
 
     public $busqueda;
@@ -29,20 +31,6 @@ class TablaRol extends Component
 	public $openDestroy = false;
 
 	protected $listeners = ['render'];
-
-    protected function rules() {
-        return [
-            'rol.name' => [
-                'required',
-                'string',
-                Rule::unique('roles', 'name')->ignore($this->rol),
-            ]
-        ];
-    }
-
-    protected $validationAttributes = [
-        'rol.name' => 'nombre',
-    ];
 
     public function mount() {
         $this->rol = new Role();
@@ -90,7 +78,8 @@ class TablaRol extends Component
 
 	public function edit(Role $rol)
 	{
-		$this->rol = $rol;
+		$this->form->setRol($rol);
+		$this->resetValidation();
         $this->permisos = $rol->permissions()->allRelatedIds()->map(fn ($id) => (string)$id);
 
 		$this->openEdit = true;
@@ -100,10 +89,9 @@ class TablaRol extends Component
 	{
 		$this->authorize('admin.rol.edit');
 
-		$this->validate();
+		$this->form->update();
 
-        $this->rol->permissions()->sync($this->permisos);
-		$this->rol->save();
+        $this->form->rol->permissions()->sync($this->permisos);
 
 		$this->reset('openEdit');
 

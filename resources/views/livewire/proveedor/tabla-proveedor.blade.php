@@ -182,7 +182,7 @@
                                     <div class="absolute inset-y-0 left-0 flex items-center">
                                         <select id="letra" name="letra"
                                             class="focus:ring-indigo-500 focus:border-indigo-500 h-full py-0 pl-2 pr-7 border-transparent bg-transparent text-gray-500 sm:text-sm rounded-md"
-                                            wire:model.live="proveedor.letra" disabled>
+                                            wire:model.live="form.letra" disabled>
                                             <option>V</option>
                                             <option>E</option>
                                             <option>J</option>
@@ -190,52 +190,52 @@
                                     </div>
                                     <input type="text" name="documento" id="documento"
                                         class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-12 sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Cédula o RIF" wire:model.live="proveedor.documento" readonly>
+                                        placeholder="Cédula o RIF" wire:model.live="form.documento" readonly>
                                 </div>
-                                <x-input-error for="proveedor.letra" />
-                                <x-input-error for="proveedor.documento" />
+                                <x-input-error for="form.letra" />
+                                <x-input-error for="form.documento" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="proveedor.nombre">
-                                <x-input-error for="proveedor.nombre" />
+                                    wire:model.live="form.nombre">
+                                <x-input-error for="form.nombre" />
                             </div>
 
                             <div class="col-span-6">
                                 <label for="contacto" class="block text-sm font-medium text-gray-700">Contacto</label>
                                 <input type="text" name="contacto" id="contacto" autocomplete="street-address"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="proveedor.contacto">
-                                <x-input-error for="proveedor.contacto" />
+                                    wire:model.live="form.contacto">
+                                <x-input-error for="form.contacto" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="telefono" class="block text-sm font-medium text-gray-700">Teléfono</label>
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <input type="tel" name="telefono" id="telefono" pattern="\d{4}-\d{7}"
-                                        class="form-control w-full" wire:model.live="proveedor.telefono">
+                                        class="form-control w-full" wire:model.live="form.telefono">
                                     <small class="text-xs text-gray-600">Formato: 0412-1234567</small>
                                 </div>
-                                <x-input-error for="proveedor.telefono" />
+                                <x-input-error for="form.telefono" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                 <input type="text" name="email" id="email" autocomplete="email"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="proveedor.email">
-                                <x-input-error for="proveedor.email" />
+                                    wire:model.live="form.email">
+                                <x-input-error for="form.email" />
                             </div>
 
                             <div class="col-span-6">
                                 <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
                                 <input type="text" name="direccion" id="direccion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="proveedor.direccion">
-                                <x-input-error for="proveedor.direccion" />
+                                    wire:model.live="form.direccion">
+                                <x-input-error for="form.direccion" />
                             </div>
                         </div>
                     </div>

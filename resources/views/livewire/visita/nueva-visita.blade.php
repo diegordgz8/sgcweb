@@ -51,14 +51,14 @@
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="unidad" class="block text-sm font-medium text-gray-700">Unidad</label>
-                                <select id="unidad" name="unidad" class="form-control w-full" wire:model.live="unidad.id">
-                                    <option value="0"> ---- </option>
+                                <select id="unidad" name="unidad" class="form-control w-full" wire:model.live="unidadId">
+                                    <option value=""> ---- </option>
                                     @foreach ($unidades as $item)
                                         <option value="{{ $item->id }}">{{ $item->numero }} - {{ $item->propietario->integrante->nombre }}
                                             {{ $item->propietario->integrante->apellido }}</option>
                                     @endforeach
                                 </select>
-                                <x-input-error for="unidad.id" />
+                                <x-input-error for="unidadId" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">

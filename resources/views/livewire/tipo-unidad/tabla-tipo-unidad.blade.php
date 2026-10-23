@@ -163,16 +163,16 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="tipoUnidad.nombre">
-                                <x-input-error for="nombre" />
+                                    wire:model.live="form.nombre">
+                                <x-input-error for="form.nombre" />
                             </div>
 
                             <div class="col-span-2">
                                 <label for="area" class="block text-sm font-medium text-gray-700">Área</label>
                                 <input type="number" name="area" id="area"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="tipoUnidad.area">
-                                <x-input-error for="area" />
+                                    wire:model.live="form.area">
+                                <x-input-error for="form.area" />
                             </div>
 
                             <div class="col-span-6">
@@ -180,8 +180,8 @@
                                     class="block text-sm font-medium text-gray-700">Descripción</label>
                                 <input type="text" name="descripcion" id="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="tipoUnidad.descripcion">
-                                <x-input-error for="descripcion" />
+                                    wire:model.live="form.descripcion">
+                                <x-input-error for="form.descripcion" />
                             </div>
                         </div>
                     </div>

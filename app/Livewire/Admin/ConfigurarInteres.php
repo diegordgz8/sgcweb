@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Livewire\Forms\InteresForm;
 use App\Models\Interes;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -10,7 +11,7 @@ class ConfigurarInteres extends Component
 {
     public $open = false;
 
-    public $interes;
+    public InteresForm $form;
 
     public $busqueda = '';
     #[Locked]
@@ -19,20 +20,9 @@ class ConfigurarInteres extends Component
     public $direccion = 'desc';
     public $cantidad = '10';
 
-    protected $rules = [
-        'interes.factor' => 'required|numeric|gt:0|lte:5',
-        'interes.meses' => 'required|numeric|gt:0',
-        'interes.estado' => 'boolean',
-    ];
-
-    protected $messages = [
-        'interes.factor.gt' => 'El factor debe ser mayor a :value%.',
-        'interes.factor.lte' => 'El factor no puede ser mayor a :value%.',
-    ];
-
     public function mount()
     {
-        $this->interes = Interes::orderBy('created_at', 'desc')->firstOrNew();
+        $this->form->setInteres(Interes::orderBy('created_at', 'desc')->firstOrNew());
     }
 
     public function render()
@@ -53,27 +43,7 @@ class ConfigurarInteres extends Component
     {
         $this->authorize('admin.home');
 
-        $this->validate();
-
-        if ($this->interes) {
-
-            if ($this->interes->isDirty(['factor', 'meses'])) {
-
-                Interes::create([
-                    'factor' => $this->interes->factor,
-                    'meses' => $this->interes->meses,
-                    'estado' => $this->interes->estado,
-                ]);
-            } else if ($this->interes->isDirty('estado')) {
-                $this->interes->save();
-            }
-        } else {
-            Interes::create([
-                'factor' => $this->interes->factor,
-                'meses' => $this->interes->meses,
-                'estado' => $this->interes->estado,
-            ]);
-        }
+        $this->form->update();
 
         $this->reset('open');
 

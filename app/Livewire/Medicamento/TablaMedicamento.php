@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Medicamento;
 
+use App\Livewire\Forms\MedicamentoForm;
 use App\Models\Medicamento;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaMedicamento extends Component
     use WithPagination;
 
     public Medicamento $medicamento;
+
+    public MedicamentoForm $form;
 
     public $busqueda = '';
     #[Locked]
@@ -24,11 +27,6 @@ class TablaMedicamento extends Component
 
     public $openEdit = false;
     public $openDestroy = false;
-
-    protected $rules = [
-        'medicamento.nombre' => 'required|max:25',
-        'medicamento.descripcion' => 'max:255',
-    ];
 
     protected $listeners = ['render'];
 
@@ -83,7 +81,8 @@ class TablaMedicamento extends Component
 
     public function edit(Medicamento $medicamento)
     {
-        $this->medicamento = $medicamento;
+        $this->form->setMedicamento($medicamento);
+        $this->resetValidation();
         $this->openEdit = true;
     }
 
@@ -91,9 +90,7 @@ class TablaMedicamento extends Component
     {
         $this->authorize('medicamento.edit');
 
-        $this->validate();
-
-        $this->medicamento->save();
+        $this->form->update();
 
         $this->reset('openEdit');
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Categoria;
 
+use App\Livewire\Forms\CategoriaForm;
 use App\Models\Categoria;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaCategoria extends Component
 	use WithPagination;
 	
 	public Categoria $categoria;
+
+	public CategoriaForm $form;
 
 	public $busqueda = '';
 	#[Locked]
@@ -24,11 +27,6 @@ class TablaCategoria extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected $rules = [
-		'categoria.nombre' => 'required|max:25',
-		'categoria.descripcion' => 'max:255',
-	];
 
 	protected $listeners = ['render'];
 
@@ -82,7 +80,8 @@ class TablaCategoria extends Component
 
 	public function edit(Categoria $categoria)
 	{
-		$this->categoria = $categoria;
+		$this->form->setCategoria($categoria);
+		$this->resetValidation();
 		$this->openEdit = true;
 	}
 
@@ -90,9 +89,7 @@ class TablaCategoria extends Component
 	{
 		$this->authorize('categoria.edit');
 
-		$this->validate();
-
-		$this->categoria->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

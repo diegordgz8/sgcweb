@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Proveedor;
 
+use App\Livewire\Forms\ProveedorForm;
 use App\Models\Proveedor;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaProveedor extends Component
 	use WithPagination;
 
 	public Proveedor $proveedor;
+
+	public ProveedorForm $form;
 
 	public $busqueda;
 	#[Locked]
@@ -24,22 +27,6 @@ class TablaProveedor extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected function rules()
-	{
-		return [
-			'proveedor.letra' => '',
-			'proveedor.documento' => '',
-			'proveedor.nombre' => 'required',
-			'proveedor.contacto' => 'required',
-			'proveedor.telefono' => [
-				'required',
-				'regex:/\d{4}-\d{7}/',
-			],
-			'proveedor.email' => 'nullable|email|unique:proveedores,email,' . $this->proveedor->id,
-			'proveedor.direccion' => 'nullable',
-		];
-	}
 
 	protected $listeners = ['render'];
 
@@ -68,18 +55,6 @@ class TablaProveedor extends Component
 	public function updated($propertyName)
 	{
 		$this->validateOnly($propertyName);
-	}
-
-	public function updatedProveedorLetra()
-	{
-		$this->validateOnly('proveedor.letra');
-		$this->validateOnly('proveedor.documento');
-	}
-
-	public function updatedProveedorDocumento()
-	{
-		$this->validateOnly('proveedor.documento');
-		$this->validateOnly('proveedor.letra');
 	}
 
 	public function updatingBusqueda()
@@ -112,7 +87,8 @@ class TablaProveedor extends Component
 
 	public function edit(Proveedor $proveedor)
 	{
-		$this->proveedor = $proveedor;
+		$this->form->setProveedor($proveedor);
+		$this->resetValidation();
 
 		$this->openEdit = true;
 	}
@@ -121,9 +97,7 @@ class TablaProveedor extends Component
 	{
 		$this->authorize('proveedor.edit');
 
-		$this->validate();
-
-		$this->proveedor->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

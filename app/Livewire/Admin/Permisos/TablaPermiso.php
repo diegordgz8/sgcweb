@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin\Permisos;
 
-use Illuminate\Validation\Rule;
+use App\Livewire\Forms\PermisoForm;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -13,6 +13,8 @@ class TablaPermiso extends Component
     use WithPagination;
 
     public Permission $permiso;
+
+    public PermisoForm $form;
 
     public $busqueda;
     #[Locked]
@@ -27,20 +29,6 @@ class TablaPermiso extends Component
 	public $openDestroy = false;
 
 	protected $listeners = ['render'];
-
-    protected function rules() {
-        return [
-            'permiso.name' => [
-                'required',
-                'string',
-                Rule::unique('permissions', 'name')->ignore($this->permiso),
-            ]
-        ];
-    }
-
-    protected $validationAttributes = [
-        'permiso.name' => 'nombre',
-    ];
 
     public function mount() {
         $this->permiso = new Permission();
@@ -88,7 +76,8 @@ class TablaPermiso extends Component
 
 	public function edit(Permission $permiso)
 	{
-		$this->permiso = $permiso;
+		$this->form->setPermiso($permiso);
+		$this->resetValidation();
 
 		$this->openEdit = true;
 	}
@@ -97,9 +86,7 @@ class TablaPermiso extends Component
 	{
 		$this->authorize('admin.permiso.edit');
 
-		$this->validate();
-
-		$this->permiso->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

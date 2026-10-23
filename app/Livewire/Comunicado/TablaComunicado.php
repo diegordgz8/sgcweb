@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Comunicado;
 
+use App\Livewire\Forms\ComunicadoForm;
 use App\Models\Comunicado;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Locked;
@@ -12,7 +13,7 @@ class TablaComunicado extends Component
 {
 	use WithPagination;
 
-	public Comunicado $comunicado;
+	public ComunicadoForm $form;
 
 	public $busqueda = '';
 	#[Locked]
@@ -25,11 +26,6 @@ class TablaComunicado extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected $rules = [
-		'comunicado.asunto' => 'required|max:45',
-		'comunicado.contenido' => 'required',
-	];
 
 	protected $listeners = ['render'];
 
@@ -79,7 +75,8 @@ class TablaComunicado extends Component
 
 	public function edit(Comunicado $comunicado)
 	{
-		$this->comunicado = $comunicado;
+		$this->form->setComunicado($comunicado);
+		$this->resetValidation();
 		$this->openEdit = true;
 	}
 
@@ -87,9 +84,7 @@ class TablaComunicado extends Component
 	{
 		$this->authorize('comunicado.edit');
 
-		$this->validate();
-
-		$this->comunicado->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

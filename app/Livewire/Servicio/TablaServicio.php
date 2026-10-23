@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Servicio;
 
+use App\Livewire\Forms\ServicioForm;
 use App\Models\Categoria;
 use App\Models\Servicio;
 use Livewire\Attributes\Locked;
@@ -13,6 +14,8 @@ class TablaServicio extends Component
 	use WithPagination;
 
 	public Servicio $servicio;
+
+	public ServicioForm $form;
 
 	public $busqueda;
 	#[Locked]
@@ -31,19 +34,6 @@ class TablaServicio extends Component
 	public function mount(Servicio $servicio)
 	{
 		$this->servicio = $servicio;
-	}
-
-	protected function rules()
-	{
-		return [
-			'servicio.nombre' => [
-				'required',
-				'max:60',
-				'unique:servicios,nombre,' . $this->servicio->id.',id,deleted_at,NULL',
-			],
-			'servicio.descripcion' => 'nullable',
-			'servicio.categoria_id' => 'required|not_in:0',
-		];
 	}
 
 	public function render()
@@ -104,8 +94,8 @@ class TablaServicio extends Component
 
 	public function edit(Servicio $servicio)
 	{
-		$this->servicio = $servicio;
-
+		$this->form->setServicio($servicio);
+		$this->resetValidation();
 		$this->openEdit = true;
 	}
 
@@ -113,9 +103,7 @@ class TablaServicio extends Component
 	{
 		$this->authorize('servicio.edit');
 
-		$this->validate();
-
-		$this->servicio->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

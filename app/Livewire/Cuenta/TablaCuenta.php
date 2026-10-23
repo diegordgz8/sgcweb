@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Cuenta;
 
+use App\Livewire\Forms\CuentaForm;
 use App\Models\Banco;
 use App\Models\Cuenta;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
-use Illuminate\Support\Str;
 use Livewire\WithPagination;
 
 class TablaCuenta extends Component
@@ -16,8 +16,7 @@ class TablaCuenta extends Component
 
 	public $cuenta;
 
-	public $codigo = '0412';
-	public $telefono;
+	public CuentaForm $form;
 
 	public $busqueda;
 	#[Locked]
@@ -34,20 +33,6 @@ class TablaCuenta extends Component
 	public $openDestroy = false;
 
 	public $bancos = [];
-
-	public $letra = 'V', $documento;
-
-	protected $rules = [
-		'letra' => 'required',
-		'documento' => 'required|min:6|max:10',
-		'cuenta.beneficiario' => 'required|string|max:45',
-		'cuenta.numero' => 'required|numeric|digits:20',
-		'cuenta.banco_id' => 'required|not_in:0',
-		'cuenta.tipo' => 'required|not_in:0',
-		'codigo' => 'nullable',
-		'telefono' => 'nullable|digits:7',
-		'cuenta.publica' => 'boolean',
-	];
 
 	public function mount()
 	{
@@ -112,15 +97,10 @@ class TablaCuenta extends Component
 
 	public function edit(Cuenta $cuenta)
 	{
-
-		$this->letra = Str::substr($cuenta->documento, 0, 1);
-		$this->documento = Str::substr($cuenta->documento, 2);
-
-		$this->codigo = Str::substr($cuenta->telefono, 0, 4);
-		$this->telefono = Str::substr($cuenta->telefono, 5, 7);
+		$this->form->setCuenta($cuenta);
+		$this->resetValidation();
 
 		$this->bancos = Banco::all();
-		$this->cuenta = $cuenta;
 		$this->openEdit = true;
 	}
 
@@ -128,15 +108,7 @@ class TablaCuenta extends Component
 	{
 		$this->authorize('cuenta.edit');
 
-		$this->cuenta->documento = $this->letra . '-' . $this->documento;
-
-		$this->validate();
-
-		if ($this->telefono) {
-			$this->telefono = $this->codigo . '-' . $this->telefono;
-		}
-
-		$this->cuenta->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Gasto;
 
+use App\Livewire\Forms\GastoForm;
 use App\Models\Gasto;
 use App\Models\Proveedor;
 use Livewire\Attributes\Locked;
@@ -27,13 +28,10 @@ class TablaGasto extends Component
 	public $openCancelar = false;
 
 	public Gasto $gasto;
-	public $montos = [];
+
+	public GastoForm $form;
 
 	protected $listeners = ['render'];
-
-	protected $rules = [
-		'gasto.monto' => '',
-	];
 
 	public function mount()
 	{
@@ -52,39 +50,19 @@ class TablaGasto extends Component
 		return view('livewire.gasto.tabla-gasto', compact('gastos'));
 	}
 
-	public function updatingMontos()
+	public function updatedForm($value, $key)
 	{
-		$this->gasto->monto = 0;
-	}
-
-	public function updatedMontos()
-	{
-		$this->sumarMontos();
-	}
-
-	private function sumarMontos()
-	{
-		foreach ($this->montos as $key => $monto) {
-
-			if ($monto != "") {
-
-				if (in_array($key, $this->gasto->servicios->pluck('id')->toArray())) {
-					$this->gasto->monto += $monto;
-				}
-			}
+		if (str_starts_with($key, 'montos')) {
+			$this->form->sumarMontos();
 		}
-
-		number_format($this->gasto->monto, 2, ',', '.');
 	}
 
 	public function edit(Gasto $gasto)
 	{
-		foreach ($gasto->servicios as $item) {
-			$this->montos[$item->id] = $item->pivot->monto;
-		}
+		$this->form->setGasto($gasto);
+		$this->resetValidation();
 
 		$this->gasto = $gasto;
-		$this->gasto->proveedor;
 		$this->readyToLoadEdit = true;
 		$this->openEdit = true;
 	}
@@ -93,18 +71,11 @@ class TablaGasto extends Component
 	{
 		$this->authorize('gasto.edit');
 
-		$this->validate();
+		$this->form->update();
 
-		foreach ($this->gasto->servicios as $item) {
-			$item->pivot->monto = $this->montos[$item->id];
-			$item->pivot->save();
-		}
+		$this->reset('openEdit');
 
-		if ($this->gasto->save()) {
-			$this->reset('openEdit');
-
-			flash()->success('El gasto fue actualizado satisfactoriamente');
-		}
+		flash()->success('El gasto fue actualizado satisfactoriamente');
 	}
 
 	public function cancelar(Gasto $gasto)

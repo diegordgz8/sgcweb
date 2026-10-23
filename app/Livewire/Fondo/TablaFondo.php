@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Fondo;
 
+use App\Livewire\Forms\FondoForm;
 use App\Models\Fondo;
 use App\Models\Moneda;
 use App\Traits\WithCurrencies;
@@ -14,7 +15,7 @@ class TablaFondo extends Component
 	use WithPagination;
 	use WithCurrencies;
 
-	public Fondo $fondo;
+	public FondoForm $form;
 
 	public $busqueda = '';
 	#[Locked]
@@ -32,11 +33,6 @@ class TablaFondo extends Component
 	public $moneda = '';
 	public $minimo = '';
 	public $maximo = '';
-
-	protected $rules = [
-		'fondo.descripcion' => 'required|max:255',
-		'fondo.moneda' => 'required'
-	];
 
 	protected $listeners = ['render'];
 
@@ -102,6 +98,22 @@ class TablaFondo extends Component
 			$this->orden = $orden;
 			$this->direccion = 'asc';
 		}
+	}
+
+	public function edit(Fondo $fondo)
+	{
+		$this->form->setFondo($fondo);
+		$this->resetValidation();
+		$this->openEdit = true;
+	}
+
+	public function update()
+	{
+		$this->authorize('fondo.edit');
+
+		$this->form->update();
+		$this->reset('openEdit');
+		flash()->success('El fondo se actualizó satisfactoriamente');
 	}
 
 	private function filtrar()
