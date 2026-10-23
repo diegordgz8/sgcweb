@@ -86,9 +86,10 @@ Route::resource('tipo-unidad', CtrTipoUnidad::class)->only(['index', 'show'])->n
 
 Route::get('visita', [CtrVisita::class, 'index'])->middleware('can:visita.index')->name('visita.index');
 
-Route::get('visita/{visita}', [CtrVisita::class, 'show'])->middleware('can:visita.show')->name('visita.show');
-
+// Before visita/{visita}, otherwise "lista" is taken as a visit id
 Route::get('visita/lista', [CtrVisita::class, 'lista'])->middleware('can:visita.lista')->name('visita.lista');
+
+Route::get('visita/{visita}', [CtrVisita::class, 'show'])->middleware('can:visita.show')->name('visita.show');
 
 Route::get('unidad', [CtrUnidad::class, 'index'])->middleware('can:unidad.index')->name('unidad.index');
 
