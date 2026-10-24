@@ -54,7 +54,8 @@ class RespaldoTest extends TestCase
             ->assertHasNoErrors();
 
         Process::assertRan(function (PendingProcess $proceso) {
-            return $proceso->command[0] === 'mysql'
+            // The binary may come from DB_DUMP_BINARY_PATH, so compare only its name
+            return pathinfo($proceso->command[0], PATHINFO_FILENAME) === 'mysql'
                 && end($proceso->command) === config('database.connections.mysql.database');
         });
         $this->assertEmpty(glob(storage_path('app/backup-temp/restaurar-*')));
