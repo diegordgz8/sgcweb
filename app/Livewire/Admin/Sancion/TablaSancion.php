@@ -2,9 +2,8 @@
 
 namespace App\Livewire\Admin\Sancion;
 
-use App\Models\Moneda;
+use App\Livewire\Forms\SancionForm;
 use App\Models\Sancion;
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -14,7 +13,7 @@ class TablaSancion extends Component
     
 	use WithPagination;
 
-	public Sancion $sancion;
+	public SancionForm $form;
 
 	public $busqueda;
 	#[Locked]
@@ -28,14 +27,6 @@ class TablaSancion extends Component
 	protected $listeners = ['render'];
 
 	public $readyToLoad = false;
-
-	protected function rules()
-	{
-		return [
-			'sancion.monto' => 'required|numeric|gt:0',
-			'sancion.moneda' => ['required', Rule::in(Moneda::codigos())],
-		];
-	}
 
 	public function render()
 	{
@@ -81,7 +72,8 @@ class TablaSancion extends Component
 
 	public function edit(Sancion $sancion)
     {
-        $this->sancion = $sancion;
+        $this->form->setSancion($sancion);
+        $this->resetValidation();
         $this->openEdit = true;
     }
 
@@ -89,8 +81,7 @@ class TablaSancion extends Component
     {
         $this->authorize('sancion.edit');
 
-        $this->validate();
-        $this->sancion->save();
+        $this->form->update();
         $this->reset('openEdit');
         flash()->success('El monto se actualizó satisfactoriamente');
     }

@@ -146,21 +146,21 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre:</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="servicio.nombre">
-                                <x-input-error for="servicio.nombre" />
+                                    wire:model.live="form.nombre">
+                                <x-input-error for="form.nombre" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-3">
                                 <label for="categoria"
                                     class="block text-sm font-medium text-gray-700">Categoría:</label>
                                 <select name="categoria" id="categoria" class="form-control w-full"
-                                    wire:model.live="servicio.categoria_id">
+                                    wire:model.live="form.categoria_id">
                                     <option value="0"> -- </option>
                                     @foreach ($categorias as $item)
                                         <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                     @endforeach
                                 </select>
-                                <x-input-error for="servicio.categoria_id" />
+                                <x-input-error for="form.categoria_id" />
                             </div>
 
                             <div class="col-span-6">
@@ -168,8 +168,8 @@
                                     class="block text-sm font-medium text-gray-700">Descripción:</label>
                                 <input type="text" name="descripcion" id="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="servicio.descripcion">
-                                <x-input-error for="servicio.descripcion" />
+                                    wire:model.live="form.descripcion">
+                                <x-input-error for="form.descripcion" />
                             </div>
 
                         </div>

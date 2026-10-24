@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Enfermedad;
 
+use App\Livewire\Forms\EnfermedadForm;
 use App\Models\Enfermedad;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaEnfermedad extends Component
     use WithPagination;
 
     public Enfermedad $enfermedad;
+
+    public EnfermedadForm $form;
 
     public $busqueda = '';
     #[Locked]
@@ -24,11 +27,6 @@ class TablaEnfermedad extends Component
 
     public $openEdit = false;
     public $openDestroy = false;
-
-    protected $rules = [
-        'enfermedad.nombre' => 'required|max:25',
-        'enfermedad.descripcion' => 'max:255',
-    ];
 
     protected $listeners = ['render'];
 
@@ -83,7 +81,8 @@ class TablaEnfermedad extends Component
 
     public function edit(Enfermedad $enfermedad)
     {
-        $this->enfermedad = $enfermedad;
+        $this->form->setEnfermedad($enfermedad);
+        $this->resetValidation();
         $this->openEdit = true;
     }
 
@@ -91,9 +90,7 @@ class TablaEnfermedad extends Component
     {
         $this->authorize('enfermedad.edit');
 
-        $this->validate();
-
-        $this->enfermedad->save();
+        $this->form->update();
 
         $this->reset('openEdit');
 

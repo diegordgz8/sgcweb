@@ -151,7 +151,7 @@
 
     <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
-            Editar la categoría
+            Editar la persona
         </x-slot>
 
         <x-slot name="content">
@@ -166,17 +166,8 @@
                                 <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                                 <input type="text" name="nombre" id="nombre"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="categoria.nombre">
-                                <x-input-error for="nombre" />
-                            </div>
-
-                            <div class="col-span-6">
-                                <label for="descripcion"
-                                    class="block text-sm font-medium text-gray-700">Descripción</label>
-                                <input type="text" name="descripcion" id="descripcion"
-                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="categoria.descripcion">
-                                <x-input-error for="descripcion" />
+                                    wire:model.live="form.nombre">
+                                <x-input-error for="form.nombre" />
                             </div>
 
                         </div>

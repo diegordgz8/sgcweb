@@ -10,7 +10,7 @@ class NuevaUnidad extends Component
 {
 	public $numero;
 	public $direccion;
-	public TipoUnidad $tipo;
+	public $tipoUnidadId;
 
 	public $tipoUnidades;
 
@@ -18,16 +18,16 @@ class NuevaUnidad extends Component
 
 	protected $rules = [
 		'numero' => 'required|numeric|unique:unidades,numero',
-		'tipo.id' => 'required',
+		'tipoUnidadId' => 'required|exists:tipo_unidades,id',
 		'direccion' => 'required|max:255',
 	];
 
 	protected $messages = [
-		'tipo.id.required' => 'Debe seleccionar un tipo de unidad.',
+		'tipoUnidadId.required' => 'Debe seleccionar un tipo de unidad.',
+		'tipoUnidadId.exists' => 'Debe seleccionar un tipo de unidad.',
 	];
-	
+
 	public function mount() {
-		$this->tipo = new TipoUnidad;
 		$this->tipoUnidades = TipoUnidad::all();
 	}
 
@@ -48,7 +48,7 @@ class NuevaUnidad extends Component
 
 		Unidad::create([
 			'numero' => $this->numero,
-			'tipo_unidad_id' => $this->tipo->id,
+			'tipo_unidad_id' => $this->tipoUnidadId,
 			'direccion' => $this->direccion,
 		]);
 
@@ -56,9 +56,8 @@ class NuevaUnidad extends Component
 			'open',
 			'numero',
 			'direccion',
+			'tipoUnidadId',
 		]);
-
-		$this->tipo = new TipoUnidad;
 
 		$this->dispatch('render')->to('admin.unidad.tabla-unidad');
 		flash()->success('La unidad se registró satisfactoriamente');

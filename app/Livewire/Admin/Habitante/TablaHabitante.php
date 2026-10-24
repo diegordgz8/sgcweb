@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Habitante;
 
+use App\Livewire\Forms\IntegranteForm;
 use App\Models\Integrante;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -12,6 +13,8 @@ class TablaHabitante extends Component
 	use WithPagination;
 	
 	public $integrante;
+
+	public IntegranteForm $form;
 
 	public $busqueda = '';
 	#[Locked]
@@ -24,11 +27,6 @@ class TablaHabitante extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected $rules = [
-		'integrante.nombre' => 'required|max:25',
-		'integrante.descripcion' => 'max:255',
-	];
 
 	protected $listeners = ['render'];
 
@@ -89,7 +87,8 @@ class TablaHabitante extends Component
 
 	public function edit(Integrante $integrante)
 	{
-		$this->integrante = $integrante;
+		$this->form->setIntegrante($integrante);
+		$this->resetValidation();
 		$this->openEdit = true;
 	}
 
@@ -97,9 +96,7 @@ class TablaHabitante extends Component
 	{
 		$this->authorize('integrante.edit');
 
-		$this->validate();
-
-		$this->integrante->save();
+		$this->form->update();
 
 		$this->reset('openEdit');
 

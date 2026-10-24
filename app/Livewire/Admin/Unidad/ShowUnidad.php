@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Unidad;
 
+use App\Livewire\Forms\PropietarioForm;
 use App\Models\Integrante;
 use App\Models\Propietario;
 use App\Models\Unidad;
@@ -13,7 +14,7 @@ use Livewire\Component;
 class ShowUnidad extends Component
 {
 	public Unidad $unidad;
-	public Integrante $integrante;
+	public PropietarioForm $form;
 
 	public $documento;
 	public $letra = 'V';
@@ -29,35 +30,13 @@ class ShowUnidad extends Component
 
 	protected $listeners = ['render'];
 
-	protected function rules()
-	{
-		$rules = [
-			'documento' => 'required|digits_between:8,20|unique:unidades,documento',
-			'letra' => 'required',
-			'ci' => 'required|digits_between:6,8',
-			'integrante.nombre' => 'required|max:20',
-			'integrante.s_nombre' => 'nullable|max:20',
-			'integrante.apellido' => 'required|max:20',
-			'integrante.s_apellido' => 'nullable|max:20',
-			'integrante.fecha_nacimiento' => 'required|before_or_equal:today',
-			'codigo' => 'nullable',
-			'telefono' => 'nullable|digits:7',
-		];
-
-		if ($this->integrante->id) {
-			$rules['integrante.email'] = 'required|email|max:45|unique:integrantes,email,' . $this->integrante->id;
-		} else {
-
-			$rules['integrante.email'] = 'required|email|max:45|unique:integrantes,email';
-		}
-
-		return $rules;
-	}
-
-	public function mount()
-	{
-		$this->integrante = new Integrante;
-	}
+	protected $rules = [
+		'documento' => 'required|digits_between:8,20|unique:unidades,documento',
+		'letra' => 'required',
+		'ci' => 'required|digits_between:6,8',
+		'codigo' => 'nullable',
+		'telefono' => 'nullable|digits:7',
+	];
 
 	public function render()
 	{
@@ -79,9 +58,9 @@ class ShowUnidad extends Component
 		$this->buscarIntegrante();
 	}
 
-	public function updatedIntegranteFechaNacimiento()
+	public function updatedFormFechaNacimiento()
 	{
-		$this->edad = Carbon::parse($this->integrante->fecha_nacimiento)->age;
+		$this->edad = Carbon::parse($this->form->fecha_nacimiento)->age;
 	}
 
 	private function buscarIntegrante()
@@ -90,15 +69,15 @@ class ShowUnidad extends Component
 			->where('documento', $this->ci)->first();
 
 		if ($integrante) {
-			$this->integrante = $integrante;
+			$this->form->setIntegrante($integrante);
 			$this->codigo = Str::substr($integrante->telefono, 0, 4);
 			$this->telefono = Str::substr($integrante->telefono, 5, 7);
 		} else {
-			$this->integrante = new Integrante;
+			$this->form->reset();
 			$this->reset(['codigo', 'telefono']);
 		}
 
-		$this->edad = Carbon::parse($this->integrante->fecha_nacimiento)->age;
+		$this->edad = Carbon::parse($this->form->fecha_nacimiento)->age;
 	}
 
 	public function asignarPropietario()
@@ -107,11 +86,11 @@ class ShowUnidad extends Component
 
 		$this->validate();
 
-		$integrante = $this->integrante;
-		$integrante->letra = $this->letra;
-		$integrante->documento = $this->ci;
-		$integrante->telefono = $this->codigo . '-' . $this->telefono;
-		$integrante->save();
+		$integrante = $this->form->store([
+			'letra' => $this->letra,
+			'documento' => $this->ci,
+			'telefono' => $this->codigo . '-' . $this->telefono,
+		]);
 
 		if ($integrante->propietario) {
 			$this->unidad->propietario()->associate($integrante->propietario);
@@ -141,7 +120,7 @@ class ShowUnidad extends Component
 			'telefono',
 		]);
 
-		$this->integrante = new Integrante;
+		$this->form->reset();
 
 		flash()->success('El propietario fue asignado satisfactoriamente');
 	}
@@ -156,7 +135,7 @@ class ShowUnidad extends Component
 		$this->asignarPropietario();
 
 		$this->reset('openCambiar');
-		Succes('El fondo se registró satisfactoriamente');
+		flash()->success('El propietario fue cambiado satisfactoriamente');
 	}
 
 	public function retirar()

@@ -94,7 +94,7 @@
 
     <x-dialog-modal wire:model.live="openEdit">
         <x-slot name="title">
-            Editar la categoría
+            Editar el fondo
         </x-slot>
 
         <x-slot name="content">
@@ -106,20 +106,22 @@
                         <div class="grid grid-cols-6 gap-6">
 
                             <div class="col-span-6">
-                                <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
-                                <input type="text" name="nombre"
-                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="categoria.nombre">
-                                <x-input-error for="categoria.nombre" />
-                            </div>
-
-                            <div class="col-span-6">
                                 <label for="descripcion"
                                     class="block text-sm font-medium text-gray-700">Descripción</label>
                                 <input type="text" name="descripcion"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="categoria.descripcion">
-                                <x-input-error for="categoria.descripcion" />
+                                    wire:model.live="form.descripcion">
+                                <x-input-error for="form.descripcion" />
+                            </div>
+
+                            <div class="col-span-6">
+                                <label for="moneda" class="block text-sm font-medium text-gray-700">Moneda</label>
+                                <select id="moneda" name="moneda" class="form-control w-full" wire:model.live="form.moneda">
+                                    @foreach ($monedas as $codigo)
+                                        <option value="{{ $codigo }}">{{ $codigo }}</option>
+                                    @endforeach
+                                </select>
+                                <x-input-error for="form.moneda" />
                             </div>
 
                         </div>

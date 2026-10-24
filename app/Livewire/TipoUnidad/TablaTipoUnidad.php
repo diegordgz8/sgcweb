@@ -2,6 +2,7 @@
 
 namespace App\Livewire\TipoUnidad;
 
+use App\Livewire\Forms\TipoUnidadForm;
 use App\Models\TipoUnidad;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -14,6 +15,8 @@ class TablaTipoUnidad extends Component
 
 	public $tipoUnidad;
 
+	public TipoUnidadForm $form;
+
 	public $busqueda;
 	#[Locked]
 	public $orden = 'nombre';
@@ -25,12 +28,6 @@ class TablaTipoUnidad extends Component
 
 	public $openEdit = false;
 	public $openDestroy = false;
-
-	protected $rules = [
-		'tipoUnidad.nombre' => 'required',
-		'tipoUnidad.area' => 'required|numeric',
-		'tipoUnidad.descripcion' => 'max:255',
-	];
 
 	protected $listeners = ['render'];
 
@@ -96,7 +93,8 @@ class TablaTipoUnidad extends Component
 
 	public function edit(TipoUnidad $tipoUnidad)
 	{
-		$this->tipoUnidad = $tipoUnidad;
+		$this->form->setTipoUnidad($tipoUnidad);
+		$this->resetValidation();
 		$this->openEdit = true;
 	}
 
@@ -104,8 +102,7 @@ class TablaTipoUnidad extends Component
 	{
 		$this->authorize('tipo-unidad.edit');
 
-		$this->validate();
-		$this->tipoUnidad->save();
+		$this->form->update();
 		$this->reset('openEdit');
 		flash()->success('El tipo de unidad se actualizó satisfactoriamente');
 	}

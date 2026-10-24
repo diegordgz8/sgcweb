@@ -147,17 +147,17 @@
                                 <label for="monto" class="block text-sm font-medium text-gray-700">Monto</label>
                                 <input type="text" name="monto" id="monto"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                    wire:model.live="sancion.monto">
-                                <x-input-error for="sancion.monto" />
+                                    wire:model.live="form.monto">
+                                <x-input-error for="form.monto" />
                             </div>
                             <div class="col-span-6 sm:col-span-3">
                                 <div class="mt-1 relative rounded-md shadow-sm">
                                     <label for="moneda" class="block text-sm font-medium text-gray-700">
                                         Moneda:
                                     </label>
-                                    <x-select-moneda-condominio wire:model.live="sancion.moneda" name="moneda" id="moneda" class="w-full" />
+                                    <x-select-moneda-condominio wire:model.live="form.moneda" name="moneda" id="moneda" class="w-full" />
                                 </div>
-                                <x-input-error for="sancion.moneda" />
+                                <x-input-error for="form.moneda" />
                             </div>
 
                         </div>

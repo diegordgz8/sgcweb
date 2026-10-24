@@ -147,9 +147,9 @@
                                     <label for="monto" class="block text-sm font-medium text-gray-700">
                                         Monto total:
                                     </label>
-                                    <input wire:model.live="gasto.monto" type="text" name="monto" id="monto" readonly
+                                    <input wire:model.live="form.monto" type="text" name="monto" id="monto" readonly
                                         class="form-control w-full">
-                                    <x-input-error for="gasto.monto" />
+                                    <x-input-error for="form.monto" />
                                 </div>
 
                                 <div class="col-span-6 sm:col-span-3">

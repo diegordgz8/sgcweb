@@ -114,10 +114,10 @@
 
                             <div class="col-span-6">
                                 <label for="rol" class="block text-sm font-medium text-gray-700">Rol</label>
-                                <input wire:model.blur="administrador.rol" type="text" name="rol" id="rol"
+                                <input wire:model.blur="form.rol" type="text" name="rol" id="rol"
                                     autocomplete="rol"
                                     class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                                <x-input-error for="administrador.rol" />
+                                <x-input-error for="form.rol" />
                             </div>
 
                         </div>
