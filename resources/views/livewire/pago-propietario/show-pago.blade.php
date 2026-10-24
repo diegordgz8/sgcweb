@@ -104,7 +104,48 @@
                     </dd>
                 </div>
 
+                <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                    <dt class="text-sm font-medium text-gray-500">
+                        Estado:
+                    </dt>
+                    <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                        <x-estado-pago :estado="$pago->estado" />
+                    </dd>
+                </div>
+
+                @if ($pago->estado == 'Rechazado' && $pago->motivo_rechazo)
+                    <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                        <dt class="text-sm font-medium text-gray-500">
+                            Motivo del rechazo:
+                        </dt>
+                        <dd class="mt-1 text-sm text-red-800 sm:mt-0 sm:col-span-2">
+                            {{ $pago->motivo_rechazo }}
+                        </dd>
+                    </div>
+                @endif
+
             </dl>
         </div>
+
+        <div class="flex flex-wrap justify-end gap-2 border-t border-gray-200 bg-gray-50 px-4 py-3 sm:px-6">
+            <a href="{{ auth()->user()->can('pago-propietario.confirmar') ? route('pago.confirmar') : route('pago-propietario.index') }}"
+                class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-widest text-gray-700 shadow-sm hover:text-gray-500">
+                Atrás
+            </a>
+
+            @if ($pago->estado == 'Por confirmar')
+                @can('pago-propietario.confirmar')
+                    <x-danger-button wire:click="abrirRechazar({{ $pago->id }})" wire:loading.attr="disabled">
+                        Rechazar
+                    </x-danger-button>
+
+                    <x-button wire:click="confirmar({{ $pago->id }})" wire:loading.attr="disabled">
+                        Confirmar pago
+                    </x-button>
+                @endcan
+            @endif
+        </div>
     </div>
+
+    @include('livewire.pago-propietario.partials.modales-confirmacion')
 </div>

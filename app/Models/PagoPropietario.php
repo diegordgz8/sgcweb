@@ -6,6 +6,7 @@ use App\Traits\WithCurrencies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PagoPropietario extends Model
 {
@@ -81,11 +82,38 @@ class PagoPropietario extends Model
 	}
 
 	/**
-	 * Confirma un pago sin fondo (efectivo, cheque) una vez elegido el fondo donde entra.
+	 * Confirma el pago: cierra la factura, acredita el fondo y emite el recibo. Un pago sin
+	 * fondo (efectivo, cheque) necesita que se indique el fondo donde entra.
 	 */
-	public function aceptarPago()
+	public function confirmar(?Fondo $fondo = null): void
 	{
-		$this->pagarFactura();
+		DB::transaction(function () use ($fondo) {
+			if ($fondo) {
+				$this->fondo()->associate($fondo);
+			}
+
+			$this->pagarFactura();
+			$this->emitirRecibo();
+		});
+	}
+
+	public function necesitaFondo(): bool
+	{
+		return $this->fondo_id === null;
+	}
+
+	private function emitirRecibo(): void
+	{
+		$ultimoRecibo = Recibo::orderBy('created_at', 'desc')->first();
+
+		$count = $ultimoRecibo ? Str::substr($ultimoRecibo->numero, 12) : 0;
+
+		$numero = 'R' . Str::substr(today(), 0, 4) . Str::substr(today(), 5, 2) . '-' . $this->unidad->numero . '-' . ++$count;
+
+		Recibo::create([
+			'numero' => $numero,
+			'pago_propietario_id' => $this->id,
+		]);
 	}
 
 	private function acreditarFondo(): void
@@ -93,8 +121,10 @@ class PagoPropietario extends Model
 		$this->fondo->acreditar($this->convertirMonto($this->monto, $this->moneda, $this->fondo->moneda, $this->created_at));
 	}
 
-	public function rechazar() {
+	public function rechazar(string $motivo): void
+	{
 		$this->estado = 'Rechazado';
+		$this->motivo_rechazo = $motivo;
 		$this->save();
 	}
 

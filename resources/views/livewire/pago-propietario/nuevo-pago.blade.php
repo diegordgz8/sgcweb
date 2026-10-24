@@ -50,8 +50,11 @@
 
                             @if ($corrigiendo)
                                 <p class="col-span-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-800">
-                                    El condominio rechazó el pago anterior de esta factura. Revise los datos,
-                                    corríjalos y envíelo de nuevo.
+                                    El condominio rechazó el pago anterior de esta factura.
+                                    @if ($motivoRechazo)
+                                        <span class="block mt-1 font-semibold">Motivo: {{ $motivoRechazo }}</span>
+                                    @endif
+                                    <span class="block mt-1">Revise los datos, corríjalos y envíelo de nuevo.</span>
                                 </p>
                             @endif
 

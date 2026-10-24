@@ -182,7 +182,10 @@ class EstadoPagoTest extends TestCase
     private function rechazar(): void
     {
         Livewire::actingAs($this->administrador())->test(ConfirmarPago::class)
-            ->call('rechazar', PagoPropietario::latest('id')->first()->id);
+            ->call('abrirRechazar', PagoPropietario::latest('id')->first()->id)
+            ->set('motivoRechazo', 'La referencia no coincide con ninguna transferencia.')
+            ->call('rechazar')
+            ->assertHasNoErrors();
     }
 
     private function administrador(): User

@@ -129,7 +129,8 @@ class SaldoUnidadTest extends TestCase
         $caja = Fondo::create(['descripcion' => 'Caja chica', 'saldo' => 0, 'moneda' => 'ARS']);
 
         Livewire::actingAs(User::factory()->create()->assignRole('Condominio'))->test(ConfirmarPago::class)
-            ->call('elegirFondo', $pago->id)
+            ->call('confirmar', $pago->id)
+            ->assertSet('openConfirmar', true)
             ->call('aceptar', $caja->id);
 
         $this->assertSame('Pagada', $septiembre->fresh()->estado);

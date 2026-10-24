@@ -76,6 +76,11 @@
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
                                                     <x-estado-pago :estado="$pago->estado" />
+                                                    @if ($pago->estado == 'Rechazado' && $pago->motivo_rechazo)
+                                                        <div class="mt-1 max-w-xs whitespace-normal text-xs text-red-800">
+                                                            {{ $pago->motivo_rechazo }}
+                                                        </div>
+                                                    @endif
                                                 </td>
 
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium space-x-1">

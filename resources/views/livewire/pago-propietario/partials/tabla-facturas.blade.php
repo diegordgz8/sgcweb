@@ -112,6 +112,11 @@
                                         <td class="px-6 py-4">
                                             <x-estado-pago :estado="$item->estado_pago" />
                                             @if ($item->estado_pago === 'Pago rechazado')
+                                                @if ($item->ultimoPago->motivo_rechazo)
+                                                    <div class="mt-1 max-w-xs whitespace-normal text-xs text-red-800">
+                                                        Motivo: {{ $item->ultimoPago->motivo_rechazo }}
+                                                    </div>
+                                                @endif
                                                 <div class="mt-1 text-xs text-gray-500">Toque la fila para corregirlo y reenviarlo.</div>
                                             @endif
                                         </td>

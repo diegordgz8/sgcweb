@@ -49,6 +49,7 @@ class NuevoPago extends Component
 
 	// El formulario corrige un pago rechazado: se reenvía como un pago nuevo
 	public $corrigiendo = false;
+	public $motivoRechazo;
 
 	protected function rules()
 	{
@@ -139,6 +140,7 @@ class NuevoPago extends Component
 			'moneda',
 			'cuentaId',
 			'corrigiendo',
+			'motivoRechazo',
 		]);
 
 		$this->factura = $factura;
@@ -147,6 +149,7 @@ class NuevoPago extends Component
 		// Un pago rechazado se corrige partiendo de los datos que se enviaron
 		if ($ultimoPago?->estado === 'Rechazado') {
 			$this->corrigiendo = true;
+			$this->motivoRechazo = $ultimoPago->motivo_rechazo;
 			$this->descripcion = $ultimoPago->descripcion;
 			$this->monto = (float) $ultimoPago->monto;
 			$this->fecha = substr($ultimoPago->fecha, 0, 10);
@@ -345,6 +348,7 @@ class NuevoPago extends Component
 			'formaPago',
 			'moneda',
 			'corrigiendo',
+			'motivoRechazo',
 		]);
 
 		$this->factura = new Factura;

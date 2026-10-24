@@ -1,4 +1,4 @@
-<div x-data="initConfirmarPago()" x-init="init" wire:init="$set('readyToLoad', true)">
+<div wire:init="$set('readyToLoad', true)">
     <div class="space-y-4">
         <div class="flex space-x-4 items-center">
             <x-select-cantidad />
@@ -66,21 +66,12 @@
                                                         <i class="fas fa-eye"></i>
                                                     </a>
 
-                                                    @if ($pago->forma_pago == 'Efectivo' || $pago->forma_pago == 'Cheque')
-                                                        <button class="btn btn-green"
-                                                            wire:click="elegirFondo({{ $pago }})">
-                                                            <i class="fas fa-check"></i>
-                                                            Aceptar
-                                                        </button>
-                                                    @else
-                                                        <a class="btn btn-green"
-                                                            wire:click="confirmar({{ $pago }})">
-                                                            <i class="fas fa-check"></i>
-                                                            Aceptar
-                                                        </a>
-                                                    @endif
+                                                    <button class="btn btn-green" wire:click="confirmar({{ $pago->id }})">
+                                                        <i class="fas fa-check"></i>
+                                                        Aceptar
+                                                    </button>
 
-                                                    <button class="btn btn-red" @click="abrirRechazar(@js($pago))">
+                                                    <button class="btn btn-red" wire:click="abrirRechazar({{ $pago->id }})">
                                                         <i class="fas fa-times"></i>
                                                         Rechazar
                                                     </button>
@@ -115,77 +106,5 @@
 
     </div>
 
-    <x-dialog-modal wire:model.live="openConfirmar">
-        <x-slot name="title">
-            Confirmar pago
-        </x-slot>
-
-        <x-slot name="content">
-            <div class="mt-10 sm:mt-0">
-
-                <h1 class="text-center text-lg mb-4">Seleccione el fondo donde se agregará el pago</h1>
-
-                <div class="grid grid-cols-2 gap-6">
-
-                    @foreach ($fondos as $item)
-                        <x-card-fondo wire:click="aceptar({{ $item }})" :fondo="$item" class="cursor-pointer" />
-                    @endforeach
-
-                </div>
-
-            </div>
-        </x-slot>
-
-        <x-slot name="footer">
-            <x-secondary-button class="mr-2" wire:click="$set('openConfirmar', false)">
-                Cancelar
-            </x-secondary-button>
-        </x-slot>
-    </x-dialog-modal>
-
-    <x-confirmation-modal wire:model.live="openRechazar">
-
-        <x-slot name="title">
-            Rechazar pago
-        </x-slot>
-
-        <x-slot name="content">
-            ¿Seguro que desea rechazar el pago?
-        </x-slot>
-
-        <x-slot name="footer">
-            <x-secondary-button wire:click="$set('openRechazar', false)">
-                Cancelar
-            </x-secondary-button>
-
-            <x-danger-button @click="rechazar" wire:loading.attr="disabled"
-                class="disabled:opacity-25">
-                Rechazar
-            </x-danger-button>
-        </x-slot>
-
-    </x-confirmation-modal>
+    @include('livewire.pago-propietario.partials.modales-confirmacion')
 </div>
-
-@push('js')
-    <script>
-        function initConfirmarPago() {
-            return {
-                pago: null,
-
-                init: function() {
-                },
-
-                abrirRechazar: function(pago) {
-                    this.$wire.openRechazar = true;
-                    this.pago = pago.id;
-                },
-
-                rechazar: function() {
-                    console.log(this.pago);
-                    this.$wire.rechazar(this.pago);
-                }
-            }
-        }
-    </script>
-@endpush
