@@ -3,12 +3,17 @@
 namespace Tests\Feature;
 
 use App\Livewire\Banco\TablaBanco;
+use App\Livewire\Cuenta\TablaCuenta;
+use App\Livewire\Proveedor\NuevoProveedor;
 use App\Models\Banco;
+use App\Models\Categoria;
 use App\Models\Condominio;
+use App\Models\Cuenta;
 use App\Models\Interes;
 use App\Models\Iva;
 use App\Models\Mensualidad;
 use App\Models\Moneda;
+use App\Models\Servicio;
 use App\Models\TasaCambio;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
@@ -84,5 +89,31 @@ class PantallasTest extends TestCase
 
         $this->expectException(\Throwable::class);
         $vista->set('form.banco.id', 999);
+    }
+
+    public function test_services_of_a_deleted_category_still_show_it(): void
+    {
+        $categoria = Categoria::factory()->create(['nombre' => 'Mantenimiento']);
+        $servicio = Servicio::factory()->create(['categoria_id' => $categoria->id]);
+        $categoria->delete();
+        $administrador = User::factory()->create()->assignRole('Administrador');
+
+        $this->actingAs($administrador)->get(route('servicio.index'))->assertOk();
+
+        Livewire::actingAs($administrador)->test(NuevoProveedor::class)
+            ->set('readyToLoad', true)
+            ->assertSee($servicio->nombre)
+            ->assertSee('Mantenimiento');
+    }
+
+    public function test_accounts_of_a_deleted_bank_still_show_it(): void
+    {
+        $banco = Banco::factory()->create(['nombre' => 'Banco Cerrado']);
+        Cuenta::factory()->create(['banco_id' => $banco->id]);
+        $banco->delete();
+
+        Livewire::actingAs(User::factory()->create()->assignRole('Administrador'))->test(TablaCuenta::class)
+            ->set('readyToLoad', true)
+            ->assertSee('Banco Cerrado');
     }
 }

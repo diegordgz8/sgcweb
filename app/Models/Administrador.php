@@ -45,7 +45,7 @@ class Administrador extends Integrante
 
 	public function integrante()
 	{
-		return $this->belongsTo(Integrante::class);
+		return $this->belongsTo(Integrante::class)->withTrashed();
 	}
 
 	public function comunicados()

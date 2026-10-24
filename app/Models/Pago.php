@@ -25,7 +25,7 @@ class Pago extends Model
 
 	public function gasto()
 	{
-		return $this->belongsTo(Gasto::class);
+		return $this->belongsTo(Gasto::class)->withTrashed();
 	}
 
 	public function fondo()

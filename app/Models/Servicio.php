@@ -18,7 +18,8 @@ class Servicio extends Model
      */
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class);
+        // Categories are soft-deleted; a service keeps showing the one it was filed under
+        return $this->belongsTo(Categoria::class)->withTrashed();
     }
 
     public function proveedores() {

@@ -22,6 +22,6 @@ class Comunicado extends Model
     protected $fillable = ['asunto', 'contenido'];
 
 	public function autor() {
-        return $this->belongsTo(Administrador::class, 'administrador_id');
+        return $this->belongsTo(Administrador::class, 'administrador_id')->withTrashed();
     }
 }

@@ -18,7 +18,7 @@ class Propietario extends Model
 
 	public function integrante()
 	{
-		return $this->belongsTo(Integrante::class);
+		return $this->belongsTo(Integrante::class)->withTrashed();
 	}
 
 	public function unidades()

@@ -22,7 +22,7 @@ class Cuenta extends Model
 
     public function banco()
     {
-        return $this->belongsTo(Banco::class);
+        return $this->belongsTo(Banco::class)->withTrashed();
     }
 
     public function fondo()
