@@ -9,7 +9,7 @@
 
             @livewire('admin.sancion.nueva-sancion')
 
-            <a href="{{ route('sancion.exportar') }}" class="btn btn-blue whitespace-nowrap">
+            <a target="_blank" rel="noopener" href="{{ route('sancion.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>
 

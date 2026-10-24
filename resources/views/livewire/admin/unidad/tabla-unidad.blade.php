@@ -86,7 +86,7 @@
             <x-input wire:model.live="busqueda" type="text" placeholder="Escriba para buscar por número o dirección..."
                 class="w-full" />
 
-            <a href="{{ route('unidad.exportar', ['-' . $busqueda . '-' . 'numero' . '-' . 'asc' . '-' . $propietario . '-' . $habitantes . '-' . $facturas]) }}"
+            <a target="_blank" rel="noopener" href="{{ route('unidad.exportar', ['-' . $busqueda . '-' . 'numero' . '-' . 'asc' . '-' . $propietario . '-' . $habitantes . '-' . $facturas]) }}"
                 class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>

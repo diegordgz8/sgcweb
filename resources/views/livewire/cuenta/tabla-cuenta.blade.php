@@ -9,7 +9,7 @@
 
             @livewire('cuenta.nueva-cuenta')
 
-            <a href="{{ route('cuenta.exportar') }}" class="btn btn-blue whitespace-nowrap">
+            <a target="_blank" rel="noopener" href="{{ route('cuenta.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>
 
