@@ -5,7 +5,10 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.5",
+        "ext-gd": "*",
+        "ext-intl": "*",
+        "ext-zip": "*",
         "barryvdh/laravel-dompdf": "^3.1.2",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^13.0",
