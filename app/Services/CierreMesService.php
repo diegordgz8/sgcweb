@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\MesYaCerrado;
+use App\Models\AjusteSaldo;
 use App\Models\CierreMes;
 use App\Models\Factura;
 use App\Models\Gasto;
@@ -168,6 +169,17 @@ class CierreMesService
 			]));
 		}
 
+		// Faltantes y saldos a favor de pagos anteriores: los primeros suman y los segundos restan
+		$ajustes = $unidad->ajustesSaldo()->pendientes()->get();
+
+		foreach ($ajustes as $ajuste) {
+			$items->push(Item::make([
+				'itemable_id' => $ajuste->id,
+				'itemable_type' => AjusteSaldo::class,
+				'monto' => $ajuste->monto_con_signo,
+			]));
+		}
+
 		$montoFactura = 0;
 
 		// Cada item está en la moneda de su origen; se pasa a la de la factura con las tasas del cierre
@@ -176,19 +188,31 @@ class CierreMesService
 			$montoFactura += $item->monto;
 		}
 
+		// Un saldo a favor mayor que la factura la deja en cero y el resto pasa a la siguiente
+		$saldoAFavor = $montoFactura < 0 ? round(-$montoFactura, 2) : 0;
+		$montoFactura = max($montoFactura, 0);
+
+		$faltantes = $ajustes->filter(fn (AjusteSaldo $ajuste) => $ajuste->esFaltante());
+
 		$factura = Factura::make([
 			'numero' => Str::replace('-', '', $this->mes) . '-' . $unidad->numero . '-1',
 			'monto' => $montoFactura,
 			'monto_por_pagar' => $montoFactura,
 			'moneda' => $this->moneda,
 			'fecha' => now(),
+			// La deuda arrastrada por los faltantes conserva su antigüedad para el interés
+			'deuda_desde' => $faltantes->min(fn (AjusteSaldo $ajuste) => $ajuste->deuda_desde->toDateString()),
 			'unidad_id' => $unidad->id,
 			'iva_id' => $this->iva->id,
 		]);
 
-		$this->aplicarInteres($factura, $unidad);
+		if ($montoFactura == 0) {
+			$factura->estado = 'Pagada';
+		}
 
-		return compact('unidad', 'factura', 'items', 'sanciones');
+		$this->aplicarInteres($factura, $unidad, $faltantes);
+
+		return compact('unidad', 'factura', 'items', 'sanciones', 'ajustes', 'saldoAFavor');
 	}
 
 	private function guardarFactura(array $borrador, CierreMes $cierre): void
@@ -205,18 +229,40 @@ class CierreMesService
 			$sancion->pivot->estado = 'Procesada';
 			$sancion->pivot->save();
 		}
+
+		foreach ($borrador['ajustes'] as $ajuste) {
+			$ajuste->update(['factura_aplicada_id' => $borrador['factura']->id]);
+		}
+
+		if ($borrador['saldoAFavor'] > 0) {
+			AjusteSaldo::create([
+				'unidad_id' => $borrador['unidad']->id,
+				'tipo' => 'A favor',
+				'monto' => $borrador['saldoAFavor'],
+				'moneda' => $borrador['factura']->moneda,
+				'deuda_desde' => now(),
+				'factura_origen_id' => $borrador['factura']->id,
+			]);
+		}
 	}
 
-	private function aplicarInteres(Factura $factura, Unidad $unidad): void
+	/**
+	 * Late interest applies when the unit's oldest unpaid debt is old enough. Unpaid debt is
+	 * a pending invoice or a shortfall carried from an underpaid one; paid invoices don't count.
+	 */
+	private function aplicarInteres(Factura $factura, Unidad $unidad, Collection $faltantes): void
 	{
-		if (! $this->interes || ! $this->interes->estado) {
+		if (! $this->interes || ! $this->interes->estado || $factura->monto <= 0) {
 			return;
 		}
 
-		$facturaMasVieja = $unidad->facturas()->orderBy('fecha', 'asc')->first();
+		$deudaMasVieja = $unidad->facturas()->where('estado', 'Pendiente')->get()
+			->map(fn (Factura $pendiente) => Carbon::parse($pendiente->deuda_desde_efectiva))
+			->concat($faltantes->map(fn (AjusteSaldo $ajuste) => $ajuste->deuda_desde))
+			->min();
 
-		// Carbon 3 returns a signed diff, so measure from the old invoice forward
-		if ($facturaMasVieja && Carbon::parse($facturaMasVieja->fecha)->diffInMonths(Carbon::today()) >= $this->interes->meses) {
+		// Carbon 3 returns a signed diff, so measure from the old debt forward
+		if ($deudaMasVieja && $deudaMasVieja->diffInMonths(Carbon::today()) >= $this->interes->meses) {
 			$factura->interes()->associate($this->interes);
 
 			// Items already include VAT and VAT also applies to the interest, so scaling the

@@ -6,6 +6,7 @@ use App\Livewire\Gasto\NuevoGasto;
 use App\Livewire\Pago\NuevoPago as NuevoPagoGasto;
 use App\Livewire\PagoPropietario\ConfirmarPago;
 use App\Livewire\PagoPropietario\NuevoPago as NuevoPagoPropietario;
+use App\Models\AjusteSaldo;
 use App\Models\Banco;
 use App\Models\Categoria;
 use App\Models\Cuenta;
@@ -95,8 +96,9 @@ class PagosTest extends TestCase
         Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
             ->call('confirmar', PagoPropietario::sole()->id);
 
-        // 50 USD = 81.000 ARS abonados a la factura; el fondo en USD recibe los 50
-        $this->assertEquals(69000, $factura->fresh()->monto_por_pagar);
+        // 50 USD = 81.000 ARS: la factura se cierra y los 69.000 ARS que faltan quedan como faltante
+        $this->assertSame('Pagada', $factura->fresh()->estado);
+        $this->assertFaltante($factura, 69000);
         $this->assertEquals(50, $cuenta->fondo->fresh()->saldo);
     }
 
@@ -254,11 +256,13 @@ class PagosTest extends TestCase
 
     /**
      * R-46: cada conversión redondea a 2 decimales, así que pagar el total en otra moneda deja
-     * un resto de céntimos (positivo o negativo) que no debe impedir cerrar la factura.
+     * céntimos de diferencia. La factura se cierra igual y esos céntimos no se pierden: pasan
+     * a la próxima factura como faltante o saldo a favor.
      */
-    public function test_paying_the_full_invoice_in_another_currency_closes_it(): void
+    public function test_paying_the_full_invoice_in_another_currency_closes_it_and_keeps_the_cents(): void
     {
-        foreach ([150000, 150010] as $monto) {
+        // 150.000 ARS → 92,59 USD = 149.995,80 ARS (faltan 4,20); 150.010 → 92,60 = 150.012 (sobran 2)
+        foreach ([150000 => ['Faltante', 4.20], 150010 => ['A favor', 2.00]] as $monto => [$tipo, $diferencia]) {
             [$propietario, $factura] = $this->propietarioConFactura($monto, 'ARS');
             $cuenta = $this->cuentaConFondo('USD');
 
@@ -280,10 +284,15 @@ class PagosTest extends TestCase
             $factura->refresh();
             $this->assertSame('Pagada', $factura->estado, "Factura de $monto ARS");
             $this->assertEquals(0, $factura->monto_por_pagar, "Factura de $monto ARS");
+
+            $ajuste = AjusteSaldo::where('factura_origen_id', $factura->id)->sole();
+            $this->assertSame($tipo, $ajuste->tipo, "Factura de $monto ARS");
+            $this->assertEquals($diferencia, $ajuste->monto, "Factura de $monto ARS");
+            $this->assertSame('ARS', $ajuste->moneda);
         }
     }
 
-    public function test_a_partial_payment_in_another_currency_keeps_the_invoice_pending(): void
+    public function test_a_partial_payment_closes_the_invoice_and_leaves_the_rest_as_shortfall(): void
     {
         [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
         $cuenta = $this->cuentaConFondo('USD');
@@ -303,9 +312,9 @@ class PagosTest extends TestCase
         Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
             ->call('confirmar', PagoPropietario::sole()->id);
 
-        // 92,58 USD = 149.979,60 ARS: faltan 20,40 ARS, más que un céntimo de dólar (16,20 ARS)
-        $this->assertSame('Pendiente', $factura->fresh()->estado);
-        $this->assertEquals(20.4, $factura->fresh()->monto_por_pagar);
+        // 92,58 USD = 149.979,60 ARS: faltan 20,40 ARS
+        $this->assertSame('Pagada', $factura->fresh()->estado);
+        $this->assertFaltante($factura, 20.40);
     }
 
     public function test_paying_the_full_expense_in_another_currency_closes_it(): void
@@ -379,6 +388,15 @@ class PagosTest extends TestCase
 
         $this->assertEquals(1000, $gasto->fresh()->saldo);
         $this->assertEquals(1000, $fondoDolares->fresh()->saldo);
+    }
+
+    private function assertFaltante(Factura $factura, float $monto): void
+    {
+        $ajuste = AjusteSaldo::where('factura_origen_id', $factura->id)->sole();
+
+        $this->assertSame('Faltante', $ajuste->tipo);
+        $this->assertEquals($monto, $ajuste->monto);
+        $this->assertSame($factura->unidad_id, $ajuste->unidad_id);
     }
 
     private function usuarioCondominio(): User

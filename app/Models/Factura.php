@@ -17,6 +17,7 @@ class Factura extends Model
 		'monto_por_pagar',
 		'moneda',
 		'fecha',
+		'deuda_desde',
 		'unidad_id',
 		'iva_id',
 		'interes_id',
@@ -28,15 +29,23 @@ class Factura extends Model
 		'monto_por_pagar' => 'decimal:2',
 	];
 
-	public function pagar(float $monto)
+	/**
+	 * Cierra la factura con un pago. Lo que falte o sobre lo registra quien paga como
+	 * ajuste de saldo de la unidad.
+	 */
+	public function saldar(): void
 	{
-		$this->monto_por_pagar -= $monto;
-
-		if ($this->monto_por_pagar <= 0) {
-			$this->estado = 'Pagada';
-		}
-
+		$this->monto_por_pagar = 0;
+		$this->estado = 'Pagada';
 		$this->save();
+	}
+
+	/**
+	 * Fecha desde la que la unidad arrastra la deuda de esta factura.
+	 */
+	public function getDeudaDesdeEfectivaAttribute()
+	{
+		return $this->deuda_desde ?? $this->fecha;
 	}
 
 	public function getMontoFormateadoAttribute() {

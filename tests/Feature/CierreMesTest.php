@@ -238,18 +238,6 @@ class CierreMesTest extends TestCase
         $this->assertEqualsWithDelta(10, $vista->get('total'), 0.001);
     }
 
-    public function test_invoice_is_marked_paid_after_partial_payments(): void
-    {
-        [$unidad] = $this->crearUnidades([50]);
-        $factura = $this->crearFactura($unidad, now(), monto: 0.3);
-
-        $factura->pagar(0.1);
-        $factura->pagar(0.1);
-        $factura->pagar(0.1);
-
-        $this->assertSame('Pagada', $factura->fresh()->estado);
-    }
-
     private function mes(int $desplazamiento): string
     {
         return now()->startOfMonth()->subMonths(6)->addMonths($desplazamiento)->format('Y-m');

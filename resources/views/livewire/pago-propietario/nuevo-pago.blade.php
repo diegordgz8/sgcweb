@@ -7,6 +7,23 @@
         </a>
     </div>
 
+    @foreach ($ajustes as $ajuste)
+        <p @class([
+            'mt-4 rounded-md px-4 py-3 text-sm',
+            'bg-yellow-50 text-yellow-800' => $ajuste->esFaltante(),
+            'bg-green-50 text-green-800' => ! $ajuste->esFaltante(),
+        ])>
+            Unidad {{ $ajuste->unidad->numero }}:
+            @if ($ajuste->esFaltante())
+                tiene un faltante de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />
+                ({{ Str::lcfirst($ajuste->descripcion) }}), que se cobrará en la próxima factura.
+            @else
+                tiene un saldo a favor de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />,
+                que se descontará de la próxima factura.
+            @endif
+        </p>
+    @endforeach
+
     <div class="py-6 space-y-2">
         <h1 class="text-center text-xl font-semibold">Seleccione la factura a pagar...</h1>
 
@@ -81,6 +98,20 @@
                                     class="form-control w-full" />
                                 <x-input-error for="monto" />
                             </div>
+
+                            @if ($this->avisoSaldo)
+                                <p @class([
+                                    'col-span-6 rounded-md px-4 py-3 text-sm',
+                                    'bg-yellow-50 text-yellow-800' => $this->avisoSaldo['faltante'],
+                                    'bg-green-50 text-green-800' => ! $this->avisoSaldo['faltante'],
+                                ])>
+                                    @if ($this->avisoSaldo['faltante'])
+                                        Quedará un faltante de {{ $this->avisoSaldo['monto'] }}, que se cobrará en la próxima factura.
+                                    @else
+                                        Quedará un saldo a favor de {{ $this->avisoSaldo['monto'] }}, que se descontará de la próxima factura.
+                                    @endif
+                                </p>
+                            @endif
 
                             <div class="col-span-6 sm:col-span-1">
                                 <input wire:click="pagarTotal" wire:loading.attr="disabled" type="button"

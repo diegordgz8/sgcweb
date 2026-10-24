@@ -3,6 +3,7 @@
 namespace App\Livewire\PagoPropietario;
 
 use App\Exceptions\TasaNoDisponible;
+use App\Models\AjusteSaldo;
 use App\Models\Factura;
 use App\Models\Cuenta;
 use App\Models\Fondo;
@@ -64,7 +65,8 @@ class NuevoPago extends Component
 					->whereIn('cuenta_id', Cuenta::where('publica', true)->select('id')),
 			],
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil|required|min:4|max:8',
-			'monto' => ['required', 'numeric', 'gt:0', 'lte:' . (float) $this->montoFacturaConvertido],
+			// Se acepta cualquier monto: lo que falte o sobre queda en el saldo de la unidad
+			'monto' => ['required', 'numeric', 'gt:0'],
 		];
 	}
 
@@ -72,7 +74,6 @@ class NuevoPago extends Component
 		'fecha.before_or_equal' => 'La fecha debe ser anterior o igual al día actual.',
 		'cuentaId.not_in' => 'Debe seleccionar una cuenta.',
 		'cuentaId.exists' => 'La cuenta seleccionada no recibe pagos en la moneda elegida.',
-		'monto.lte' => 'El monto no debe ser mayor al total de la deuda.',
 	];
 
 	public function mount()
@@ -94,7 +95,13 @@ class NuevoPago extends Component
 
 		$this->facturaMasVieja = $facturas->sortBy('fecha')->first();
 
-		return view('livewire.pago-propietario.nuevo-pago', compact('facturas', 'cuentas'));
+		// Faltantes y saldos a favor que se aplicarán en la próxima factura de cada unidad
+		$ajustes = AjusteSaldo::pendientes()
+			->with('unidad')
+			->whereIn('unidad_id', Auth::user()->propietario->unidades()->select('unidades.id'))
+			->get();
+
+		return view('livewire.pago-propietario.nuevo-pago', compact('facturas', 'cuentas', 'ajustes'));
 	}
 
 	public function mostrarForm(Factura $factura)
@@ -143,6 +150,34 @@ class NuevoPago extends Component
 
 		$this->convertirSaldo();
 		$this->validarMonto();
+	}
+
+	/**
+	 * Faltante o saldo a favor que dejaría el monto escrito, en la moneda de la factura.
+	 * Usa las tasas vigentes, las mismas con que se registrará el pago.
+	 */
+	public function getAvisoSaldoProperty(): ?array
+	{
+		if (! $this->factura->exists || ! is_numeric($this->monto) || $this->monto <= 0) {
+			return null;
+		}
+
+		try {
+			$abono = $this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda);
+		} catch (TasaNoDisponible $e) {
+			return null;
+		}
+
+		$diferencia = round($this->factura->monto_por_pagar - $abono, 2);
+
+		if ($diferencia == 0) {
+			return null;
+		}
+
+		return [
+			'faltante' => $diferencia > 0,
+			'monto' => $this->formatearMonto(abs($diferencia), $this->factura->moneda),
+		];
 	}
 
 	/**
