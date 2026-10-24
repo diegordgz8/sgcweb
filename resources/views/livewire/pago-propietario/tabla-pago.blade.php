@@ -93,7 +93,7 @@
                                                     @endif
 
                                                     @if ($pago->estado == 'Confirmado')
-                                                        <a href="{{ route('pago-propietario.recibo', $pago->recibo) }}"
+                                                        <a target="_blank" rel="noopener" href="{{ route('pago-propietario.recibo', $pago->recibo) }}"
                                                             class="btn btn-green">
                                                             <i class="fas fa-download"></i>
                                                         </a>

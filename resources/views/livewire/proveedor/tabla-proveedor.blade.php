@@ -7,7 +7,7 @@
             <x-input type="search" placeholder="Escriba para buscar..." class="w-full"
                 wire:model.live="busqueda" />
 
-            <a href="{{ route('proveedor.exportar') }}" class="btn btn-blue whitespace-nowrap">
+            <a target="_blank" rel="noopener" href="{{ route('proveedor.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>
 

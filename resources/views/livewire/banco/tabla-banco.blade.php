@@ -11,7 +11,7 @@
                 @livewire('banco.nuevo-banco')
             @endcan
 
-            <a href="{{ route('banco.exportar') }}" class="btn btn-blue whitespace-nowrap">
+            <a target="_blank" rel="noopener" href="{{ route('banco.exportar') }}" class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>
 

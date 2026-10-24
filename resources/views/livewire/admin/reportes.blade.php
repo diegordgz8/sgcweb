@@ -18,7 +18,7 @@
                         <div class="flex justify-between p-4 border shadow rounded">
                             <h4 class="inline text-lg">Saldo total</h4>
                             <div>
-                                <a href="{{ route('reporte.saldoTotal', 1) }}" target="_blank"
+                                <a href="{{ route('reporte.saldoTotal', 1) }}" target="_blank" rel="noopener"
                                     class="btn btn-blue">Ver</a>
                                 <a href="{{ route('reporte.saldoTotal', 2) }}" class="btn btn-blue">Descargar</a>
                             </div>
@@ -27,7 +27,7 @@
                         <div class="flex justify-between p-4 border shadow rounded">
                             <h4 class="inline text-lg">Unidades con facturas pendientes</h4>
                             <div>
-                                <a href="{{ route('reporte.con-facturas-pendientes', 1) }}" target="_blank"
+                                <a href="{{ route('reporte.con-facturas-pendientes', 1) }}" target="_blank" rel="noopener"
                                     class="btn btn-blue">Ver</a>
                                 <a href="{{ route('reporte.con-facturas-pendientes', 2) }}" class="btn btn-blue">Descargar</a>
                             </div>

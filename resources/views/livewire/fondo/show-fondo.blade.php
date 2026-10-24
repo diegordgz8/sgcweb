@@ -54,7 +54,7 @@
                 <h2 class="px-4 py-2 text-lg inline w-full">Movimientos</h2>
 
                 @if (count($fondo->getMovimientos()))
-                    <a href="{{ route('fondo.movimiento', $fondo) }}" class="btn btn-blue whitespace-nowrap">
+                    <a target="_blank" rel="noopener" href="{{ route('fondo.movimiento', $fondo) }}" class="btn btn-blue whitespace-nowrap">
                         <i class="fas fa-file-export"></i> Exportar
                     </a>
                 @endif

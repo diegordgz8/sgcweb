@@ -53,7 +53,7 @@
             <x-input type="text" placeholder="Escriba para buscar por nombre..." class="w-full"
                 wire:model.live="busqueda" />
 
-                <a href="{{ route('fondo.exportar', ['-' . $busqueda . '-' . $orden . '-' . $direccion . '-' . $moneda . '-' . $minimo . '-' . $maximo]) }}"
+                <a target="_blank" rel="noopener" href="{{ route('fondo.exportar', ['-' . $busqueda . '-' . $orden . '-' . $direccion . '-' . $moneda . '-' . $minimo . '-' . $maximo]) }}"
                 class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>

@@ -27,7 +27,7 @@
             <x-input type="search" placeholder="Escriba para buscar por nombre o apellido..." class="w-full"
                 wire:model.live="busqueda" />
 
-                <a href="{{ route('visita.exportar', ['-' . $busqueda . '-' . $this->orden . '-' . $this->direccion . '-' . $fechaDesde . '-' . $fechaHasta]) }}"
+                <a target="_blank" rel="noopener" href="{{ route('visita.exportar', ['-' . $busqueda . '-' . $this->orden . '-' . $this->direccion . '-' . $fechaDesde . '-' . $fechaHasta]) }}"
                 class="btn btn-blue whitespace-nowrap">
                 <i class="fas fa-file-export"></i> Exportar
             </a>
