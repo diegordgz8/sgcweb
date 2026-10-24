@@ -48,6 +48,13 @@
                     <div class="px-4 py-5 bg-white sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
 
+                            @if ($corrigiendo)
+                                <p class="col-span-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-800">
+                                    El condominio rechazó el pago anterior de esta factura. Revise los datos,
+                                    corríjalos y envíelo de nuevo.
+                                </p>
+                            @endif
+
                             <div class="col-span-6">
                                 <label for="factura" class="block text-sm font-medium text-gray-700">
                                     Factura:
@@ -210,7 +217,7 @@
             </x-secondary-button>
 
             <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
-                Registrar
+                {{ $corrigiendo ? 'Reenviar pago' : 'Registrar' }}
             </x-button>
 
         </x-slot>

@@ -75,10 +75,18 @@
                                                     {{ $pago->unidad->numero }}
                                                 </td>
                                                 <td class="px-6 py-4 whitespace-nowrap">
-                                                    {{ $pago->estado }}
+                                                    <x-estado-pago :estado="$pago->estado" />
                                                 </td>
 
                                                 <td class="px-6 py-4 whitespace-nowrap text-right text-xs font-medium space-x-1">
+                                                    {{-- Solo el último pago de una factura sin pagar se puede corregir --}}
+                                                    @if ($pago->estado == 'Rechazado' && $pago->factura->estado == 'Pendiente' && $pago->factura->ultimoPago?->is($pago))
+                                                        <a href="{{ route('pago-propietario.create', ['corregir' => $pago->factura->numero]) }}"
+                                                            class="btn btn-blue whitespace-nowrap">
+                                                            Corregir y reenviar
+                                                        </a>
+                                                    @endif
+
                                                     @if ($pago->estado == 'Confirmado')
                                                         <a href="{{ route('pago-propietario.recibo', $pago->recibo) }}"
                                                             class="btn btn-green">

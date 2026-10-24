@@ -56,6 +56,32 @@ class Factura extends Model
 		return $this->formatearMonto($this->monto_por_pagar, $this->moneda);
 	}
 
+	/**
+	 * Estado del cobro que ve el propietario: el de la factura o el de su último pago.
+	 */
+	public function getEstadoPagoAttribute(): string
+	{
+		if ($this->estado === 'Pagada') {
+			return 'Pagada';
+		}
+
+		return match ($this->ultimoPago?->estado) {
+			'Por confirmar' => 'Esperando confirmación',
+			'Rechazado' => 'Pago rechazado',
+			default => 'Pendiente de pago',
+		};
+	}
+
+	public function pagos()
+	{
+		return $this->hasMany(PagoPropietario::class);
+	}
+
+	public function ultimoPago()
+	{
+		return $this->hasOne(PagoPropietario::class)->latestOfMany();
+	}
+
 	public function items() {
 		return $this->hasMany(Item::class);
 	}

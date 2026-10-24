@@ -40,6 +40,7 @@ class TablaPago extends Component
 
 			if ($pagos->count() > 0) {
 				$pagos = $pagos->toQuery()
+					->with('factura.ultimoPago', 'unidad')
 					->where('descripcion', 'LIKE', '%' . $this->busqueda . '%')
 					->orderBy($this->orden, $this->direccion)
 					->paginate($this->cantidad);

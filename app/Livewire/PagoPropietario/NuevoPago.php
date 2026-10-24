@@ -47,7 +47,8 @@ class NuevoPago extends Component
 	public $direccion = 'desc';
 	public $cantidad = '10';
 
-	public $facturaMasVieja;
+	// El formulario corrige un pago rechazado: se reenvía como un pago nuevo
+	public $corrigiendo = false;
 
 	protected function rules()
 	{
@@ -80,11 +81,21 @@ class NuevoPago extends Component
 	public function mount()
 	{
 		$this->factura = new Factura;
+
+		// Desde la lista de pagos, "Corregir y reenviar" abre el pago rechazado de esa factura
+		if ($numero = request()->query('corregir')) {
+			$factura = Auth::user()->propietario->facturas()->where('facturas.numero', $numero)->first();
+
+			if ($factura) {
+				$this->mostrarForm($factura);
+			}
+		}
 	}
 
 	public function render()
 	{
 		$facturas = Auth::user()->propietario->facturas()
+			->with('ultimoPago')
 			->where('estado', 'Pendiente')
 			->paginate($this->cantidad);
 
@@ -93,8 +104,6 @@ class NuevoPago extends Component
 		} else {
 			$cuentas = $this->cuentasEnMoneda()->get();
 		}
-
-		$this->facturaMasVieja = $facturas->sortBy('fecha')->first();
 
 		// Faltantes y saldos a favor que se aplicarán en la próxima factura de cada unidad
 		$ajustes = AjusteSaldo::pendientes()
@@ -109,8 +118,15 @@ class NuevoPago extends Component
 	{
 		$this->authorize('pagar', $factura);
 
-		if ($this->facturaMasVieja->id != $factura->id) {
+		if ($this->facturaMasVieja()?->id != $factura->id) {
 			flash()->error('No puede pagar una factura si existe otra más vieja.');
+			return false;
+		}
+
+		$ultimoPago = $factura->ultimoPago;
+
+		if ($ultimoPago?->estado === 'Por confirmar') {
+			flash()->info('El pago de esta factura está esperando la confirmación del condominio.');
 			return false;
 		}
 
@@ -121,10 +137,25 @@ class NuevoPago extends Component
 			'referencia',
 			'formaPago',
 			'moneda',
+			'cuentaId',
+			'corrigiendo',
 		]);
 
 		$this->factura = $factura;
 		$this->moneda = $this->factura->moneda;
+
+		// Un pago rechazado se corrige partiendo de los datos que se enviaron
+		if ($ultimoPago?->estado === 'Rechazado') {
+			$this->corrigiendo = true;
+			$this->descripcion = $ultimoPago->descripcion;
+			$this->monto = (float) $ultimoPago->monto;
+			$this->fecha = substr($ultimoPago->fecha, 0, 10);
+			$this->referencia = $ultimoPago->referencia;
+			$this->formaPago = $ultimoPago->forma_pago;
+			$this->moneda = $ultimoPago->moneda;
+			$this->cuentaId = $ultimoPago->fondo?->cuenta_id ?? 0;
+		}
+
 		$this->convertirSaldo();
 
 		$this->montoFormateado = $this->factura->montoPorPagarFormateado;
@@ -147,13 +178,7 @@ class NuevoPago extends Component
 			return false;
 		}
 
-		$this->facturaMasVieja = Auth::user()->propietario->facturas()
-			->where('estado', 'Pendiente')
-			->orderBy('fecha')
-			->orderBy('facturas.id')
-			->first();
-
-		if ($this->facturaMasVieja->id != $factura->id) {
+		if ($this->facturaMasVieja()?->id != $factura->id) {
 			flash()->info("Se generó la factura {$factura->numero} con el faltante. Primero debe pagar su factura más antigua.");
 
 			return false;
@@ -181,6 +206,18 @@ class NuevoPago extends Component
 
 		$this->convertirSaldo();
 		$this->validarMonto();
+	}
+
+	/**
+	 * Factura pendiente más antigua del propietario: hay que pagarlas en orden.
+	 */
+	private function facturaMasVieja(): ?Factura
+	{
+		return Auth::user()->propietario->facturas()
+			->where('estado', 'Pendiente')
+			->orderBy('fecha')
+			->orderBy('facturas.id')
+			->first();
 	}
 
 	/**
@@ -270,6 +307,12 @@ class NuevoPago extends Component
 	{
 		$this->authorize('pagar', $this->factura);
 
+		// Un pago por confirmar no se duplica; uno rechazado sí se puede reenviar
+		if ($this->factura->pagos()->where('estado', 'Por confirmar')->exists()) {
+			flash()->error('El pago de esta factura ya está esperando la confirmación del condominio.');
+			return false;
+		}
+
 		$this->validate();
 
 		$datos = [
@@ -287,9 +330,11 @@ class NuevoPago extends Component
 			$datos['fondo_id'] = Fondo::where('cuenta_id', $this->cuentaId)->value('id');
 		}
 
-		$pago = PagoPropietario::create($datos);
+		PagoPropietario::create($datos);
 
-		// $pago->save();
+		$mensaje = $this->corrigiendo
+			? 'El pago corregido fue enviado. Debe esperar que el condominio lo confirme.'
+			: 'El pago ha sido registrado, debe esperar que el condominio confirme el pago para ver los cambios.';
 
 		$this->reset([
 			'open',
@@ -299,11 +344,12 @@ class NuevoPago extends Component
 			'referencia',
 			'formaPago',
 			'moneda',
+			'corrigiendo',
 		]);
 
 		$this->factura = new Factura;
 		$this->cuentaId = 0;
 
-		flash()->success('El pago ha sido registrado, debe esperar que el condominio confirme el pago para ver los cambios.');
+		flash()->success($mensaje);
 	}
 }
