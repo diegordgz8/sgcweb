@@ -9,7 +9,9 @@ use Laravel\Jetstream\Http\Middleware\AuthenticateSession;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         commands: __DIR__.'/../routes/console.php',
-        using: function () {
+        health: '/up',
+        // `then` instead of `using`: Laravel ignores `health` when `using` is given
+        then: function () {
             Route::prefix('api')
                 ->middleware('api')
                 ->group(base_path('routes/api.php'));

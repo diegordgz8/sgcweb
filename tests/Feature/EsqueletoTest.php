@@ -47,6 +47,27 @@ class EsqueletoTest extends TestCase
         $this->assertSame(['create' => 'crear', 'edit' => 'modificar'], Route::resourceVerbs());
     }
 
+    public function test_health_endpoint_responds_without_starting_a_session(): void
+    {
+        // Coolify's healthcheck polls /up; it must not add a row to the sessions table each time
+        $this->get('/up')->assertOk()->assertCookieMissing(config('session.cookie'));
+    }
+
+    public function test_health_endpoint_reports_down_when_the_database_fails(): void
+    {
+        $default = config('database.default');
+        config([
+            'app.debug' => false,
+            'database.default' => 'caida',
+            'database.connections.caida' => ['driver' => 'sqlite', 'database' => storage_path('no-existe.sqlite')],
+        ]);
+
+        $respuesta = $this->get('/up');
+
+        config(['database.default' => $default]);
+        $respuesta->assertStatus(500);
+    }
+
     public function test_signed_in_users_are_sent_home_from_the_login_page(): void
     {
         $this->actingAs(User::factory()->create())->get('/login')->assertRedirect('/');
