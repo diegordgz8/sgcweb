@@ -32,7 +32,7 @@ class Factura extends Model
 	{
 		$this->monto_por_pagar -= $monto;
 
-		if ($this->monto_por_pagar == 0) {
+		if ($this->monto_por_pagar <= 0) {
 			$this->estado = 'Pagada';
 		}
 

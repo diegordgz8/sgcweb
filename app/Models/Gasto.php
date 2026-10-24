@@ -29,7 +29,7 @@ class Gasto extends Model
 	{
 		$this->saldo -= $monto;
 
-		if ($this->saldo == 0) {
+		if ($this->saldo <= 0) {
 			$this->estado_pago = 'Pagado';
 		}
 

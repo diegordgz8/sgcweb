@@ -40,6 +40,25 @@ trait WithCurrencies
 		return round($monto / $this->tasaDe($de, $fecha) * $this->tasaDe($a, $fecha), 2);
 	}
 
+	/**
+	 * Monto a abonar en la moneda de destino para saldar una deuda con un pago en otra moneda.
+	 * Cada conversión redondea a 2 decimales, así que pagar el total deja un resto de
+	 * céntimos; si el resto vale menos de un céntimo de la moneda del pago, se salda exacto.
+	 */
+	public function abonoConvertido($monto, string $de, string $a, $saldo, $fecha = null): float
+	{
+		$abono = $this->convertirMonto($monto, $de, $a, $fecha);
+
+		if ($de === $a) {
+			return $abono;
+		}
+
+		// Un céntimo de la moneda del pago, en la moneda de destino (al menos un céntimo de esta)
+		$centimo = max(0.01, 0.01 / $this->tasaDe($de, $fecha) * $this->tasaDe($a, $fecha));
+
+		return abs($saldo - $abono) < $centimo ? (float) $saldo : $abono;
+	}
+
 	public function formatearMonto($monto, string $moneda): string
 	{
 		$formato = new NumberFormatter(app()->getLocale(), NumberFormatter::CURRENCY);

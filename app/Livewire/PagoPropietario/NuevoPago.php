@@ -54,11 +54,14 @@ class NuevoPago extends Component
 			'fecha' => 'required|before_or_equal:today',
 			'formaPago' => 'required',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			// La cuenta debe tener un fondo en la moneda del pago, que es donde se acredita al confirmarlo
+			// La cuenta debe ser pública y tener un fondo en la moneda del pago, que es donde
+			// se acredita al confirmarlo
 			'cuentaId' => [
 				'exclude_unless:formaPago,Transferencia,Pago móvil,Punto de venta,Depósito',
 				'not_in:0',
-				Rule::exists('fondos', 'cuenta_id')->where('moneda', $this->moneda),
+				Rule::exists('fondos', 'cuenta_id')
+					->where('moneda', $this->moneda)
+					->whereIn('cuenta_id', Cuenta::where('publica', true)->select('id')),
 			],
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil|required|min:4|max:8',
 			'monto' => ['required', 'numeric', 'gt:0', 'lte:' . (float) $this->montoFacturaConvertido],
@@ -68,7 +71,7 @@ class NuevoPago extends Component
 	protected $messages = [
 		'fecha.before_or_equal' => 'La fecha debe ser anterior o igual al día actual.',
 		'cuentaId.not_in' => 'Debe seleccionar una cuenta.',
-		'cuentaId.exists' => 'La cuenta seleccionada no tiene un fondo en la moneda del pago.',
+		'cuentaId.exists' => 'La cuenta seleccionada no recibe pagos en la moneda elegida.',
 		'monto.lte' => 'El monto no debe ser mayor al total de la deuda.',
 	];
 

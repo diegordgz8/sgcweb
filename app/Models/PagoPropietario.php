@@ -31,7 +31,9 @@ class PagoPropietario extends Model
 	 */
 	public function pagarFactura()
 	{
-		$this->factura->pagar($this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at));
+		$this->factura->pagar($this->abonoConvertido(
+			$this->monto, $this->moneda, $this->factura->moneda, $this->factura->monto_por_pagar, $this->created_at
+		));
 
 		if ($this->fondo) {
 			$this->acreditarFondo();

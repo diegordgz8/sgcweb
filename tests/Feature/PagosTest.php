@@ -252,6 +252,135 @@ class PagosTest extends TestCase
         $this->assertEquals(4000, $cuentaPesos->fondo->fresh()->saldo);
     }
 
+    /**
+     * R-46: cada conversión redondea a 2 decimales, así que pagar el total en otra moneda deja
+     * un resto de céntimos (positivo o negativo) que no debe impedir cerrar la factura.
+     */
+    public function test_paying_the_full_invoice_in_another_currency_closes_it(): void
+    {
+        foreach ([150000, 150010] as $monto) {
+            [$propietario, $factura] = $this->propietarioConFactura($monto, 'ARS');
+            $cuenta = $this->cuentaConFondo('USD');
+
+            Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+                ->call('mostrarForm', $factura->id)
+                ->set('moneda', 'USD')
+                ->call('pagarTotal')
+                ->set('descripcion', 'Pago total en dólares')
+                ->set('fecha', now()->format('Y-m-d'))
+                ->set('formaPago', 'Transferencia')
+                ->set('cuentaId', $cuenta->id)
+                ->set('referencia', '33334444')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
+                ->call('confirmar', PagoPropietario::where('factura_id', $factura->id)->sole()->id);
+
+            $factura->refresh();
+            $this->assertSame('Pagada', $factura->estado, "Factura de $monto ARS");
+            $this->assertEquals(0, $factura->monto_por_pagar, "Factura de $monto ARS");
+        }
+    }
+
+    public function test_a_partial_payment_in_another_currency_keeps_the_invoice_pending(): void
+    {
+        [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
+        $cuenta = $this->cuentaConFondo('USD');
+
+        Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+            ->call('mostrarForm', $factura->id)
+            ->set('moneda', 'USD')
+            ->set('monto', 92.58)
+            ->set('descripcion', 'Casi todo')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('formaPago', 'Transferencia')
+            ->set('cuentaId', $cuenta->id)
+            ->set('referencia', '55556666')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
+            ->call('confirmar', PagoPropietario::sole()->id);
+
+        // 92,58 USD = 149.979,60 ARS: faltan 20,40 ARS, más que un céntimo de dólar (16,20 ARS)
+        $this->assertSame('Pendiente', $factura->fresh()->estado);
+        $this->assertEquals(20.4, $factura->fresh()->monto_por_pagar);
+    }
+
+    public function test_paying_the_full_expense_in_another_currency_closes_it(): void
+    {
+        foreach ([150000, 150010] as $monto) {
+            $gasto = Gasto::create([
+                'descripcion' => "Obra de $monto", 'tipo' => 'Ordinario', 'calculo_por' => 'Total de inmuebles',
+                'mes_cobro' => now()->format('Y-m'), 'moneda' => 'ARS', 'monto' => $monto, 'saldo' => $monto,
+                'proveedor_id' => Proveedor::factory()->create()->id, 'factura' => "F-$monto",
+            ]);
+            $fondo = Fondo::create(['descripcion' => "Caja en dólares $monto", 'saldo' => 1000, 'moneda' => 'USD']);
+
+            Livewire::actingAs($this->usuarioCondominio())->test(NuevoPagoGasto::class)
+                ->call('mostrarForm', $gasto)
+                ->set('moneda', 'USD')
+                ->set('formaPago', 'Efectivo')
+                ->set('fondoId', $fondo->id)
+                ->call('pagarTotal')
+                ->set('descripcion', 'Pago total')
+                ->set('fecha', now()->format('Y-m-d'))
+                ->set('recibo', (string) $monto)
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $gasto->refresh();
+            $this->assertSame('Pagado', $gasto->estado_pago, "Gasto de $monto ARS");
+            $this->assertEquals(0, $gasto->saldo, "Gasto de $monto ARS");
+        }
+    }
+
+    public function test_owner_payment_rejects_a_private_account_even_with_a_fund(): void
+    {
+        [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
+        $cuentaPrivada = $this->cuentaConFondo('ARS');
+        $cuentaPrivada->update(['publica' => false]);
+
+        Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+            ->call('mostrarForm', $factura->id)
+            ->set('formaPago', 'Transferencia')
+            ->assertDontSee($cuentaPrivada->numeroOculto)
+            ->set('cuentaId', $cuentaPrivada->id)
+            ->set('descripcion', 'Cuota')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('referencia', '52412356')
+            ->set('monto', 150000)
+            ->call('save')
+            ->assertHasErrors(['cuentaId' => 'exists']);
+
+        $this->assertSame(0, PagoPropietario::count());
+    }
+
+    public function test_expense_payment_rejects_a_fund_in_another_currency(): void
+    {
+        $gasto = Gasto::create([
+            'descripcion' => 'Pintura', 'tipo' => 'Ordinario', 'calculo_por' => 'Total de inmuebles',
+            'mes_cobro' => now()->format('Y-m'), 'moneda' => 'ARS', 'monto' => 1000, 'saldo' => 1000,
+            'proveedor_id' => Proveedor::factory()->create()->id, 'factura' => 'F-4',
+        ]);
+        $fondoDolares = Fondo::create(['descripcion' => 'Caja en dólares', 'saldo' => 1000, 'moneda' => 'USD']);
+
+        Livewire::actingAs($this->usuarioCondominio())->test(NuevoPagoGasto::class)
+            ->call('mostrarForm', $gasto)
+            ->set('formaPago', 'Efectivo')
+            ->set('fondoId', $fondoDolares->id)
+            ->set('descripcion', 'Pago de la pintura')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('recibo', '1004')
+            ->set('monto', 1000)
+            ->call('save')
+            ->assertHasErrors(['fondoId' => 'exists']);
+
+        $this->assertEquals(1000, $gasto->fresh()->saldo);
+        $this->assertEquals(1000, $fondoDolares->fresh()->saldo);
+    }
+
     private function usuarioCondominio(): User
     {
         return User::factory()->create()->assignRole('Condominio');
