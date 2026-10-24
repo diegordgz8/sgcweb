@@ -9,6 +9,7 @@ use App\Models\Cuenta;
 use App\Models\Fondo;
 use App\Models\Moneda;
 use App\Models\PagoPropietario;
+use App\Models\Unidad;
 use App\Traits\WithCurrencies;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
@@ -129,6 +130,36 @@ class NuevoPago extends Component
 		$this->montoFormateado = $this->factura->montoPorPagarFormateado;
 
 		$this->open = true;
+	}
+
+	/**
+	 * Convierte los faltantes de la unidad en una factura y abre el pago de esa factura.
+	 */
+	public function pagarFaltante(Unidad $unidad)
+	{
+		$this->authorize('pagarFaltante', $unidad);
+
+		$factura = $unidad->facturarFaltantes();
+
+		if (! $factura) {
+			flash()->error('La unidad no tiene faltantes pendientes.');
+
+			return false;
+		}
+
+		$this->facturaMasVieja = Auth::user()->propietario->facturas()
+			->where('estado', 'Pendiente')
+			->orderBy('fecha')
+			->orderBy('facturas.id')
+			->first();
+
+		if ($this->facturaMasVieja->id != $factura->id) {
+			flash()->info("Se generó la factura {$factura->numero} con el faltante. Primero debe pagar su factura más antigua.");
+
+			return false;
+		}
+
+		return $this->mostrarForm($factura);
 	}
 
 	public function updated($propertyName)

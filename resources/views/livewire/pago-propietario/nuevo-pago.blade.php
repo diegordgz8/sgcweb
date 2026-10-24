@@ -17,6 +17,10 @@
             @if ($ajuste->esFaltante())
                 tiene un faltante de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />
                 ({{ Str::lcfirst($ajuste->descripcion) }}), que se cobrará en la próxima factura.
+                <button type="button" wire:click="pagarFaltante('{{ $ajuste->unidad->numero }}')"
+                    wire:loading.attr="disabled" class="ml-2 font-semibold underline hover:no-underline">
+                    Pagar ahora
+                </button>
             @else
                 tiene un saldo a favor de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />,
                 que se descontará de la próxima factura.

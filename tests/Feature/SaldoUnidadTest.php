@@ -189,6 +189,72 @@ class SaldoUnidadTest extends TestCase
             ->assertSee('faltante de la factura ' . $septiembre->numero);
     }
 
+    public function test_a_shortfall_can_be_paid_right_away_instead_of_waiting_for_the_close(): void
+    {
+        $septiembre = $this->cerrar('2026-09');
+        $this->confirmar($this->pago($septiembre, 135000));
+
+        Livewire::actingAs($this->unidad->propietario->user)->test(NuevoPago::class)
+            ->assertSee('Pagar ahora')
+            ->call('pagarFaltante', $this->unidad->numero)
+            ->assertSet('open', true)
+            ->assertDontSee('tiene un faltante de');
+
+        $faltante = Factura::where('numero', 'like', 'F%')->sole();
+        $this->assertEquals(15000, $faltante->monto);
+        $this->assertSame('Pendiente', $faltante->estado);
+        $this->assertSame(substr($septiembre->fecha, 0, 10), $faltante->deuda_desde);
+        $this->assertSame($faltante->id, AjusteSaldo::sole()->factura_aplicada_id);
+
+        $this->confirmar($this->pago($faltante, 15000));
+        $this->assertSame('Pagada', $faltante->fresh()->estado);
+
+        // Ya pagado, el faltante no se vuelve a cobrar en el cierre
+        $this->assertEquals(150000, $this->cerrar('2026-10')->monto);
+    }
+
+    public function test_underpaying_a_shortfall_invoice_leaves_a_new_shortfall(): void
+    {
+        $septiembre = $this->cerrar('2026-09');
+        $this->confirmar($this->pago($septiembre, 135000));
+
+        $faltante = $this->unidad->facturarFaltantes();
+        $this->confirmar($this->pago($faltante, 10000));
+
+        $this->assertEquals(5000, AjusteSaldo::pendientes()->sole()->monto);
+        $this->assertEquals(155000, $this->cerrar('2026-10')->monto);
+    }
+
+    public function test_only_the_owner_can_pay_the_unit_shortfall(): void
+    {
+        $septiembre = $this->cerrar('2026-09');
+        $this->confirmar($this->pago($septiembre, 135000));
+
+        $otro = User::factory()->create()->assignRole('Propietario');
+        Propietario::forceCreate(['integrante_id' => Integrante::factory()->create()->id, 'user_id' => $otro->id]);
+
+        Livewire::actingAs($otro)->test(NuevoPago::class)
+            ->call('pagarFaltante', $this->unidad->numero)
+            ->assertForbidden();
+
+        $this->assertSame(0, Factura::where('numero', 'like', 'F%')->count());
+    }
+
+    public function test_an_older_pending_invoice_must_be_paid_before_the_shortfall(): void
+    {
+        $septiembre = $this->cerrar('2026-09');
+        $this->confirmar($this->pago($septiembre, 135000));
+        $vieja = $this->factura(now()->subMonths(2));
+
+        Livewire::actingAs($this->unidad->propietario->user)->test(NuevoPago::class)
+            ->call('pagarFaltante', $this->unidad->numero)
+            ->assertSet('open', false);
+
+        // La factura del faltante se genera igual y queda en la lista para pagarla después
+        $this->assertTrue(Factura::where('numero', 'like', 'F%')->where('estado', 'Pendiente')->exists());
+        $this->assertSame('Pendiente', $vieja->fresh()->estado);
+    }
+
     private function cerrar(string $mes): Factura
     {
         $cierre = app(CierreMesService::class)->cerrar($mes, Moneda::facturacion());
