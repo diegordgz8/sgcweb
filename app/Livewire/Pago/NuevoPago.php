@@ -8,6 +8,7 @@ use App\Models\Gasto;
 use App\Models\Moneda;
 use App\Models\Pago;
 use App\Traits\WithCurrencies;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -55,7 +56,7 @@ class NuevoPago extends Component
 			'recibo' => 'required|numeric|unique:pagos_gastos,recibo',
 			'formaPago' => 'required',
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
-			'fondoId' => 'required|not_in:0|exists:fondos,id',
+			'fondoId' => ['required', 'not_in:0', Rule::exists('fondos', 'id')->where('moneda', $this->moneda)],
 			'referencia' => 'exclude_unless:formaPago,Transferencia,Pago móvil,Cheque|min:4|max:8',
 			'monto' => $monto,
 		];
@@ -64,6 +65,7 @@ class NuevoPago extends Component
 	protected $messages = [
 		'fondoId.required' => 'Debe seleccionar un fondo.',
 		'fondoId.not_in' => 'Debe seleccionar un fondo.',
+		'fondoId.exists' => 'El fondo seleccionado no está en la moneda del pago.',
 		'monto.lte' => 'El monto no debe ser mayor al saldo del fondo seleccionado o al total de la deuda.',
 	];
 
@@ -173,22 +175,25 @@ class NuevoPago extends Component
 
 		$this->validate();
 
-		$pago = Pago::create([
-			'descripcion' => $this->descripcion,
-			'monto' => $this->monto,
-			'fecha' => $this->fecha,
-			'recibo' => $this->recibo,
-			'referencia' => $this->referencia,
-			'forma_pago' => $this->formaPago,
-			'moneda' => $this->moneda,
-		]);
+		// El pago, el débito del fondo y el abono al gasto se guardan juntos o no se guarda nada
+		DB::transaction(function () {
+			$pago = Pago::create([
+				'descripcion' => $this->descripcion,
+				'monto' => $this->monto,
+				'fecha' => $this->fecha,
+				'recibo' => $this->recibo,
+				'referencia' => $this->referencia,
+				'forma_pago' => $this->formaPago,
+				'moneda' => $this->moneda,
+			]);
 
-		$pago->gasto()->associate($this->gasto);
-		$pago->fondo()->associate(Fondo::find($this->fondoId));
+			$pago->gasto()->associate($this->gasto);
+			$pago->fondo()->associate(Fondo::find($this->fondoId));
 
-		$pago->save();
+			$pago->save();
 
-		$pago->pagarGasto();
+			$pago->pagarGasto();
+		});
 
 		$this->reset([
 			'open',

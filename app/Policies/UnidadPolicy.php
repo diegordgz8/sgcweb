@@ -25,6 +25,14 @@ class UnidadPolicy
 			|| ($usuario->can('unidad.edit') && $this->esPropietario($usuario, $unidad));
 	}
 
+	/**
+	 * Paying a unit's shortfall before the next close: only its owner.
+	 */
+	public function pagarFaltante(User $usuario, Unidad $unidad): bool
+	{
+		return $usuario->can('pago-propietario.create') && $this->esPropietario($usuario, $unidad);
+	}
+
 	private function esPropietario(User $usuario, Unidad $unidad): bool
 	{
 		return $usuario->propietario !== null

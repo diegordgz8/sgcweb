@@ -7,6 +7,27 @@
         </a>
     </div>
 
+    @foreach ($ajustes as $ajuste)
+        <p @class([
+            'mt-4 rounded-md px-4 py-3 text-sm',
+            'bg-yellow-50 text-yellow-800' => $ajuste->esFaltante(),
+            'bg-green-50 text-green-800' => ! $ajuste->esFaltante(),
+        ])>
+            Unidad {{ $ajuste->unidad->numero }}:
+            @if ($ajuste->esFaltante())
+                tiene un faltante de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />
+                ({{ Str::lcfirst($ajuste->descripcion) }}), que se cobrará en la próxima factura.
+                <button type="button" wire:click="pagarFaltante('{{ $ajuste->unidad->numero }}')"
+                    wire:loading.attr="disabled" class="ml-2 font-semibold underline hover:no-underline">
+                    Pagar ahora
+                </button>
+            @else
+                tiene un saldo a favor de <x-monto :monto="$ajuste->monto" :moneda="$ajuste->moneda" />,
+                que se descontará de la próxima factura.
+            @endif
+        </p>
+    @endforeach
+
     <div class="py-6 space-y-2">
         <h1 class="text-center text-xl font-semibold">Seleccione la factura a pagar...</h1>
 
@@ -26,6 +47,16 @@
                 <div class="shadow overflow-hidden sm:rounded-md">
                     <div class="px-4 py-5 bg-white sm:p-6">
                         <div class="grid grid-cols-6 gap-6">
+
+                            @if ($corrigiendo)
+                                <p class="col-span-6 rounded-md bg-red-50 px-4 py-3 text-sm text-red-800">
+                                    El condominio rechazó el pago anterior de esta factura.
+                                    @if ($motivoRechazo)
+                                        <span class="block mt-1 font-semibold">Motivo: {{ $motivoRechazo }}</span>
+                                    @endif
+                                    <span class="block mt-1">Revise los datos, corríjalos y envíelo de nuevo.</span>
+                                </p>
+                            @endif
 
                             <div class="col-span-6">
                                 <label for="factura" class="block text-sm font-medium text-gray-700">
@@ -81,6 +112,20 @@
                                     class="form-control w-full" />
                                 <x-input-error for="monto" />
                             </div>
+
+                            @if ($this->avisoSaldo)
+                                <p @class([
+                                    'col-span-6 rounded-md px-4 py-3 text-sm',
+                                    'bg-yellow-50 text-yellow-800' => $this->avisoSaldo['faltante'],
+                                    'bg-green-50 text-green-800' => ! $this->avisoSaldo['faltante'],
+                                ])>
+                                    @if ($this->avisoSaldo['faltante'])
+                                        Quedará un faltante de {{ $this->avisoSaldo['monto'] }}, que se cobrará en la próxima factura.
+                                    @else
+                                        Quedará un saldo a favor de {{ $this->avisoSaldo['monto'] }}, que se descontará de la próxima factura.
+                                    @endif
+                                </p>
+                            @endif
 
                             <div class="col-span-6 sm:col-span-1">
                                 <input wire:click="pagarTotal" wire:loading.attr="disabled" type="button"
@@ -175,7 +220,7 @@
             </x-secondary-button>
 
             <x-button wire:click="save" wire:loading.attr="disabled" class="disabled:bg-opacity-25">
-                Registrar
+                {{ $corrigiendo ? 'Reenviar pago' : 'Registrar' }}
             </x-button>
 
         </x-slot>

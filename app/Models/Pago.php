@@ -49,6 +49,8 @@ class Pago extends Model
 	{
 		$this->fondo->debitar($this->convertirMonto($this->monto, $this->moneda, $this->fondo->moneda, $this->created_at));
 
-		$this->gasto->pagar($this->convertirMonto($this->monto, $this->moneda, $this->gasto->moneda, $this->created_at));
+		$this->gasto->pagar($this->abonoConvertido(
+			$this->monto, $this->moneda, $this->gasto->moneda, $this->gasto->saldo, $this->created_at
+		));
 	}
 }

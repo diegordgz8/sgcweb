@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Exceptions\MonedaNoEliminable;
 use App\Exceptions\TasaNoDisponible;
+use App\Models\AjusteSaldo;
 use App\Models\Factura;
 use App\Models\Fondo;
 use App\Models\Gasto;
@@ -126,7 +127,8 @@ class MonedaTest extends TestCase
         $pago->pagarFactura();
 
         // 81000 ARS = 50 USD = 46 EUR
-        $this->assertEquals(50, $factura->fresh()->monto_por_pagar);
+        $this->assertSame('Pagada', $factura->fresh()->estado);
+        $this->assertEquals(50, AjusteSaldo::where('factura_origen_id', $factura->id)->where('tipo', 'Faltante')->value('monto'));
         $this->assertEquals(46, $fondo->fresh()->saldo);
     }
 

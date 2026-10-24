@@ -143,6 +143,10 @@
                                                     ({{ $item->itemable->descripcion }})
                                                 @break
 
+                                                @case(AjusteSaldo::class)
+                                                    {{ $item->itemable->descripcion }}
+                                                @break
+
                                             @endswitch
                                         </div>
                                     </td>

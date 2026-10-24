@@ -6,6 +6,7 @@ use App\Livewire\Gasto\NuevoGasto;
 use App\Livewire\Pago\NuevoPago as NuevoPagoGasto;
 use App\Livewire\PagoPropietario\ConfirmarPago;
 use App\Livewire\PagoPropietario\NuevoPago as NuevoPagoPropietario;
+use App\Models\AjusteSaldo;
 use App\Models\Banco;
 use App\Models\Categoria;
 use App\Models\Cuenta;
@@ -95,8 +96,9 @@ class PagosTest extends TestCase
         Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
             ->call('confirmar', PagoPropietario::sole()->id);
 
-        // 50 USD = 81.000 ARS abonados a la factura; el fondo en USD recibe los 50
-        $this->assertEquals(69000, $factura->fresh()->monto_por_pagar);
+        // 50 USD = 81.000 ARS: la factura se cierra y los 69.000 ARS que faltan quedan como faltante
+        $this->assertSame('Pagada', $factura->fresh()->estado);
+        $this->assertFaltante($factura, 69000);
         $this->assertEquals(50, $cuenta->fondo->fresh()->saldo);
     }
 
@@ -250,6 +252,151 @@ class PagosTest extends TestCase
             ->assertHasNoErrors();
 
         $this->assertEquals(4000, $cuentaPesos->fondo->fresh()->saldo);
+    }
+
+    /**
+     * R-46: cada conversión redondea a 2 decimales, así que pagar el total en otra moneda deja
+     * céntimos de diferencia. La factura se cierra igual y esos céntimos no se pierden: pasan
+     * a la próxima factura como faltante o saldo a favor.
+     */
+    public function test_paying_the_full_invoice_in_another_currency_closes_it_and_keeps_the_cents(): void
+    {
+        // 150.000 ARS → 92,59 USD = 149.995,80 ARS (faltan 4,20); 150.010 → 92,60 = 150.012 (sobran 2)
+        foreach ([150000 => ['Faltante', 4.20], 150010 => ['A favor', 2.00]] as $monto => [$tipo, $diferencia]) {
+            [$propietario, $factura] = $this->propietarioConFactura($monto, 'ARS');
+            $cuenta = $this->cuentaConFondo('USD');
+
+            Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+                ->call('mostrarForm', $factura->id)
+                ->set('moneda', 'USD')
+                ->call('pagarTotal')
+                ->set('descripcion', 'Pago total en dólares')
+                ->set('fecha', now()->format('Y-m-d'))
+                ->set('formaPago', 'Transferencia')
+                ->set('cuentaId', $cuenta->id)
+                ->set('referencia', '33334444')
+                ->call('save')
+                ->assertHasNoErrors();
+
+            Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
+                ->call('confirmar', PagoPropietario::where('factura_id', $factura->id)->sole()->id);
+
+            $factura->refresh();
+            $this->assertSame('Pagada', $factura->estado, "Factura de $monto ARS");
+            $this->assertEquals(0, $factura->monto_por_pagar, "Factura de $monto ARS");
+
+            $ajuste = AjusteSaldo::where('factura_origen_id', $factura->id)->sole();
+            $this->assertSame($tipo, $ajuste->tipo, "Factura de $monto ARS");
+            $this->assertEquals($diferencia, $ajuste->monto, "Factura de $monto ARS");
+            $this->assertSame('ARS', $ajuste->moneda);
+        }
+    }
+
+    public function test_a_partial_payment_closes_the_invoice_and_leaves_the_rest_as_shortfall(): void
+    {
+        [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
+        $cuenta = $this->cuentaConFondo('USD');
+
+        Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+            ->call('mostrarForm', $factura->id)
+            ->set('moneda', 'USD')
+            ->set('monto', 92.58)
+            ->set('descripcion', 'Casi todo')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('formaPago', 'Transferencia')
+            ->set('cuentaId', $cuenta->id)
+            ->set('referencia', '55556666')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        Livewire::actingAs($this->usuarioCondominio())->test(ConfirmarPago::class)
+            ->call('confirmar', PagoPropietario::sole()->id);
+
+        // 92,58 USD = 149.979,60 ARS: faltan 20,40 ARS
+        $this->assertSame('Pagada', $factura->fresh()->estado);
+        $this->assertFaltante($factura, 20.40);
+    }
+
+    public function test_paying_the_full_expense_in_another_currency_closes_it(): void
+    {
+        foreach ([150000, 150010] as $monto) {
+            $gasto = Gasto::create([
+                'descripcion' => "Obra de $monto", 'tipo' => 'Ordinario', 'calculo_por' => 'Total de inmuebles',
+                'mes_cobro' => now()->format('Y-m'), 'moneda' => 'ARS', 'monto' => $monto, 'saldo' => $monto,
+                'proveedor_id' => Proveedor::factory()->create()->id, 'factura' => "F-$monto",
+            ]);
+            $fondo = Fondo::create(['descripcion' => "Caja en dólares $monto", 'saldo' => 1000, 'moneda' => 'USD']);
+
+            Livewire::actingAs($this->usuarioCondominio())->test(NuevoPagoGasto::class)
+                ->call('mostrarForm', $gasto)
+                ->set('moneda', 'USD')
+                ->set('formaPago', 'Efectivo')
+                ->set('fondoId', $fondo->id)
+                ->call('pagarTotal')
+                ->set('descripcion', 'Pago total')
+                ->set('fecha', now()->format('Y-m-d'))
+                ->set('recibo', (string) $monto)
+                ->call('save')
+                ->assertHasNoErrors();
+
+            $gasto->refresh();
+            $this->assertSame('Pagado', $gasto->estado_pago, "Gasto de $monto ARS");
+            $this->assertEquals(0, $gasto->saldo, "Gasto de $monto ARS");
+        }
+    }
+
+    public function test_owner_payment_rejects_a_private_account_even_with_a_fund(): void
+    {
+        [$propietario, $factura] = $this->propietarioConFactura(150000, 'ARS');
+        $cuentaPrivada = $this->cuentaConFondo('ARS');
+        $cuentaPrivada->update(['publica' => false]);
+
+        Livewire::actingAs($propietario)->test(NuevoPagoPropietario::class)
+            ->call('mostrarForm', $factura->id)
+            ->set('formaPago', 'Transferencia')
+            ->assertDontSee($cuentaPrivada->numeroOculto)
+            ->set('cuentaId', $cuentaPrivada->id)
+            ->set('descripcion', 'Cuota')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('referencia', '52412356')
+            ->set('monto', 150000)
+            ->call('save')
+            ->assertHasErrors(['cuentaId' => 'exists']);
+
+        $this->assertSame(0, PagoPropietario::count());
+    }
+
+    public function test_expense_payment_rejects_a_fund_in_another_currency(): void
+    {
+        $gasto = Gasto::create([
+            'descripcion' => 'Pintura', 'tipo' => 'Ordinario', 'calculo_por' => 'Total de inmuebles',
+            'mes_cobro' => now()->format('Y-m'), 'moneda' => 'ARS', 'monto' => 1000, 'saldo' => 1000,
+            'proveedor_id' => Proveedor::factory()->create()->id, 'factura' => 'F-4',
+        ]);
+        $fondoDolares = Fondo::create(['descripcion' => 'Caja en dólares', 'saldo' => 1000, 'moneda' => 'USD']);
+
+        Livewire::actingAs($this->usuarioCondominio())->test(NuevoPagoGasto::class)
+            ->call('mostrarForm', $gasto)
+            ->set('formaPago', 'Efectivo')
+            ->set('fondoId', $fondoDolares->id)
+            ->set('descripcion', 'Pago de la pintura')
+            ->set('fecha', now()->format('Y-m-d'))
+            ->set('recibo', '1004')
+            ->set('monto', 1000)
+            ->call('save')
+            ->assertHasErrors(['fondoId' => 'exists']);
+
+        $this->assertEquals(1000, $gasto->fresh()->saldo);
+        $this->assertEquals(1000, $fondoDolares->fresh()->saldo);
+    }
+
+    private function assertFaltante(Factura $factura, float $monto): void
+    {
+        $ajuste = AjusteSaldo::where('factura_origen_id', $factura->id)->sole();
+
+        $this->assertSame('Faltante', $ajuste->tipo);
+        $this->assertEquals($monto, $ajuste->monto);
+        $this->assertSame($factura->unidad_id, $ajuste->unidad_id);
     }
 
     private function usuarioCondominio(): User

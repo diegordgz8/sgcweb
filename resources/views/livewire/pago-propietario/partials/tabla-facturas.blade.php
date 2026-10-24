@@ -69,12 +69,20 @@
                                         wire:click="orden('descripcion')">
                                         Monto por pagar
                                     </th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Estado
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($facturas as $item)
                                     <tr wire:click="mostrarForm({{ $item }})"
-                                        class="cursor-pointer hover:bg-gray-100">
+                                        @class([
+                                            'hover:bg-gray-100',
+                                            'cursor-pointer' => $item->estado_pago !== 'Esperando confirmación',
+                                            'cursor-default opacity-75' => $item->estado_pago === 'Esperando confirmación',
+                                        ])>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
                                                 {{ $item->numero }}
@@ -100,6 +108,17 @@
                                             <div class="text-sm font-medium text-gray-900">
                                                 {{ $item->montoPorPagarFormateado }}
                                             </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <x-estado-pago :estado="$item->estado_pago" />
+                                            @if ($item->estado_pago === 'Pago rechazado')
+                                                @if ($item->ultimoPago->motivo_rechazo)
+                                                    <div class="mt-1 max-w-xs whitespace-normal text-xs text-red-800">
+                                                        Motivo: {{ $item->ultimoPago->motivo_rechazo }}
+                                                    </div>
+                                                @endif
+                                                <div class="mt-1 text-xs text-gray-500">Toque la fila para corregirlo y reenviarlo.</div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

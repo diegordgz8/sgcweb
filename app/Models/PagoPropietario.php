@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Traits\WithCurrencies;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PagoPropietario extends Model
 {
@@ -26,19 +28,45 @@ class PagoPropietario extends Model
 	];
 
 	/**
-	 * Abona a la factura y al fondo el monto convertido a la moneda de cada uno,
-	 * con las tasas vigentes al registrar el pago.
+	 * Cierra la factura con este pago y acredita el fondo, con las tasas vigentes al registrar
+	 * el pago. Lo que falte se cobra y lo que sobre se descuenta en la próxima factura de la
+	 * unidad, por pequeño que sea.
 	 */
 	public function pagarFactura()
 	{
-		$this->factura->pagar($this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at));
+		DB::transaction(function () {
+			$factura = $this->factura;
+			$diferencia = round($factura->monto_por_pagar - $this->montoEnMonedaFactura(), 2);
 
-		if ($this->fondo) {
-			$this->acreditarFondo();
-		}
+			$factura->saldar();
 
-		$this->estado = 'Confirmado';
-		$this->save();
+			if ($diferencia != 0) {
+				AjusteSaldo::create([
+					'unidad_id' => $factura->unidad_id,
+					'tipo' => $diferencia > 0 ? 'Faltante' : 'A favor',
+					'monto' => abs($diferencia),
+					'moneda' => $factura->moneda,
+					'deuda_desde' => $factura->deuda_desde_efectiva,
+					'factura_origen_id' => $factura->id,
+					'pago_propietario_id' => $this->id,
+				]);
+			}
+
+			if ($this->fondo) {
+				$this->acreditarFondo();
+			}
+
+			$this->estado = 'Confirmado';
+			$this->save();
+		});
+	}
+
+	/**
+	 * El pago expresado en la moneda de la factura, con las tasas vigentes al registrarlo.
+	 */
+	public function montoEnMonedaFactura(): float
+	{
+		return $this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at);
 	}
 
 	/**
@@ -46,19 +74,46 @@ class PagoPropietario extends Model
 	 */
 	public function getMontoAbonadoAttribute(): float
 	{
-		return $this->convertirMonto($this->monto, $this->moneda, $this->factura->moneda, $this->created_at);
+		return $this->montoEnMonedaFactura();
 	}
 
 	public function getMontoFormateadoAttribute() {
 		return $this->formatearMonto($this->monto, $this->moneda);
 	}
 
-	public function aceptarPago()
+	/**
+	 * Confirma el pago: cierra la factura, acredita el fondo y emite el recibo. Un pago sin
+	 * fondo (efectivo, cheque) necesita que se indique el fondo donde entra.
+	 */
+	public function confirmar(?Fondo $fondo = null): void
 	{
-		$this->acreditarFondo();
+		DB::transaction(function () use ($fondo) {
+			if ($fondo) {
+				$this->fondo()->associate($fondo);
+			}
 
-		$this->estado = 'Confirmado';
-		$this->save();
+			$this->pagarFactura();
+			$this->emitirRecibo();
+		});
+	}
+
+	public function necesitaFondo(): bool
+	{
+		return $this->fondo_id === null;
+	}
+
+	private function emitirRecibo(): void
+	{
+		$ultimoRecibo = Recibo::orderBy('created_at', 'desc')->first();
+
+		$count = $ultimoRecibo ? Str::substr($ultimoRecibo->numero, 12) : 0;
+
+		$numero = 'R' . Str::substr(today(), 0, 4) . Str::substr(today(), 5, 2) . '-' . $this->unidad->numero . '-' . ++$count;
+
+		Recibo::create([
+			'numero' => $numero,
+			'pago_propietario_id' => $this->id,
+		]);
 	}
 
 	private function acreditarFondo(): void
@@ -66,8 +121,10 @@ class PagoPropietario extends Model
 		$this->fondo->acreditar($this->convertirMonto($this->monto, $this->moneda, $this->fondo->moneda, $this->created_at));
 	}
 
-	public function rechazar() {
+	public function rechazar(string $motivo): void
+	{
 		$this->estado = 'Rechazado';
+		$this->motivo_rechazo = $motivo;
 		$this->save();
 	}
 
