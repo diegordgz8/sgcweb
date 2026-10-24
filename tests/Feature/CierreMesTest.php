@@ -24,6 +24,7 @@ use App\Models\Unidad;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Livewire\Livewire;
 use Tests\TestCase;
 
@@ -262,7 +263,59 @@ class CierreMesTest extends TestCase
 
         Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
             ->set('mes', $mes)
+            ->call('revisar')
             ->call('cerrarMes');
+    }
+
+    public function test_review_shows_what_will_be_charged_without_saving_anything(): void
+    {
+        $this->crearUnidades([50, 50]);
+        $gasto = $this->crearGasto('Extraordinario', 600, $this->mes(0), numeroMeses: 3);
+        Condominio::create(['rif' => 'J-1', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas', 'moneda_facturacion' => 'VES']);
+
+        $vista = Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
+            ->set('mes', $this->mes(0))
+            ->call('revisar')
+            ->assertHasNoErrors();
+
+        $previa = $vista->get('vistaPrevia');
+        $this->assertCount(2, $previa['facturas']);
+        $this->assertEquals(200, $previa['gastos'][0]['cuota']);
+        $this->assertEquals(2 * 10 + 200, $previa['total']);
+        $vista->assertSee('Cerrar '.Carbon::createFromFormat('!Y-m', $this->mes(0))->locale('es')->translatedFormat('F Y'));
+
+        $this->assertSame(0, CierreMes::count());
+        $this->assertSame(0, Factura::count());
+        $this->assertSame('Pendiente', $gasto->fresh()->estado_cobro);
+    }
+
+    public function test_month_cannot_be_closed_without_reviewing_it(): void
+    {
+        $this->crearUnidades([50]);
+        Condominio::create(['rif' => 'J-1', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas', 'moneda_facturacion' => 'VES']);
+
+        Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
+            ->set('mes', $this->mes(0))
+            ->call('cerrarMes')
+            ->assertHasErrors('mes');
+
+        $this->assertSame(0, CierreMes::count());
+    }
+
+    public function test_changing_the_month_discards_the_review(): void
+    {
+        $this->crearUnidades([50]);
+        Condominio::create(['rif' => 'J-1', 'nombre' => 'Residencias Prueba', 'direccion' => 'Caracas', 'moneda_facturacion' => 'VES']);
+
+        Livewire::actingAs($this->administrador)->test(NuevoCierre::class)
+            ->set('mes', $this->mes(0))
+            ->call('revisar')
+            ->set('mes', $this->mes(1))
+            ->assertSet('vistaPrevia', null)
+            ->call('cerrarMes')
+            ->assertHasErrors('mes');
+
+        $this->assertSame(0, CierreMes::count());
     }
 
     /**

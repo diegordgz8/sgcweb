@@ -20,53 +20,100 @@ use Illuminate\Support\Str;
 /**
  * Closes a month: creates one invoice per unit with an owner, charging the monthly fee,
  * the expenses due that month and the unit's pending sanctions.
+ *
+ * previsualizar() computes exactly what cerrar() would charge without writing anything,
+ * so the month close can be reviewed before it is confirmed.
  */
 class CierreMesService
 {
 	private string $mes;
 	private string $moneda;
-	private CierreMes $cierre;
 	private ?Interes $interes;
 	private Iva $iva;
 	private Mensualidad $mensualidad;
 	private int $numeroUnidades;
 	private float $areaTotal;
+	private Collection $gastosOrdinarios;
+	private Collection $gastosExtraordinarios;
 
 	public function cerrar(string $mes, string $moneda): CierreMes
+	{
+		$this->comprobarAbierto($mes);
+
+		return DB::transaction(function () use ($mes, $moneda) {
+			$cierre = CierreMes::create([
+				'mes' => $mes,
+				'moneda' => $moneda,
+			]);
+
+			foreach ($this->preparar($mes, $moneda, $cierre->created_at) as $borrador) {
+				$this->guardarFactura($borrador, $cierre);
+			}
+
+			$this->actualizarEstadoGastos();
+
+			return $cierre;
+		});
+	}
+
+	/**
+	 * What the close would generate: one draft invoice per unit, the expenses and sanctions
+	 * included, and the totals. Nothing is saved.
+	 */
+	public function previsualizar(string $mes, string $moneda): array
+	{
+		$this->comprobarAbierto($mes);
+
+		$borradores = $this->preparar($mes, $moneda, now());
+
+		return [
+			'mes' => $mes,
+			'moneda' => $moneda,
+			'facturas' => $borradores->map(fn (array $b) => [
+				'unidad' => $b['unidad']->numero,
+				'monto' => $b['factura']->monto,
+				'con_interes' => $b['factura']->interes_id !== null,
+			])->values()->all(),
+			'gastos' => $this->gastosOrdinarios->concat($this->gastosExtraordinarios)->map(fn (Gasto $gasto) => [
+				'descripcion' => $gasto->descripcion,
+				'tipo' => $gasto->tipo,
+				'cuota' => $gasto->getMontoCuota(),
+				'moneda' => $gasto->moneda,
+				'ultima_cuota' => $gasto->tipo == 'Extraordinario' && $gasto->getUltimoMesCobro() <= $mes,
+			])->values()->all(),
+			'sanciones' => $borradores->sum(fn (array $b) => $b['sanciones']->count()),
+			'total' => $borradores->sum(fn (array $b) => $b['factura']->monto),
+		];
+	}
+
+	private function comprobarAbierto(string $mes): void
 	{
 		if (CierreMes::where('mes', $mes)->exists()) {
 			throw MesYaCerrado::para($mes);
 		}
+	}
 
+	/**
+	 * Builds the unsaved invoice, items and sanctions for every unit with an owner.
+	 */
+	private function preparar(string $mes, string $moneda, Carbon $fecha): Collection
+	{
 		$this->mes = $mes;
 		$this->moneda = $moneda;
 
-		return DB::transaction(function () {
-			$this->cierre = CierreMes::create([
-				'mes' => $this->mes,
-				'moneda' => $this->moneda,
-			]);
+		$unidades = Unidad::has('propietario')->get();
 
-			$unidades = Unidad::has('propietario')->get();
+		$this->numeroUnidades = $unidades->count();
+		$this->areaTotal = Unidad::getAreaTotal();
+		$this->mensualidad = Mensualidad::orderBy('created_at', 'desc')->first();
+		$this->interes = Interes::orderBy('created_at', 'desc')->first();
+		$this->iva = Iva::orderBy('created_at', 'desc')->first();
 
-			$this->numeroUnidades = $unidades->count();
-			$this->areaTotal = Unidad::getAreaTotal();
-			$this->mensualidad = Mensualidad::orderBy('created_at', 'desc')->first();
-			$this->interes = Interes::orderBy('created_at', 'desc')->first();
-			$this->iva = Iva::orderBy('created_at', 'desc')->first();
+		$this->gastosOrdinarios = $this->gastosOrdinarios();
+		$this->gastosExtraordinarios = $this->gastosExtraordinarios();
+		$gastos = $this->gastosOrdinarios->concat($this->gastosExtraordinarios);
 
-			$gastosOrdinarios = $this->gastosOrdinarios();
-			$gastosExtraordinarios = $this->gastosExtraordinarios();
-			$gastos = $gastosOrdinarios->concat($gastosExtraordinarios);
-
-			foreach ($unidades as $unidad) {
-				$this->facturar($unidad, $gastos);
-			}
-
-			$this->actualizarEstadoGastos($gastosOrdinarios, $gastosExtraordinarios);
-
-			return $this->cierre;
-		});
+		return $unidades->map(fn (Unidad $unidad) => $this->borrador($unidad, $gastos, $fecha));
 	}
 
 	/**
@@ -93,7 +140,7 @@ class CierreMesService
 			->filter(fn (Gasto $gasto) => $gasto->getUltimoMesCobro() >= $this->mes);
 	}
 
-	private function facturar(Unidad $unidad, Collection $gastos): void
+	private function borrador(Unidad $unidad, Collection $gastos, Carbon $fecha): array
 	{
 		$items = collect([
 			Item::make([
@@ -111,22 +158,21 @@ class CierreMesService
 			]));
 		}
 
-		foreach ($unidad->sanciones()->where('estado', 'Por procesar')->get() as $sancion) {
+		$sanciones = $unidad->sanciones()->where('estado', 'Por procesar')->get();
+
+		foreach ($sanciones as $sancion) {
 			$items->push(Item::make([
 				'itemable_id' => $sancion->id,
 				'itemable_type' => Sancion::class,
 				'monto' => $sancion->monto,
 			]));
-
-			$sancion->pivot->estado = 'Procesada';
-			$sancion->pivot->save();
 		}
 
 		$montoFactura = 0;
 
 		// Cada item está en la moneda de su origen; se pasa a la de la factura con las tasas del cierre
 		foreach ($items as $item) {
-			$item->convertirA($this->moneda, $this->cierre->created_at);
+			$item->convertirA($this->moneda, $fecha);
 			$montoFactura += $item->monto;
 		}
 
@@ -136,18 +182,28 @@ class CierreMesService
 			'monto_por_pagar' => $montoFactura,
 			'moneda' => $this->moneda,
 			'fecha' => now(),
-			'cierre_mes_id' => $this->cierre->id,
 			'unidad_id' => $unidad->id,
 			'iva_id' => $this->iva->id,
 		]);
 
 		$this->aplicarInteres($factura, $unidad);
 
-		$factura->save();
+		return compact('unidad', 'factura', 'items', 'sanciones');
+	}
 
-		foreach ($items as $item) {
-			$item->factura()->associate($factura->id);
+	private function guardarFactura(array $borrador, CierreMes $cierre): void
+	{
+		$borrador['factura']->cierre_mes_id = $cierre->id;
+		$borrador['factura']->save();
+
+		foreach ($borrador['items'] as $item) {
+			$item->factura()->associate($borrador['factura']->id);
 			$item->save();
+		}
+
+		foreach ($borrador['sanciones'] as $sancion) {
+			$sancion->pivot->estado = 'Procesada';
+			$sancion->pivot->save();
 		}
 	}
 
@@ -181,14 +237,14 @@ class CierreMesService
 		return $monto / $this->numeroUnidades;
 	}
 
-	private function actualizarEstadoGastos(Collection $gastosOrdinarios, Collection $gastosExtraordinarios): void
+	private function actualizarEstadoGastos(): void
 	{
-		foreach ($gastosOrdinarios as $gasto) {
+		foreach ($this->gastosOrdinarios as $gasto) {
 			$gasto->estado_cobro = 'Procesado';
 			$gasto->save();
 		}
 
-		foreach ($gastosExtraordinarios as $gasto) {
+		foreach ($this->gastosExtraordinarios as $gasto) {
 			$gasto->estado_cobro = $gasto->getUltimoMesCobro() <= $this->mes ? 'Procesado' : 'En proceso';
 			$gasto->save();
 		}
