@@ -302,6 +302,25 @@ class CierreMesTest extends TestCase
         $this->assertSame(0, CierreMes::count());
     }
 
+    public function test_month_list_offers_open_months_and_rejects_free_text(): void
+    {
+        $this->crearUnidades([50]);
+        $this->cerrar($this->mes(0));
+
+        $vista = Livewire::actingAs($this->administrador)->test(NuevoCierre::class);
+        $meses = $vista->instance()->mesesAbiertos();
+
+        $this->assertArrayNotHasKey($this->mes(0), $meses);
+        $this->assertArrayHasKey(now()->format('Y-m'), $meses);
+        $this->assertArrayNotHasKey(now()->addMonth()->format('Y-m'), $meses);
+
+        // Firefox shows type="month" as a text box, where "Octubre" could be typed
+        $vista->set('mes', 'Octubre')
+            ->call('revisar')
+            ->assertHasErrors('mes')
+            ->assertSet('vistaPrevia', null);
+    }
+
     public function test_changing_the_month_discards_the_review(): void
     {
         $this->crearUnidades([50]);

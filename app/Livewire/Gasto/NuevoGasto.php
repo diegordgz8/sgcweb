@@ -67,8 +67,8 @@ class NuevoGasto extends Component
 			'calculo' => 'required',
 			'comienzoCobro' => [
 				'required',
-				'date',
-				'after:last month',
+				'date_format:Y-m',
+				Rule::in(array_keys($this->mesesCobro())),
 			],
 			'moneda' => ['required', Rule::in(Moneda::codigos())],
 			'monto' => [
@@ -95,8 +95,21 @@ class NuevoGasto extends Component
 		];
 	}
 
+	/**
+	 * Months in which charging can start: this one and the next eleven. Offered as a list
+	 * because type="month" falls back to free text in Firefox.
+	 */
+	public function mesesCobro(): array
+	{
+		return collect(range(0, 11))
+			->map(fn ($adelante) => now()->startOfMonth()->addMonths($adelante))
+			->mapWithKeys(fn ($mes) => [$mes->format('Y-m') => $mes->locale('es')->translatedFormat('F Y')])
+			->all();
+	}
+
 	protected $messages = [
-		'comienzoCobro.after' => 'El comienzo de cobro no puede ser un mes anterior al actual.',
+		'comienzoCobro.date_format' => 'Seleccione el mes de la lista.',
+		'comienzoCobro.in' => 'El comienzo de cobro debe ser este mes o uno de los próximos once.',
 		'proveedorId.required' => 'Debe seleccionar un proveedor.',
 		'proveedorId.not_in' => 'Debe seleccionar un proveedor.',
 		'asambleaId.not_in' => 'Debe seleccionar una asamblea.',

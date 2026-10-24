@@ -18,8 +18,12 @@
 
 				<div class="col-span-6">
 					<label for="mes" class="block text-sm font-medium text-gray-700">Mes</label>
-					<input wire:model.live="mes" type="month" name="mes" id="mes"
-						class="form-control w-full">
+					<select wire:model.live="mes" name="mes" id="mes" class="form-control w-full">
+						<option value="">Seleccione el mes</option>
+						@foreach ($this->mesesAbiertos() as $valor => $nombre)
+							<option value="{{ $valor }}">{{ ucfirst($nombre) }}</option>
+						@endforeach
+					</select>
 					<x-input-error for="mes" />
 				</div>
 

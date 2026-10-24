@@ -105,8 +105,13 @@
                                 <label for="comienzo-cobro" class="block text-sm font-medium text-gray-700">
                                     Comienzo de cobro:
                                 </label>
-                                <input wire:model.live="comienzoCobro" type="month" name="comienzo-cobro" id="comienzo-cobro"
+                                <select wire:model.live="comienzoCobro" name="comienzo-cobro" id="comienzo-cobro"
                                     class="form-control w-full">
+                                    <option value="">Seleccione el mes</option>
+                                    @foreach ($this->mesesCobro() as $valor => $nombre)
+                                        <option value="{{ $valor }}">{{ ucfirst($nombre) }}</option>
+                                    @endforeach
+                                </select>
                                 <x-input-error for="comienzoCobro" />
                             </div>
 
